@@ -651,12 +651,9 @@ void internal(int id , int& npoint)
     stringstream buffer;    
     compute_stress_displ_at_specified_points(npoint, buffer);
     
-    //win_exchange.w_npoints = npoint;   //!give C the total number
     compute_stress_on_boundary_surfaces(npoint, buffer);
     save_buffer_to_file(file4, buffer);    
 
-    //  Windowexchange is a separate  object
-    winvar::win_exchange.w_npointg = npoint - winvar::win_exchange.w_npoints;
     buffer.flags(old_flags);
     file4.close();
     

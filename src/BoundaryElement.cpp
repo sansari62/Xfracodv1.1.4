@@ -83,6 +83,9 @@ void BoundaryElement::bound(int i, float& ss, float& sn, float& ustem, float& un
 
 
 
+
+
+
 void  MatrixB(int m)
 {
     

@@ -95,6 +95,8 @@ void newcoord(float dr)
 
 
 
+
+
 float call_work1_setting_fi0(float dtt, float& fi0, int mm, int mode, float& angip, float ang)
 {
     float  gi0 = 0.0, fi = 0.0;
@@ -121,10 +123,7 @@ float call_work1_setting_fi0(float dtt, float& fi0, int mm, int mode, float& ang
         wi = (b_elm[numbe - 1].jstate != 2) ? w0 : w1;    // if tip element not openp, ignore it
         if (dtt == 0)
         {
-            //  ERROR 
-           // MessageBox::Show("An error occurred: " + "dtt equals 0.", "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
-
-            MessageBox(nullptr, L"dtt equals 0", L"Error", MB_OK);
+           MessageBox(nullptr, L"dtt equals 0", L"Error", MB_OK);
         }
         else
         {
@@ -138,14 +137,12 @@ float call_work1_setting_fi0(float dtt, float& fi0, int mm, int mode, float& ang
         angip = ang * 180.0/ pi; 
         fi0 = fi;
     }
-     //else 
-     //   if(abs(fi -fi0) <= 0.0009)
-     //   {
-     //       angip = ang * 180.0 / pi;
-     //       //fi0 = fi;
-     //   }
+    
     return wi;
 }
+
+
+
 
 
 

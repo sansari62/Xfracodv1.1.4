@@ -38,7 +38,9 @@ void compute_AE_based_on_symm(int mx, int my, int mxk, int myk, int AE_indx, int
 
 void AcousticE() 
 {
-    int mm = 1;                 //rock index
+
+
+    int mm = 1;                
     float r, ra;             //random numbers
     string filepath1 = filepath + "/CAE" + to_string(test_id) + ".dat";
     ofstream file3(filepath1);
@@ -61,14 +63,13 @@ void AcousticE()
         file7 << numbe * 4 << std::endl;
     }
 
-    // Loop over boundary elements
     for (int i = 0; i < numbe; ++i)
     {
         mm = elm_list[i].mat_no;
         r = static_cast<float>(rand()) / RAND_MAX; // Random number between 0 and 1  Sara!   generating rand check
         ra = static_cast<float>(rand()) / RAND_MAX; // Random number between 0 and 1
 
-        //!The location of AE is at the centre of the fracture
+        //The location of AE is at the centre of the fracture
         AE[i].x = elm_list[i].xm + r * elm_list[i].a * cosf(ra * 2.0 * pi);
         AE[i].y = elm_list[i].ym + r * elm_list[i].a * sinf(ra * 2.0 * pi);
                 
@@ -108,8 +109,6 @@ void AcousticE()
 
         //Sara! write in file
         file3 << AE[i].x << AE[i].y << AE[i].m << endl;
-
-        file7 << AE[i].x << " " << AE[i].y << " " << AE[i].m << std::endl;
 
         switch (symm.ksym)
         {

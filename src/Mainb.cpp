@@ -4,6 +4,10 @@
 using namespace CommonPara_h::comvar;
 
 
+
+
+
+
 void solve(int n, int mode)
 {
     
@@ -550,7 +554,7 @@ void mainb(int mode)
                 case 6:
                 case 16:
                     label_500(i, j, mm, mmj, is, in, js, jn, mode);
-                    continue;                    //Sara! double check
+                    continue;                   
                 }
                 //label2010
                 //---------------save influence coefficients, save the coeff. all time ------
@@ -572,7 +576,7 @@ void mainb(int mode)
                 if (elm_list[i].kod > 10 && i == j)
                 {
 
-                    ks = rock1[1].e / 1e4;    //   Sara! think about rock1[0]
+                    ks = rock1[1].e / 1e4;    
                     kn = rock1[1].e / 1e4;
                     switch (elm_list[i].kod)
                     {

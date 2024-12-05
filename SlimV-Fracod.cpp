@@ -64,20 +64,12 @@ int main()
     ////
     
    
-    cout << "The program is running";
-    std::ofstream file57(filepath + "Cpermeability.dat");
-
-    if (!file57)
-    {
-        return 1;
-    }
-
+    cout << "The program is running";   
 
     elm_list.reserve(500);
     b_elm.reserve(500);
 
     Central_control();
-    file57.close();
     file2.close();
    
 

@@ -128,6 +128,8 @@ namespace comvar {
 		//to_string(test_id);
 	std::ofstream file2(filepath+"/Coutput.dat");
 	string filepath1 = filepath + "/Csplot" + to_string(test_id) + ".dat";
+	std::ofstream file57(filepath + "Cpermeability.dat");
+
 	
 	
 	
