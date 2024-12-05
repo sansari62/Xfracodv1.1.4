@@ -17,7 +17,7 @@ void safety_check()
 
         if (elm_list[m].kod == 5)
         {
-            if (elm_list[m].aks == 0.0 || elm_list[m].akn == 0.0)
+            if (b_elm[m].aks == 0.0 || b_elm[m].akn == 0.0)
                 MessageBox(nullptr, L"Element stiffness is zero", L"Warning!", MB_OK);
 
                 //MessageBox::Show("Element stiffness is zero", "Warning", MessageBoxButtons::OK, MessageBoxIcon::Warning);
@@ -405,10 +405,10 @@ void third_correction_run()
                 if (dist <= 1.1f * elm_list[m].a)
                 {
 
-                    ss = elm_list[m].sigma_s;
-                    sn = elm_list[m].sigma_n;
-                    usneg = elm_list[m].us_neg;
-                    unneg = elm_list[m].un_neg;
+                    ss = b_elm[m].sigma_s;
+                    sn = b_elm[m].sigma_n;
+                    usneg = b_elm[m].us_neg;
+                    unneg = b_elm[m].un_neg;
                     angle0 = static_cast<float>(atan2(elm_list[m].sinbet, elm_list[m].cosbet)) * 180 / pi; 
                     uxneg = usneg * elm_list[m].cosbet - unneg * elm_list[m].sinbet;
                     uyneg = usneg * elm_list[m].sinbet + unneg * elm_list[m].cosbet;
@@ -473,8 +473,9 @@ void calc_bound_stress(int it)
    
     for (int m = 0; m < numbe; ++m)
     {
-        BoundaryElement& be = elm_list[m];
-        be.bound(m, ss, sn, ustem, untem, usneg, unneg);  //not sure Sara!
+        //BoundaryElement& be = elm_list[m];
+        BE& be = b_elm[m];
+        elm_list[m].bound(m, ss, sn, ustem, untem, usneg, unneg);  //not sure Sara!
         ssd = ss - be.ss_old;
         snd = sn - be.sn_old;
         be.ss_old = ss;
@@ -496,8 +497,8 @@ void calc_bound_stress(int it)
         {
             be.us = ustem;
             be.un = untem;
-            be.forces = be.force1 + ss * 2.0 * be.a;
-            be.forcen = be.force2 + sn * 2.0 * be.a;
+            be.forces = be.force1 + ss * 2.0 * elm_list[m].a;
+            be.forcen = be.force2 + sn * 2.0 * elm_list[m].a;
             s4.df[m * 2] = s4.d0[m * 2]; // !for (AE)
             s4.df[m * 2+1] = s4.d0[m*2+1]; // !for (AE)
         }
@@ -518,7 +519,7 @@ void work0(int mode)
 
     //first time consider it as elastic fracture
     for (int m = 0; m < numbe; m++)
-        elm_list[m].jstate = 0;                
+        b_elm[m].jstate = 0;                
 
     if (insituS.incres == 0) 
         n_it = 1;
@@ -646,8 +647,8 @@ void work0(int mode)
             int ncorrection = 0;  
             for (int m = 0; m < numbe; ++m)
             {
-                BoundaryElement& be = elm_list[m];
-                if (be.kod == 5)
+                BE& be = b_elm[m];
+                if (elm_list[m].kod == 5)
                 {
                     // ------------sliding joint--------------
                     if (be.jstate == 2)
@@ -703,27 +704,28 @@ void work0(int mode)
     w0 =  0.0;
     for (int m = 0; m < numbe; ++m)
     {
+        BE& be = b_elm[m];
         switch (elm_list[m].kod)
         {
         case 1:
         case 11:
-            w0 += 0.5 * elm_list[m].forces * elm_list[m].us + 0.5 * elm_list[m].forcen * elm_list[m].un;
+            w0 += 0.5 * be.forces * be.us + 0.5 * be.forcen * be.un;
             break;
         case 2:
         case 12:
-            w0 -= 0.5 * elm_list[m].forces * elm_list[m].us - 0.5 * elm_list[m].forcen * elm_list[m].un;
+            w0 -= 0.5 * be.forces * be.us - 0.5 * be.forcen * be.un;
             break;
         case 3:
         case 13:
-            w0 -= 0.5 * elm_list[m].forces * elm_list[m].us + 0.5 * elm_list[m].forcen * elm_list[m].un;
+            w0 -= 0.5 * be.forces * be.us + 0.5 * be.forcen * be.un;
             break;
         case 4:
         case 14:
-            w0 += 0.5 * elm_list[m].forces * elm_list[m].us - 0.5 * elm_list[m].forcen * elm_list[m].un;
+            w0 += 0.5 * be.forces * be.us - 0.5 * be.forcen * be.un;
             break;
         case 5:
         case 6:
-            w0 += 0.5 * elm_list[m].forces * elm_list[m].us + 0.5 * elm_list[m].forcen * elm_list[m].un;   //similar to 1 check it in test later
+            w0 += 0.5 * be.forces * be.us + 0.5 * be.forcen * be.un;   //similar to 1 check it in test later
            
         default:
             break;
@@ -763,7 +765,7 @@ void work1(int mode)
     float ss = 0.0, ustem = 0.0,usneg = 0.0,unneg = 0.0,untem = 0.0;
     float sn = 0.0;
 
-    elm_list[numbe-1].jstate = 0;       
+    b_elm[numbe-1].jstate = 0;       
     float ph = 30.0 * 3.1416 / 180.0;
 
     for (int k = 0; k < 2 * (numbe - 1); ++k)
@@ -781,23 +783,23 @@ void work1(int mode)
 
     if (sn + watercm.pwater[numbe - 1] * watercm.jwater[numbe - 1] > 1e4)
     {
-        elm_list[numbe-1].jstate = 1;
-        elm_list[numbe-1].jslipd = 0;      
+        b_elm[numbe-1].jstate = 1;
+        b_elm[numbe-1].jslipd = 0;      
     }
     else
     {
         if (abs(ss) > streng)    
         {
-            elm_list[numbe - 1].jstate = 2;
-            elm_list[numbe - 1].jslipd = -copysign(1.0, ss);
+            b_elm[numbe - 1].jstate = 2;
+            b_elm[numbe - 1].jslipd = -copysign(1.0, ss);
         }
         //Sara set m to 0   change m to numbe-1 Sara! 9.9.2024
         if (sn + watercm.pwater[numbe - 1] * watercm.jwater[numbe - 1] < 0 && abs(ss) < streng)    //m instead of numbe check later in test
-            elm_list[numbe - 1].jstate = 0;
+            b_elm[numbe - 1].jstate = 0;
     }
 
     //label30
-    if (elm_list[numbe-1].jstate != 0) 
+    if (b_elm[numbe-1].jstate != 0) 
         mainb(mode);
 
     //temperatory accumulation of element displacement, undo it later
@@ -807,10 +809,10 @@ void work1(int mode)
     for (int m = 0; m < numbe; ++m)
     {
         elm_list[m].bound(m, ss, sn, ustem, untem, usneg, unneg);  // all of these parameter should be checked!!!
-        elm_list[m].us = ustem;
-        elm_list[m].un = untem;
-        elm_list[m].forces = elm_list[m].force1 + ss * 2.0 * elm_list[m].a;
-        elm_list[m].forcen = elm_list[m].force2 + sn * 2.0 * elm_list[m].a;
+        b_elm[m].us = ustem;
+        b_elm[m].un = untem;
+        b_elm[m].forces = b_elm[m].force1 + ss * 2.0 * elm_list[m].a;
+        b_elm[m].forcen = b_elm[m].force2 + sn * 2.0 * elm_list[m].a;
 
     }
     //undo accumulation because the fictitious element is not real element yet
@@ -824,24 +826,24 @@ void work1(int mode)
         {
             case 1:
             case 11:
-                w1 += 0.5 * elm_list[m].forces * elm_list[m].us + 0.5 * elm_list[m].forcen * elm_list[m].un;
+                w1 += 0.5 * b_elm[m].forces * b_elm[m].us + 0.5 * b_elm[m].forcen * b_elm[m].un;
                 break;
                 
             case 2:
             case 12:
-                w1 -= 0.5 * elm_list[m].forces * elm_list[m].us - 0.5 * elm_list[m].forcen * elm_list[m].un;
+                w1 -= 0.5 * b_elm[m].forces * b_elm[m].us - 0.5 * b_elm[m].forcen * b_elm[m].un;
                 break;
             case 3:
             case 13:
-                w1 -= 0.5 * elm_list[m].forces * elm_list[m].us + 0.5 * elm_list[m].forcen * elm_list[m].un;
+                w1 -= 0.5 * b_elm[m].forces * b_elm[m].us + 0.5 * b_elm[m].forcen * b_elm[m].un;
                 break;
             case 4:
             case 14:
-                w1 += 0.5 * elm_list[m].forces * elm_list[m].us - 0.5 * elm_list[m].forcen * elm_list[m].un;
+                w1 += 0.5 * b_elm[m].forces * b_elm[m].us - 0.5 * b_elm[m].forcen * b_elm[m].un;
                 break;
             case 5:
             case 6:
-                w1 += 0.5 * elm_list[m].forces * elm_list[m].us + 0.5 * elm_list[m].forcen * elm_list[m].un;                           
+                w1 += 0.5 * b_elm[m].forces * b_elm[m].us + 0.5 * b_elm[m].forcen * b_elm[m].un;                           
         }
     }
     //reset the fictitous element to no water pressure   

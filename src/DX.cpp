@@ -339,8 +339,8 @@ void recalculate_boundary_element_m(float xt, float yt, float xt0, float yt0,int
     float pyy = symm.pyy1 + g.sky * (y0 - elm_list[m].ym);
     float pxy = symm.pxy1;
      
-    elm_list[m].force1 = 2.0 * elm_list[m].a * (-((pyy - pxx) * sinb * cosb + pxy * (cosb * cosb - sinb * sinb)));     //!old b0()
-    elm_list[m].force2 = 2.0 * elm_list[m].a * (-(pxx * sinb * sinb - 2.0 * pxy * sinb * cosb + pyy * cosb * cosb));  // !old b0()
+    b_elm[m].force1 = 2.0 * elm_list[m].a * (-((pyy - pxx) * sinb * cosb + pxy * (cosb * cosb - sinb * sinb)));     //!old b0()
+    b_elm[m].force2 = 2.0 * elm_list[m].a * (-(pxx * sinb * sinb - 2.0 * pxy * sinb * cosb + pyy * cosb * cosb));  // !old b0()
 
     return;
 }

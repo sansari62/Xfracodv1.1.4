@@ -78,7 +78,7 @@ void AcousticE()
         if (elm_list[i].kod == 5)
         {
             //Shear slip along fracture element, elastic is considered too
-            if (elm_list[i].jstate == 2 || elm_list[i].jstate == 0)
+            if (b_elm[i].jstate == 2 || b_elm[i].jstate == 0)
             {
                 //= shear modulus * shear dd * area
                 AE_m0 = abs(s4.df[i * 2] - s4.df0[i * 2]) * 
@@ -91,7 +91,7 @@ void AcousticE()
             }
 
             //tensile failure along fracture element
-            else if (elm_list[i].jstate == 1)
+            else if (b_elm[i].jstate == 1)
             {
                 //=lame modulus * tensile dd * area
                 AE_m0 = abs(s4.df[i * 2+1] - s4.df0[i * 2+1]) * rock1[mm].e * (rock1[mm].pr / ((1 + rock1[mm].pr) *

@@ -8,11 +8,16 @@
 #include <omp.h>
 #include<chrono>
 #include<Mainb.h>
-//using namespace System::Diagnostics;
+
 
 
 using namespace comvar;
 using namespace winvar;
+
+
+
+
+
 
 void write_data_to_file(float xp, float yp, float sig1, float sig2, float bet, float sig12, float set,
     float disp, float zet, int mm, stringstream& buffer)
@@ -192,6 +197,7 @@ void compute_disp_boundary_and_frac_surfaces(int & npoint, float  sig1, float si
     }
     return;
 }
+
 
 
 
@@ -389,8 +395,12 @@ void reassigning_boundary_values2(int& npoint, int ID, int m, int j, int k, floa
 {    
     if (j == numbe)
        j--;
-    BoundaryElement& be = elm_list[m];  //be is an alias for boundary elemnt m
-    BoundaryElement& bj = elm_list[j];  //bj is an alias for boundary elemnt j
+    BE& be = b_elm[m];  //be is an alias for boundary elemnt m
+    BE& bj = b_elm[j];  //bj is an alias for boundary elemnt j
+
+
+    BoundaryElement& be1 = elm_list[m];
+    BoundaryElement& bj1 = elm_list[j];
 
 
     float ss_m = be.sigma_s;
@@ -412,13 +422,13 @@ void reassigning_boundary_values2(int& npoint, int ID, int m, int j, int k, floa
 
     float us_a =0, un_a = 0, ang = 0;
 
-    if (be.kod > 10)
+    if (be1.kod > 10)
     {// correction for gravity and introduced Ks and Kn
         ss_m = be.sigma_s + s4.d0[m * 2] * (rock1[1].e / 1e4);    
         sn_m = be.sigma_n + s4.d0[m * 2 + 1] * (rock1[1].e / 1e4);
     }
 
-    if (bj.kod > 10)
+    if (bj1.kod > 10)
     {
         ss_n = bj.sigma_s + s4.d0[j * 2] * (rock1[1].e / 1e4);
         sn_n = bj.sigma_n + s4.d0[j * 2 +1] * (rock1[1].e / 1e4);
@@ -432,24 +442,24 @@ void reassigning_boundary_values2(int& npoint, int ID, int m, int j, int k, floa
 
     if (k == 1)
     {  //for boundary element m
-        us_a = (be.a * (us_n * cosf(beta/2) - un_n * sinf(beta/2)) + bj.a *
-            (us_m * cosf(beta/2) + un_m * sinf(beta / 2))) / (be.a + bj.a);
+        us_a = (be1.a * (us_n * cosf(beta/2) - un_n * sinf(beta/2)) + bj1.a *
+            (us_m * cosf(beta/2) + un_m * sinf(beta / 2))) / (be1.a + bj1.a);
 
-        un_a = (be.a * (us_n * sinf(beta/2) + un_n * cosf(beta/2)) + bj.a *
-            (-us_m * sinf(beta/2) + un_m * cosf(beta/2))) / (be.a + bj.a);
+        un_a = (be1.a * (us_n * sinf(beta/2) + un_n * cosf(beta/2)) + bj1.a *
+            (-us_m * sinf(beta/2) + un_m * cosf(beta/2))) / (be1.a + bj1.a);
 
-        ang = atan2f(be.sinbet, be.cosbet) + beta / 2.0;
+        ang = atan2f(be1.sinbet, be1.cosbet) + beta / 2.0;
     }
 
     else //if (k == 2)
     {  // //for boundary element j
-        us_a = (bj.a * (us_m * cosf(beta/2) - un_m * sinf(beta/2)) + bj.a *
-            (us_n * cos(beta/2) + un_n * sinf(beta / 2))) / (be.a + bj.a);
+        us_a = (bj1.a * (us_m * cosf(beta/2) - un_m * sinf(beta/2)) + bj1.a *
+            (us_n * cos(beta/2) + un_n * sinf(beta / 2))) / (be1.a + bj1.a);
 
-        un_a = (bj.a * (us_m * sinf(beta/2) + un_m * cosf(beta/2)) + bj.a *
-            (-us_n * sinf(beta/2) + un_n * cosf(beta/2))) / (be.a + bj.a);
+        un_a = (bj1.a * (us_m * sinf(beta/2) + un_m * cosf(beta/2)) + bj1.a *
+            (-us_n * sinf(beta/2) + un_n * cosf(beta/2))) / (be1.a + bj1.a);
 
-        ang = atan2f(be.sinbet, be.cosbet) - beta / 2.0;
+        ang = atan2f(be1.sinbet, be1.cosbet) - beta / 2.0;
     }
 
 
@@ -465,7 +475,7 @@ void reassigning_boundary_values2(int& npoint, int ID, int m, int j, int k, floa
     float st0 = pxx * cosb * cosb - 2.0 * pxy * sinb * cosb + pyy * sinb * sinb;
     float sn0 = pxx * sinb * sinb - 2.0 * pxy * sinb * cosb + pyy * cosb * cosb;
 
-    int mm = bj.mat_no;
+    int mm = bj1.mat_no;
     float st = 0;
     if (k == 1)
     {
@@ -474,7 +484,7 @@ void reassigning_boundary_values2(int& npoint, int ID, int m, int j, int k, floa
 
         st = rock1[mm].e / (1 - rock1[mm].pr * rock1[mm].pr) *
             ((us_n * cosf(beta/2) - un_n * sinf(beta/2)) - (us_m * cosf(beta/2) +
-                un_m * sinf(beta/2))) / ((be.a + bj.a) * cosf(beta/2));
+                un_m * sinf(beta/2))) / ((be1.a + bj1.a) * cosf(beta/2));
     }
     else
     {
@@ -483,7 +493,7 @@ void reassigning_boundary_values2(int& npoint, int ID, int m, int j, int k, floa
 
         st = rock1[mm].e / (1 - rock1[mm].pr * rock1[mm].pr) * ((us_m * cosf(beta/2) - un_m *
             sinf(beta/2)) - (us_n * cosf(beta/2) + un_n *
-                sinf(beta / 2))) / ((be.a + bj.a) * cosf(beta/2));
+                sinf(beta / 2))) / ((be1.a + bj1.a) * cosf(beta/2));
     }
 
     st += st0  + (sn - sn0) * rock1[mm].pr / (1 - rock1[mm].pr);
@@ -497,13 +507,13 @@ void reassigning_boundary_values2(int& npoint, int ID, int m, int j, int k, floa
     float sig12 = (sig1 - sig2) / 2.0;
 
 
-    bet = (k == 1) ?atan2f(be.sinbet, be.cosbet)+ beta / 2.0 + bet :
-        atan2f(be.sinbet, be.cosbet) - beta / 2.0 + bet; 
+    bet = (k == 1) ?atan2f(be1.sinbet, be1.cosbet)+ beta / 2.0 + bet :
+        atan2f(be1.sinbet, be1.cosbet) - beta / 2.0 + bet; 
 
     float set = (sig12 > 0) ? bet + pi / 4.0 : bet - pi / 4.0;
    
-    float alpha = (k == 1) ? atan2f(be.sinbet, be.cosbet) + beta / 2.0 :
-       atan2f(be.sinbet, be.cosbet) - beta / 2.0;
+    float alpha = (k == 1) ? atan2f(be1.sinbet, be1.cosbet) + beta / 2.0 :
+       atan2f(be1.sinbet, be1.cosbet) - beta / 2.0;
 
     float ux = us_a * cosf(alpha) - un_a * sinf(alpha);
     float uy = us_a * sinf(alpha) + un_a * cosf(alpha);
@@ -611,6 +621,8 @@ void compute_stress_on_boundary_surfaces(int& npoint, stringstream& buffer)
 
 
 
+
+
 void save_buffer_to_file(ofstream& file4, stringstream& buffer)
 {
     file4 << buffer.str();
@@ -619,9 +631,14 @@ void save_buffer_to_file(ofstream& file4, stringstream& buffer)
 
 
 
+
+
+
 void internal(int id , int& npoint)
 {
     /* internal grid point stresses and displacements */
+
+
     std::ofstream file4(filepath1);
     auto old_flags = file4.flags();
     file4.setf(ios::fixed, ios::floatfield);  // Fixed-point format for floats

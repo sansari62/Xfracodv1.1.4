@@ -259,7 +259,7 @@ void Interface(int num, float xbeg, float ybeg, float xend, float yend, int mat1
         be.sinbet = yd / sw;
         be.cosbet = xd / sw;
         be.kod = 6;
-        be.ipair = 1;
+        b_elm[m].ipair = 1;
         be.mat_no = mat1;
 
         elm_list[n].xm = be.xm;
@@ -268,7 +268,7 @@ void Interface(int num, float xbeg, float ybeg, float xend, float yend, int mat1
         elm_list[n].sinbet = -be.sinbet;
         elm_list[n].cosbet = -be.cosbet;
         elm_list[n].kod = 6;
-        elm_list[n].ipair = 2;
+        b_elm[n].ipair = 2;
         elm_list[n].mat_no = mat2;
 
         //************************* Avoid double definition of elements********************************
@@ -323,26 +323,26 @@ void Interface(int num, float xbeg, float ybeg, float xend, float yend, int mat1
         //still work done by interface if it is between lining and rock
         if (be.mat_no == mat_lining) 
         {
-            be.force1 = 0;
-            be.force2 = 0;
+            b_elm[m].force1 = 0;
+            b_elm[m].force2 = 0;
         }
 
         //still work done by interface if it is between lining and rock
         else
         {
-            be.force1 = 2.0 * be.a * (-ss);
-            be.force2 = 2.0 * be.a * (-sn);
+            b_elm[m].force1 = 2.0 * be.a * (-ss);
+            b_elm[m].force2 = 2.0 * be.a * (-sn);
         }
 
         if (elm_list[n].mat_no == mat_lining)
         {
-            elm_list[n].force1 = 0;
-            elm_list[n].force2 = 0;
+            b_elm[n].force1 = 0;
+            b_elm[n].force2 = 0;
         }
         else
         {
-            elm_list[n].force1 = 2.0 * elm_list[n].a * (-ss);
-            elm_list[n].force2 = 2.0 * elm_list[n].a * (-sn);
+            b_elm[n].force1 = 2.0 * elm_list[n].a * (-ss);
+            b_elm[n].force2 = 2.0 * elm_list[n].a * (-sn);
         }
     }
     //label110

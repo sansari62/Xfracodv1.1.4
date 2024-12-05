@@ -149,27 +149,27 @@ void setting_elem_and_tipn_failure(int m, int im)
     float pyy = symm.pyy1 + g.sky * (y0 - elm_list[m].ym);
     float pxy = symm.pxy1;
 
-    elm_list[m].force1 = 2.0 * elm_list[m].a * (-((pyy - pxx) * sinb * cosb + pxy *
+    b_elm[m].force1 = 2.0 * elm_list[m].a * (-((pyy - pxx) * sinb * cosb + pxy *
         (cosb * cosb - sinb * sinb)));           // old b0()
-    elm_list[m].force2 = 2.0 * elm_list[m].a * (-(pxx * sinb * sinb - 2.0 * pxy * 
+    b_elm[m].force2 = 2.0 * elm_list[m].a * (-(pxx * sinb * sinb - 2.0 * pxy *
         sinb * cosb + pyy * cosb * cosb));        // old b0()
 
     int mm = 1;  // index of rock
     float aks_bb = 0, akn_bb = 0, phi_bb = 0, coh_bb = 0, phid_bb = 0, ap_bb = 0,
         apr_bb = 0;
     stiffness_bb(aks_bb, akn_bb, phi_bb, coh_bb, phid_bb, ap_bb, apr_bb, im, mm);
-    elm_list[m].aks = aks_bb;
-    elm_list[m].akn = akn_bb;
-    elm_list[m].phi = phi_bb;
-    elm_list[m].coh = coh_bb;
-    elm_list[m].phid = phid_bb;
+    b_elm[m].aks = aks_bb;
+    b_elm[m].akn = akn_bb;
+    b_elm[m].phi = phi_bb;
+    b_elm[m].coh = coh_bb;
+    b_elm[m].phid = phid_bb;
 
     joint[m].aperture0 = ap_bb;
     joint[m].aperture_r = apr_bb;
 
     //elm_list[m].jangle = atan2f(elm_list[m].sinbet, elm_list[m].cosbet) * 57.3;
-    elm_list[m].jstate = 0;
-    elm_list[m].jmode = im;  
+    b_elm[m].jstate = 0;
+    b_elm[m].jmode = im;
 
     return;
 }
@@ -204,7 +204,6 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
         return;   //instead of stop
     }
     int n = no;
-    //float dl = r / 2;        //not sure why 2wice this variable initialized 
     xb = xp - 1 / 2.0 * r * cosf(alpha);     // xbe(?) etc are potential (additional) element, not actual  instead of 1/2r, dl used here
     yb = yp - 1 / 2.0 * r * sinf(alpha);
     xn = xp;
@@ -217,17 +216,23 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
     
     //-------------------------------add new element------------
     m = numbe; 
-    float x = 0.5 * (xb + xn);
+   /* float x = 0.5 * (xb + xn);
     float y = 0.5 * (yb + yn);
     float sinb = (yn - yb) / dl;
-    float cosb = (xn - xb) / dl;
+    float cosb = (xn - xb) / dl;*/
+    elm_list[m].xm= 0.5 * (xb + xn);
+    elm_list[m].ym= 0.5 * (yb + yn);
+    elm_list[m].a = dl / 2.0;
+    elm_list[m].sinbet= (yn - yb) / dl;
+    elm_list[m].cosbet= (xn - xb) / dl;
+    elm_list[m].kod = 5;
+    elm_list[m].mat_no = material;
 
-    elm_list.emplace_back(x, y, dl / 2.0, cosb, sinb, 5, material);    
     //legal = CheckNewElement(elm_list[m].a, elm_list[m].xm, elm_list[m].ym,
      //   elm_list[m].cosbet, elm_list[m].sinbet, 0);
 
     float a = elm_list[m].a; float xm = elm_list[m].xm; float ym = elm_list[m].ym;
-    legal = CheckNewElement(a, xm, ym, cosb, sinb, 0);
+    legal = CheckNewElement(a, xm, ym, elm_list[m].cosbet, elm_list[m].sinbet, 0);
 
     m += 1;
     if (legal == 0)
@@ -243,7 +248,6 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
         tips[n].mpointer = m-1;
         tips[n].xen = xp - 1 / 2. * r * cosf(alpha);
         tips[n].yen = yp - 1 / 2. * r * sinf(alpha);
-        // xbe(?) etc are potential (additional) element, not actual
         tips[n].xbe = tips[n].xen - 1 / 2. * r * cosf(alpha);     
         tips[n].ybe = tips[n].yen - 1 / 2. * r * sinf(alpha);
         tips[n].imode = im;
@@ -276,7 +280,7 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
         }
         //------------Add new tip----------------
         n = no;
-        xb = xp;   // xbe(?) etc are potential (additional) element, not actual
+        xb = xp;   
         yb = yp;
         xn = xp + 1 / 2.0 * r * cosf(alpha); 
         yn = yp + 1 / 2.0 * r * sinf(alpha);
@@ -287,10 +291,20 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
         no++;     //new tip added
         
         //-------------Add new element------------------
-        sinb = (yn - yb) / dl;
-        cosb = (xn - xb) / dl;
-        elm_list.emplace_back(0.5 * (xb + xn), 0.5 * (yb + yn), dl / 2.0, cosb, sinb, 5, material);
+        float sinb = (yn - yb) / dl;
+        float cosb = (xn - xb) / dl;       
+        elm_list[m].xm = 0.5 * (xb + xn);
+        elm_list[m].ym = 0.5 * (yb + yn);
+        elm_list[m].a = dl / 2.0;
+        elm_list[m].sinbet = sinb;    
+        elm_list[m].cosbet = cosb;       
+        elm_list[m].kod = 5;
+        elm_list[m].mat_no = material;
+
+
+
         float a = elm_list[m].a; float xm = elm_list[m].xm; float ym = elm_list[m].ym;
+
         legal = CheckNewElement(a,xm, ym, cosb, sinb, 0);
         m += 1;      //new element added
         if (legal == 0)
@@ -304,7 +318,6 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
         {
             setting_elem_and_tipn_failure(m-1, im);
             tips[n].mpointer = m-1;
-            //xbe(? ) etc are potential(additional) element, not acutal
             tips[n].xbe = tips[n].xen;     
             tips[n].ybe = tips[n].yen;
             tips[n].xen = tips[n].xbe + 1 / 2. * r * cosf(alpha);
@@ -340,7 +353,6 @@ void failureB(float xp, float yp, float r, float alpha, int im, float& fos)
 
     if (numbe >= 1498)
     {
-        //call SendWindowText('Memory Overflow - Reduce In Situ Stresses'//CHAR(0))
        MessageBox(nullptr, L"Memory Overflow - Reduce In Situ Stresses.", L"Message!", MB_OK);
 
         exit(0);
@@ -355,7 +367,7 @@ void failureB(float xp, float yp, float r, float alpha, int im, float& fos)
     float sinb = sinf(alpha);
     float cosb = cosf(alpha);
 
-    xb = xp + 0.5 * r * cosb;     // xbe(?) etc are potential (additional) element, not actual
+    xb = xp + 0.5 * r * cosb;     
     yb = yp + 0.5 * r * sinb;
     xe = xp + 1.0 * r * cosb;
     ye = yp + 1.0 * r * sinb;
@@ -368,10 +380,16 @@ void failureB(float xp, float yp, float r, float alpha, int im, float& fos)
     //---------------Add new element-------------------------------
     float x = 0.5 * (xb + xp);
     float y = 0.5 * (yb + yp);
-    BoundaryElement be;
-    elm_list[m] = be;
-    elm_list.emplace_back(x, y, dl / 2, cosb, sinb, 5, material);  
-    //checkNewElementB  b=1 the final arg show b  
+    
+    elm_list[m].xm= 0.5 * (xb + xp);
+    elm_list[m].ym = 0.5 * (yb + yp);
+    elm_list[m].a = dl / 2;
+    elm_list[m].sinbet = sinb;
+    elm_list[m].cosbet = cosb;
+    elm_list[m].kod = 5;
+    elm_list[m].mat_no = material;
+
+     
     int legal = CheckNewElement(elm_list[m].a, elm_list[m].xm, elm_list[m].ym, 
         elm_list[m].cosbet, elm_list[m].sinbet, 1);
       
@@ -385,10 +403,17 @@ void failureB(float xp, float yp, float r, float alpha, int im, float& fos)
     {
         setting_elem_and_tipn_failure(m-1, im);
         // -----------------------------------------------       
-        material = check_material_id(0.5 * (xb + xe), 0.5 * (yb + ye)); //consider removing in optiphase Sara!        
-        elm_list.emplace_back(0.5 * (xb + xe), 0.5 * (yb + ye), dl / 2, 
-            cosb, sinb, 5, material);
-        
+        material = check_material_id(0.5 * (xb + xe), 0.5 * (yb + ye));        
+             
+        elm_list[m].xm = 0.5 * (xb + xe);
+        elm_list[m].ym = 0.5 * (yb + ye);
+        elm_list[m].a = dl / 2;
+        elm_list[m].sinbet = sinb;
+        elm_list[m].cosbet = cosb;
+        elm_list[m].kod = 5;
+        elm_list[m].mat_no = material;
+
+
         legal = CheckNewElement(elm_list[m].a, elm_list[m].xm, elm_list[m].ym, 
             elm_list[m].cosbet, elm_list[m].sinbet, 1);
         m = numbe + 2;
@@ -409,12 +434,14 @@ void failureB(float xp, float yp, float r, float alpha, int im, float& fos)
 
      tips[n].xbe = xe;
      tips[n].ybe = ye;
-     tips[n].xen = tips[n].xbe + 0.5 * r * cosf(alpha);  // xbe(?) etc are potential (additional) element, not actual
+     tips[n].xen = tips[n].xbe + 0.5 * r * cosf(alpha);  
      tips[n].yen = tips[n].ybe + 0.5 * r * sinf(alpha);
      tips[n].imode = im;
      numbe = m;    
     return;
 }
+
+
 
 
 

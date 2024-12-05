@@ -87,8 +87,8 @@ void newcoord(float dr)
     pyy = symm.pyy1 + g.sky * (y0 - elm_list[m].ym);
     pxy = symm.pxy1;
 
-    elm_list[m].force1 = 2.0 * elm_list[m].a * ( -(pyy - pxx) * sinb * cosb + pxy * (cosb * cosb - sinb * sinb) );
-    elm_list[m].force2 = 2.0 * elm_list[m].a * ( -(pxx * sinb * sinb - 2.0 * pxy * sinb * cosb + pyy * cosb * cosb) );
+    b_elm[m].force1 = 2.0 * elm_list[m].a * ( -(pyy - pxx) * sinb * cosb + pxy * (cosb * cosb - sinb * sinb) );
+    b_elm[m].force2 = 2.0 * elm_list[m].a * ( -(pxx * sinb * sinb - 2.0 * pxy * sinb * cosb + pyy * cosb * cosb) );
 
     return;
 }
@@ -103,7 +103,7 @@ float call_work1_setting_fi0(float dtt, float& fi0, int mm, int mode, float& ang
     {
         work1(1); // 0 = not first time; 1 = mode I    2 = mode II
 
-        wi = (elm_list[numbe-1].jstate != 1) ? w0 : w1;       // if tip element not openp, ignore it
+        wi = (b_elm[numbe-1].jstate != 1) ? w0 : w1;       // if tip element not openp, ignore it
          if (dtt == 0)
         {
              MessageBox(nullptr,L"dtt equals 0",L"Error", MB_OK);
@@ -118,7 +118,7 @@ float call_work1_setting_fi0(float dtt, float& fi0, int mm, int mode, float& ang
     {
         work1(2); // 0 = not first time; 1 = mode I    2 = mode II
 
-        wi = (elm_list[numbe - 1].jstate != 2) ? w0 : w1;    // if tip element not openp, ignore it
+        wi = (b_elm[numbe - 1].jstate != 2) ? w0 : w1;    // if tip element not openp, ignore it
         if (dtt == 0)
         {
             //  ERROR 
@@ -317,7 +317,7 @@ void fmax1(float& f0, float& angle)
     BoundaryElement& be = elm_list[m];
     bool kpause = false;
 
-    if (be.jstate == 0)
+    if (b_elm[m].jstate == 0)
     {
         kk = check_elastic_growth(m);
         if (kk == 0) return;      //Sara if kk==1 doublecheck           
@@ -375,7 +375,7 @@ void fmax1(float& f0, float& angle)
             dtt = dxi(ang,false);      //call dxi flagB = false
         }
 
-        if (!((be.jstate == 2 && be.jslipd == 1 && icyc < -20)||(be.jstate == 2 && be.jslipd == -1 && icyc > 20)))
+        if (!((b_elm[m].jstate == 2 && b_elm[m].jslipd == 1 && icyc < -20)||(b_elm[m].jstate == 2 && b_elm[m].jslipd == -1 && icyc > 20)))
         {
             wi = call_work1_setting_fi0(dtt, fi0, mm, 1, angi0, ang);
         }

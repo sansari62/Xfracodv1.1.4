@@ -237,7 +237,7 @@ void label_500(int i, int j,int mm, int mmj,int is, int in, int js, int jn,int m
             //othogonal line components--or -Non-othogonal line components, same region -
             if (i == j || mm == mmj)
             {
-                switch (elm_list[i].ipair)
+                switch (b_elm[i].ipair)
                 {
                 case 1:
                     s4.c[is][js] = s4.c_s[is][js];
@@ -256,7 +256,7 @@ void label_500(int i, int j,int mm, int mmj,int is, int in, int js, int jn,int m
             //----Non-othogonal line components, different region -- to me is the same !sara
             else
             {
-                switch (elm_list[i].ipair)
+                switch (b_elm[i].ipair)
                 {
 
                 case 1:
@@ -282,7 +282,7 @@ void label_500(int i, int j,int mm, int mmj,int is, int in, int js, int jn,int m
             interface_matrix(i, i);
             //Shear / normal stress condition to balance the equation  
 
-            switch (elm_list[i].ipair)
+            switch (b_elm[i].ipair)
             {
             case 1:
                 s4.c[is][js] = matx.A_is_js;
@@ -305,7 +305,7 @@ void label_500(int i, int j,int mm, int mmj,int is, int in, int js, int jn,int m
             if (mm == mmj)
             {
                 interface_matrix(i, j);
-                switch (elm_list[i].ipair)
+                switch (b_elm[i].ipair)
                 {
                 case 1:
                     s4.c[is][js] = matx.A_is_js;
@@ -324,7 +324,7 @@ void label_500(int i, int j,int mm, int mmj,int is, int in, int js, int jn,int m
             //!----Non-othogonal line components, different region ----
             else   //mm!=mmj
             {
-                switch (elm_list[i].ipair)
+                switch (b_elm[i].ipair)
                 {
                 case 1:
                     interface_matrix(i + 1, j);
@@ -615,16 +615,16 @@ void mainb(int mode)
             }
             else
             {
-                ks = elm_list[i].aks ;
-                kn = elm_list[i].akn ;
-                ph = elm_list[i].phi ;
-                pd = elm_list[i].phid ;
+                ks = b_elm[i].aks ;
+                kn = b_elm[i].akn ;
+                ph = b_elm[i].phi ;
+                pd = b_elm[i].phid ;
             }
 
             if (i == numbe-1 && mode == 1)
             {
                     //second round
-                    switch (elm_list[i].jstate + 1)
+                    switch (b_elm[i].jstate + 1)
                     {
                     case 1:
                     case 3:
@@ -640,7 +640,7 @@ void mainb(int mode)
             else if (i == numbe - 1 && mode == 2)
                 {
                         //third run
-                        switch (elm_list[i].jstate + 1)
+                        switch (b_elm[i].jstate + 1)
                         {
                         case 1:
                            s4.c[is][js] +=  ks;
@@ -652,13 +652,13 @@ void mainb(int mode)
                             break;
                         case 3:
                             s4.c[in][jn] += kn;
-                            s4.c[is][jn] += kn * tanf(ph) * elm_list[i].jslipd;
+                            s4.c[is][jn] += kn * tanf(ph) * b_elm[i].jslipd;
                             break;
                         }                     
                 }            
             else
             {
-                switch (elm_list[i].jstate + 1)
+                switch (b_elm[i].jstate + 1)
                 {
                 case 1:
                    s4.c[is][js] += ks;
@@ -671,8 +671,8 @@ void mainb(int mode)
                     break;
                 case 3:
                     s4.c[in][jn] +=  kn;
-                    s4.c[is][jn] +=  kn * tanf(ph) * elm_list[i].jslipd;
-                    s4.c[in][js] +=  kn * tanf(pd) * (- elm_list[i].jslipd);  //Sara!
+                    s4.c[is][jn] +=  kn * tanf(ph) * b_elm[i].jslipd;
+                    s4.c[in][js] +=  kn * tanf(pd) * (- b_elm[i].jslipd);  //Sara!
                     
                 }
             } 

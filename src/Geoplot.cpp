@@ -60,7 +60,7 @@ void geoplot()
             geom[l].w_ybeg = be.ym - be.a * be.sinbet;
             geom[l].w_xend = be.xm + be.a * be.cosbet;
             geom[l].w_yend = be.ym + be.a * be.sinbet;
-            geom[l].w_jstat = be.jstate;
+            geom[l].w_jstat = b_elm[i].jstate;
             geom[l].w_kod = be.kod > 10 ? be.kod - 10 : be.kod;
             geom[l].w_jwater = watercm.jwater[i];    //Sara! think jwater fpr elem pr struct
             geom[l].w_mat = be.mat_no;
@@ -82,7 +82,7 @@ void geoplot()
                 geom[l].w_ybeg = be2.ym + be2.a * be2.sinbet;
                 geom[l].w_xend = 2.0 * symm.xsym - (be2.xm - be2.a * be2.cosbet);
                 geom[l].w_yend = be2.ym - be2.a * be2.sinbet;
-                geom[l].w_jstat = be2.jstate;
+                geom[l].w_jstat = b_elm[j].jstate;
                 geom[l].w_kod = be2.kod > 10 ? be2.kod - 10 : be2.kod;
                 geom[l].w_jwater = watercm.jwater[j];
                 geom[l].w_mat = be2.mat_no;
@@ -106,7 +106,7 @@ void geoplot()
                 geom[l].w_ybeg = 2.0 * symm.ysym - ( be2.ym + be2.a * be2.sinbet);
                 geom[l].w_xend = be2.xm - be2.a * be2.cosbet;
                 geom[l].w_yend = 2.0 * symm.ysym - (be2.ym - be2.a * be2.sinbet);
-                geom[l].w_jstat = be2.jstate;
+                geom[l].w_jstat = b_elm[j].jstate;
                 geom[l].w_kod = be2.kod > 10 ? be2.kod - 10 : be2.kod;
                 geom[l].w_jwater = watercm.jwater[j];  //Sara!
                 geom[l].w_mat = be2.mat_no;
@@ -130,7 +130,7 @@ void geoplot()
                 geom[l].w_ybeg = 2.0 * symm.ysym - (be2.ym - be2.a * be2.sinbet);
                 geom[l].w_xend = 2.0 * symm.xsym - (be2.xm + be2.a * be2.cosbet);
                 geom[l].w_yend = 2.0 * symm.ysym - (be2.ym + be2.a * be2.sinbet);
-                geom[l].w_jstat = be2.jstate;
+                geom[l].w_jstat = b_elm[j].jstate;
                 geom[l].w_kod = be2.kod > 10 ? be2.kod - 10 : be2.kod;
                 geom[l].w_jwater = watercm.jwater[j];  
                 geom[l].w_mat = be2.mat_no;

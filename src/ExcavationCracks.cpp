@@ -80,7 +80,7 @@ void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, fl
         float x2 = xc + ac * cosbeta;   //x2 = 0.106666669
         float y2 = yc + ac * sinbeta;   //y2 = 0.0533333346
         int  en;
-        float thr = 6e-4;
+        float thr = 0.0003; //6e-4;
         if (flagB == 0)
             en = numbe - 1;
         else 
@@ -98,7 +98,7 @@ void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, fl
             float dist2 = sqrtf(powf(x2 - be.xm, 2) + powf(y2 - be.ym, 2));
 
             
-            if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a)  )
+            if (min(dist1, dist2) - thr <= factors.tolerance * max(ac, be.a)  )
             {
                 //legal = 0;
                 return(0);

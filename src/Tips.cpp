@@ -126,23 +126,23 @@ void label400_new_coordin_for_tip(int n, int mm, int mergtip, float xt, float yt
     float pyy = symm.pyy1 + g.sky * (y0 - be.ym);
     float pxy = symm.pxy1;
 
-    be.force1 = 2.0 * be.a * (-((pyy - pxx) * sinb * cosb + pxy * (cosb * cosb - sinb * sinb)));// !old b0()
-    be.force2 = 2.0 * be.a * (-(pxx * sinb * sinb - 2.0 * pxy * sinb * cosb + pyy * cosb * cosb));// !old b0()
+    b_elm[m].force1 = 2.0 * be.a * (-((pyy - pxx) * sinb * cosb + pxy * (cosb * cosb - sinb * sinb)));// !old b0()
+    b_elm[m].force2 = 2.0 * be.a * (-(pxx * sinb * sinb - 2.0 * pxy * sinb * cosb + pyy * cosb * cosb));// !old b0()
     //be.jangle = atan2f(be.sinbet, be.cosbet) * 57.3;
-    be.jmode = t.imode;
-    be.jstate = t.imode;
+    b_elm[m].jmode = t.imode;
+    b_elm[m].jstate = t.imode;
     float ss = (sigyy - sigxx) * sinb * cosb + sigxy * (cosb * cosb - sinb * sinb);
-    be.jslipd = -copysign(1.0, ss);
+    b_elm[m].jslipd = -copysign(1.0, ss);
 
     float aks_bb = 0, akn_bb = 0, phi_bb = 0;
     float coh_bb = 0;
     float phid_bb = 0, ap_bb = 0, apr_bb = 0;
     stiffness_bb(aks_bb, akn_bb, phi_bb, coh_bb, phid_bb, ap_bb, apr_bb, tips[ni].imode, mm);
-    be.akn = akn_bb;
-    be.aks = aks_bb;
-    be.phi = phi_bb;;
-    be.phid = phid_bb;
-    be.coh = 0;
+    b_elm[m].akn = akn_bb;
+    b_elm[m].aks = aks_bb;
+    b_elm[m].phi = phi_bb;;
+    b_elm[m].phid = phid_bb;
+    b_elm[m].coh = 0;
     joint[m].aperture0 = ap_bb;
     joint[m].aperture_r = apr_bb;
 

@@ -104,7 +104,7 @@ void reassigning_boundary_values(int ID,int m,int j,int k, float beta, float x, 
     if (j == numbe)
         j--;
 
-    float ss_m =be.sigma_s ; float sn_m =be.sigma_n ; float ustem_m =be.us;
+    /*float ss_m =be.sigma_s ; float sn_m =be.sigma_n ; float ustem_m =be.us;
 
     float untem_m =be.un; float us_m =be.us_neg; float un_m =be.un_neg;
 
@@ -115,7 +115,20 @@ void reassigning_boundary_values(int ID,int m,int j,int k, float beta, float x, 
     float untem_n = elm_list[j].un ; 
     float us_n = elm_list[j].us_neg ; 
     float un_n = elm_list[j].un_neg ;
-    
+    */
+
+    float ss_m = b_elm[m].sigma_s; float sn_m = b_elm[m].sigma_n; float ustem_m = b_elm[m].us;
+
+    float untem_m = b_elm[m].un; float us_m = b_elm[m].us_neg; float un_m = b_elm[m].un_neg;
+
+    float ss_n = b_elm[j].sigma_s;
+    float sn_n = b_elm[j].sigma_n;
+    float ustem_n = b_elm[j].us;
+
+    float untem_n = b_elm[j].un;
+    float us_n = b_elm[j].us_neg;
+    float un_n = b_elm[j].un_neg;
+
     float us_a = 0, un_a = 0, ang = 0;
 
    

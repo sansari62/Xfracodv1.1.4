@@ -1,23 +1,18 @@
 #include <GeologicalForm.h>
 #include "CommonPara.h"
-//#include < math.h>
-#include<algorithm>
+
+
 
 using namespace CommonPara_h::comvar;
 using namespace std;
 
-GeologicalForm::GeologicalForm(){}
+
+
+
+GeologicalForm::GeologicalForm():mat_no(1), elem_no(1), bound_type(1) {}
 
 GeologicalForm::GeologicalForm(int mat, int eleno, int kode) : mat_no(mat), elem_no(eleno), bound_type(kode) {}
 
-
-
-void GeologicalForm::init_GeologicalForm(int mat, int eleno,int kode)
-{
-    mat_no = mat;
-    elem_no = eleno;
-    bound_type = kode;     // kod in the fortran code
-}
 
 
 int GeologicalForm::getMatno(){ return mat_no;}
@@ -121,25 +116,25 @@ void GeologicalForm::cross_current_or_save_element(float xb1, float yb1, float x
     float a0 = elm_list[m].a;
     
     elm_list[m].a = 0.5 * sqrtf(powf(xb1 - xcross, 2) + powf(yb1 - ycross, 2));
-    elm_list[m].force1 = elm_list[m].force1 * elm_list[m].a / a0;
-    elm_list[m].force2 = elm_list[m].force2 * elm_list[m].a / a0;
+    b_elm[m].force1 = b_elm[m].force1 * elm_list[m].a / a0;
+    b_elm[m].force2 = b_elm[m].force2 * elm_list[m].a / a0;
     elm_list[ii].xm = 0.5 * (xe1 + xcross);
     elm_list[ii].ym = 0.5 * (ye1 + ycross);
     elm_list[ii].a = 0.5 * sqrtf(powf(xe1 - xcross, 2) + powf(ye1 - ycross, 2));
     
     elm_list[ii].sinbet = elm_list[m].sinbet;
     elm_list[ii].cosbet = elm_list[m].cosbet;
-    elm_list[ii].force1 = elm_list[m].force1 * elm_list[ii].a / a0;
-    elm_list[ii].force2 = elm_list[m].force2 * elm_list[ii].a / a0;
+    b_elm[ii].force1 = b_elm[m].force1 * elm_list[ii].a / a0;
+    b_elm[ii].force2 = b_elm[m].force2 * elm_list[ii].a / a0;
     elm_list[ii].kod = elm_list[m].kod;
    
     elm_list[ii].mat_no = elm_list[m].mat_no;
-    elm_list[ii].aks = elm_list[m].aks;
-    elm_list[ii].akn = elm_list[m].akn;
-    elm_list[ii].phi = elm_list[m].phi;
-    elm_list[ii].phid = elm_list[m].phid;
+    b_elm[ii].aks = b_elm[m].aks;
+    b_elm[ii].akn = b_elm[m].akn;
+    b_elm[ii].phi = b_elm[m].phi;
+    b_elm[ii].phid = b_elm[m].phid;
     
-    elm_list[ii].coh = elm_list[m].coh;
+    b_elm[ii].coh = b_elm[m].coh;
     joint[ii].aperture0 = joint[m].aperture0;
     joint[ii].aperture_r = joint[m].aperture_r;
 
@@ -237,6 +232,7 @@ void GeologicalForm::ctl_cross_elements(int& k,int m, int numbe0,int num)
 
 
 
+
 int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float ybeg, float xend, float yend,
     float bvs, float bvn, float gradsy,float gradny, int  itype, int jmat)
 {
@@ -267,7 +263,7 @@ int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float
     float yd = (yend - ybeg) / num;
 
 
-    int k = 0;  //? type  i think k is the no of newly added elements , like for crossing
+    int k = 0;  
     int numbe0 = numbe;   // numbe0 is the current number of elements or the old no.
     float segment =0; 
     int m = 0;
@@ -277,7 +273,7 @@ int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float
     yd = (yend - ybeg) * sw / st;
     float sinb = yd / sw;
     float cosb = xd / sw;
-    float tmp_a = 0.5 * sw;    //a shows half of element length
+    float tmp_a = 0.5 * sw;    // half of element length
     bool unique = true;
     BoundaryElement newelement;      //first initialize a new element and then check for dupllication of this element 
 
@@ -317,11 +313,11 @@ int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float
         if (bound_type == 5) 
         {
 
-            elm_list[m].aks = s8[jmat].aks0;   //improve! for all is equal
-            elm_list[m].akn = s8[jmat].akn0;
-            elm_list[m].phi = s8[jmat].phi0;
-            elm_list[m].phid = s8[jmat].phid0;
-            elm_list[m].coh = s8[jmat].coh0;
+            b_elm[m].aks = s8[jmat].aks0;   //improve! for all is equal
+            b_elm[m].akn = s8[jmat].akn0;
+            b_elm[m].phi = s8[jmat].phi0;
+            b_elm[m].phid = s8[jmat].phid0;
+            b_elm[m].coh = s8[jmat].coh0;
             joint[m].aperture0 = s8[jmat].apert0;
             joint[m].aperture_r = s8[jmat].apert_r;
             watercm.pwater[m] = 0;

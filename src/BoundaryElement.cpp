@@ -5,10 +5,13 @@ using namespace comvar;
 
 float val = 0.0;
 
-BoundaryElement::BoundaryElement():mat_no(0),xm(val), ym(val), kod(0), sigma_s(val), sigma_n(val), a(val), sinbet(val), cosbet(val),
-ipair(0), jstate(0), jslipd(0), us(val), un(val), forcen(val), forces(val), force1(val), force2(val), jmode(val), phi(val), phid(val),
- aks(val), akn(val), us_neg(0),un_neg(0),ss_old(val),sn_old(val),coh(val) {}
+//BoundaryElement::BoundaryElement():mat_no(0),xm(val), ym(val), kod(0), sigma_s(val), sigma_n(val), a(val), sinbet(val), cosbet(val),
+//ipair(0), jstate(0), jslipd(0), us(val), un(val), forcen(val), forces(val), force1(val), force2(val), jmode(val), phi(val), phid(val),
+// aks(val), akn(val), us_neg(0),un_neg(0),ss_old(val),sn_old(val),coh(val) {}
 
+
+
+BoundaryElement::BoundaryElement() :mat_no(0), xm(val), ym(val), kod(0), a(val), sinbet(val), cosbet(val) {}
 
 
 BoundaryElement::BoundaryElement(float x, float y, float am, float cos, float sin, int kd, int mat)
@@ -26,31 +29,31 @@ BoundaryElement::BoundaryElement(float x, float y, float am, float cos, float si
 
 
 
-void BoundaryElement::read_from_file(ifstream& f,int m)
-{
-	f >> xm  >> ym  >> cosbet  >> sinbet  >> a  >> kod  >> ipair  >> jstate  >> jslipd  >> jmode  >>
-		force1  >> force2  >> tips[m].costem >> tips[m].sintem >> us >> un >> forces >> forcen >>
-		aks  >> akn  >> phi  >> phid  >> coh  >> mat_no  >> joint[m].aperture0  >> joint[m].aperture_r  >>
-		sigma_s  >> sigma_n  >> us_neg  >> un_neg  >> ss_old  >> sn_old ;
-
-}
-
-
-
-
-void BoundaryElement::save_to_file(ofstream& f, int m)
-{
-	f << xm << " " << ym << " " << cosbet << " " << sinbet << " " 
-		<< a << " " << kod << " " << ipair << " " << jstate << " "
-		<< jslipd << " " << jmode << " " <<
-		force1 << " " << force2 << " " << tips[m].costem << " " << tips[m].sintem
-		<< " " << us << " " << un << " " << forces << " " << forcen
-		<< " " <<		aks << " " << akn << " " << phi << " " << phid
-		<< " " << coh << " "  << mat_no << " " << joint[m].aperture0
-		<< " " << joint[m].aperture_r << " " <<
-		sigma_s << " " << sigma_n << " " << us_neg << " " << un_neg <<
-		" " << ss_old << " " << sn_old << std::endl;
-}
+//void BoundaryElement::read_from_file(ifstream& f,int m)
+//{
+//	f >> xm  >> ym  >> cosbet  >> sinbet  >> a  >> kod  >> ipair  >> jstate  >> jslipd  >> jmode  >>
+//		force1  >> force2  >> tips[m].costem >> tips[m].sintem >> us >> un >> forces >> forcen >>
+//		aks  >> akn  >> phi  >> phid  >> coh  >> mat_no  >> joint[m].aperture0  >> joint[m].aperture_r  >>
+//		sigma_s  >> sigma_n  >> us_neg  >> un_neg  >> ss_old  >> sn_old ;
+//
+//}
+//
+//
+//
+//
+//void BoundaryElement::save_to_file(ofstream& f, int m)
+//{
+//	f << xm << " " << ym << " " << cosbet << " " << sinbet << " " 
+//		<< a << " " << kod << " " << ipair << " " << jstate << " "
+//		<< jslipd << " " << jmode << " " <<
+//		force1 << " " << force2 << " " << tips[m].costem << " " << tips[m].sintem
+//		<< " " << us << " " << un << " " << forces << " " << forcen
+//		<< " " <<		aks << " " << akn << " " << phi << " " << phid
+//		<< " " << coh << " "  << mat_no << " " << joint[m].aperture0
+//		<< " " << joint[m].aperture_r << " " <<
+//		sigma_s << " " << sigma_n << " " << us_neg << " " << un_neg <<
+//		" " << ss_old << " " << sn_old << std::endl;
+//}
 
 
 
@@ -171,14 +174,14 @@ void  MatrixB(int m)
     case 16:
         if (elm_list[m].mat_no == mat_lining || elm_list[m + 1].mat_no == mat_lining)
         {
-            if (elm_list[m].ipair == 1)
+            if (b_elm[m].ipair == 1)
             {
                 s4.b0[ms] = s4.b1[ms] - ss;
                 s4.b0[mn] = s4.b1[ms] - sn;
             }
             else
             {
-                if (elm_list[m].ipair == 2)
+                if (b_elm[m].ipair == 2)
                 {
                     s4.b0[ms] = 0;
                     s4.b0[mn] = 0;
@@ -196,13 +199,13 @@ void  MatrixB(int m)
     if (elm_list[m].mat_no == mat_lining)    //Force1 etc is not function of s4.b0, but pxx etc.
     {
 
-        elm_list[m].force1 = 0;
-        elm_list[m].force2 = 0;
+        b_elm[m].force1 = 0;
+        b_elm[m].force2 = 0;
     }
     else
     {
-        elm_list[m].force1 = 2.0 * elm_list[m].a * (-ss);
-        elm_list[m].force2 = 2.0 * elm_list[m].a * (-sn);
+        b_elm[m].force1 = 2.0 * elm_list[m].a * (-ss);
+        b_elm[m].force2 = 2.0 * elm_list[m].a * (-sn);
     }
     return;
 }

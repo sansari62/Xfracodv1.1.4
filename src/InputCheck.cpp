@@ -772,10 +772,9 @@ void final_wrap_up_for_Archs()
         int kode = arc.bound_type;
         float bvn, bvs;
         reset_arc_bvs_bvn(bvs, bvn, i, kode);
-        //i think we don't need following vars while it's already in the object's attributes
-        float gradsy = 0;
-        float gradny = 0;
-        //not sure about this just for checking test11
+        float gradsy = arc.get_gsy();
+        float gradny = arc.get_gny();
+        //new above added//not sure about this just for checking test11
         for (int m = 0; m < nume; ++m)
         {
             float& dtol = s5u.dtol;       //alias for dtol
@@ -948,7 +947,6 @@ void final_wrap_up()
             int mat1 =ai.get_pos_mat();
             int mat2 = ai.get_neg_mat();
            
-            //Sara! float check m
             for (int m = 0; m < nume; ++m)
             {
                 float seta1 = ang1 + ((ang2 - ang1) / static_cast<float>(nume)) * static_cast<float>(m);
@@ -1115,12 +1113,8 @@ void inputcheck()
     ---------------------------------------------------------------------- -*/
    
 
-    // Open file
-    //std::fstream file25("temp001.dat");// , std::ios::binary);      // Use appropriate file opening mode
     std::fstream file25("temp001.dat", std::ios::in | std::ios::out | std::ios::trunc);
 
-
-    // Check if the file is open
     if (!file25.is_open()) {
         std::cerr << "Error opening file temp001!" << std::endl;
         return;

@@ -43,7 +43,7 @@ namespace comvar {
 
 	const float zerof = 0.0f;
 
-	int test_id = 1;
+	int test_id = 12;
 
 	int nelement = 0;
 	int mcyc = 0;

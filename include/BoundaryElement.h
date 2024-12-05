@@ -43,8 +43,8 @@ public:
 	BoundaryElement();	
 	BoundaryElement(float x, float y, float am, float cos, float sin,
 		int kd ,int mat);
-	void read_from_file(ifstream& f,int m);
-	void save_to_file(ofstream& f, int m);
+	//void read_from_file(ifstream& f,int m);
+	//void save_to_file(ofstream& f, int m);
 	void bound(int i, float& ss, float& sn, float& ustem, float& untem, float& usneg, 
 		float& unneg);
 

@@ -101,7 +101,7 @@ namespace comvar {
 	extern int mat_lining;
 
 	extern std::vector<BoundaryElement> elm_list;		// list of boundary elements
-	std::vector<BE> b_elm;								//list of boundaryelement non freq attr.
+	extern std::vector<BE> b_elm;								//list of boundaryelement non freq attr.
 
 	extern std::vector<MonitoringPoint> mpoint_list;	//list of monitoring points
 	extern std::vector<MonitoringLine> mline_list;		//list of monitoring lines
