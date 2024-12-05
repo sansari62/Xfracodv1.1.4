@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{abdcf42b-3d23-4378-8642-c4666cb8d26c}</ProjectGuid>
+    <RootNamespace>SlimVFracod</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\C++projects\SlimV-Fracod\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Custom</Optimization>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\C++projects\SlimV-Fracod\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <Optimization>MaxSpeed</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="SlimV-Fracod.cpp" />
+    <ClCompile Include="src\Acousic.cpp" />
+    <ClCompile Include="src\Arc.cpp" />
+    <ClCompile Include="src\Arch_interface.cpp" />
+    <ClCompile Include="src\Borehole.cpp" />
+    <ClCompile Include="src\BoundaryElement.cpp" />
+    <ClCompile Include="src\BoundaryStress.cpp" />
+    <ClCompile Include="src\CommonPara.cpp" />
+    <ClCompile Include="src\Creep.cpp" />
+    <ClCompile Include="src\DispWindow.cpp" />
+    <ClCompile Include="src\DX.cpp" />
+    <ClCompile Include="src\Edge.cpp" />
+    <ClCompile Include="src\Edge_interface.cpp" />
+    <ClCompile Include="src\Elliptical_opening.cpp" />
+    <ClCompile Include="src\ExcavationCracks.cpp" />
+    <ClCompile Include="src\Failure.cpp" />
+    <ClCompile Include="src\Fmax.cpp" />
+    <ClCompile Include="src\Fracture.cpp" />
+    <ClCompile Include="src\fracture_defo.cpp" />
+    <ClCompile Include="src\GeologicalForm.cpp" />
+    <ClCompile Include="src\Geoplot.cpp" />
+    <ClCompile Include="src\Initiation.cpp" />
+    <ClCompile Include="src\Input.cpp" />
+    <ClCompile Include="src\InputCheck.cpp" />
+    <ClCompile Include="src\Internal.cpp" />
+    <ClCompile Include="src\Mainb.cpp" />
+    <ClCompile Include="src\Plot.cpp" />
+    <ClCompile Include="src\Rock.cpp" />
+    <ClCompile Include="src\S4.cpp" />
+    <ClCompile Include="src\Source.cpp" />
+    <ClCompile Include="src\Tips.cpp" />
+    <ClCompile Include="src\WinInterface.cpp" />
+    <ClCompile Include="src\Work.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Acoustic.h" />
+    <ClInclude Include="include\Arc.h" />
+    <ClInclude Include="include\Arch_interface.h" />
+    <ClInclude Include="include\BE.h" />
+    <ClInclude Include="include\Borehole.h" />
+    <ClInclude Include="include\BoundaryElement.h" />
+    <ClInclude Include="include\BoundaryStress.h" />
+    <ClInclude Include="include\common.h" />
+    <ClInclude Include="include\CommonPara.h" />
+    <ClInclude Include="include\Creep.h" />
+    <ClInclude Include="include\DispWindow.h" />
+    <ClInclude Include="include\DX.h" />
+    <ClInclude Include="include\Edge.h" />
+    <ClInclude Include="include\Edge_interface.h" />
+    <ClInclude Include="include\Elliptical_opening.h" />
+    <ClInclude Include="include\ExcavationCracks.h" />
+    <ClInclude Include="include\Failure.h" />
+    <ClInclude Include="include\Fmax.h" />
+    <ClInclude Include="include\Fracture.h" />
+    <ClInclude Include="include\fracture_defo.h" />
+    <ClInclude Include="include\GeologicalForm.h" />
+    <ClInclude Include="include\Geoplot.h" />
+    <ClInclude Include="include\Initiation.h" />
+    <ClInclude Include="include\Input.h" />
+    <ClInclude Include="include\InputCheck.h" />
+    <ClInclude Include="include\Internal.h" />
+    <ClInclude Include="include\Mainb.h" />
+    <ClInclude Include="include\MonitoringLine.h" />
+    <ClInclude Include="include\MonitoringPoint.h" />
+    <ClInclude Include="include\Plot.h" />
+    <ClInclude Include="include\Rock.h" />
+    <ClInclude Include="include\S4.h" />
+    <ClInclude Include="include\Source.h" />
+    <ClInclude Include="include\Tip.h" />
+    <ClInclude Include="include\WinInterface.h" />
+    <ClInclude Include="include\Work.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
