@@ -1,16 +1,13 @@
 #include "BoundaryElement.h"
 #include <CommonPara.h>
 
+
 using namespace comvar;
 
+
+
+
 float val = 0.0;
-
-//BoundaryElement::BoundaryElement():mat_no(0),xm(val), ym(val), kod(0), sigma_s(val), sigma_n(val), a(val), sinbet(val), cosbet(val),
-//ipair(0), jstate(0), jslipd(0), us(val), un(val), forcen(val), forces(val), force1(val), force2(val), jmode(val), phi(val), phid(val),
-// aks(val), akn(val), us_neg(0),un_neg(0),ss_old(val),sn_old(val),coh(val) {}
-
-
-
 BoundaryElement::BoundaryElement() :mat_no(0), xm(val), ym(val), kod(0), a(val), sinbet(val), cosbet(val) {}
 
 
@@ -28,32 +25,6 @@ BoundaryElement::BoundaryElement(float x, float y, float am, float cos, float si
 
 
 
-
-//void BoundaryElement::read_from_file(ifstream& f,int m)
-//{
-//	f >> xm  >> ym  >> cosbet  >> sinbet  >> a  >> kod  >> ipair  >> jstate  >> jslipd  >> jmode  >>
-//		force1  >> force2  >> tips[m].costem >> tips[m].sintem >> us >> un >> forces >> forcen >>
-//		aks  >> akn  >> phi  >> phid  >> coh  >> mat_no  >> joint[m].aperture0  >> joint[m].aperture_r  >>
-//		sigma_s  >> sigma_n  >> us_neg  >> un_neg  >> ss_old  >> sn_old ;
-//
-//}
-//
-//
-//
-//
-//void BoundaryElement::save_to_file(ofstream& f, int m)
-//{
-//	f << xm << " " << ym << " " << cosbet << " " << sinbet << " " 
-//		<< a << " " << kod << " " << ipair << " " << jstate << " "
-//		<< jslipd << " " << jmode << " " <<
-//		force1 << " " << force2 << " " << tips[m].costem << " " << tips[m].sintem
-//		<< " " << us << " " << un << " " << forces << " " << forcen
-//		<< " " <<		aks << " " << akn << " " << phi << " " << phid
-//		<< " " << coh << " "  << mat_no << " " << joint[m].aperture0
-//		<< " " << joint[m].aperture_r << " " <<
-//		sigma_s << " " << sigma_n << " " << us_neg << " " << un_neg <<
-//		" " << ss_old << " " << sn_old << std::endl;
-//}
 
 
 

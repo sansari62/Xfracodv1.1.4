@@ -200,33 +200,31 @@ float ang_setting(float angi0, float& fi0, int mm, int mode, float& angi)
     for (int icyc = s_index; icyc <= e_index; icyc += 2)
     {
         ang = icyc * pi / 180.0;
-        //call GetWindowMessage(message);        
 
-        if (message == ID_Pause)
-        {
-            kpause = true;  //Sara!
-            //pause();
-        }
-        else if (message == ID_Stop)
-        {
-            StopReturn = true;
-            if (mode == 2)
-            {
-                numbe--;
-                return wi;
-            }
-        }
+        //if (message == ID_Pause)
+        //{
+        //    kpause = true;  //Sara!
+        //    //pause();
+        //}
+        //else if (message == ID_Stop)
+        //{
+        //    StopReturn = true;
+        //    if (mode == 2)
+        //    {
+        //        numbe--;
+        //        return wi;
+        //    }
+        //}
 
-        if (kpause == true)
-        {
-            numbe--;
-            StopReturn = false;
-            //call WInput(1, WindowExchange, geom, stress, ng, ns, AE, joint);
-            if (StopReturn == true) return wi;   //Sara should be fixed later 
-            numbe++;
-        }
+        //if (kpause == true)
+        //{
+        //    numbe--;
+        //    StopReturn = false;
+        //    if (StopReturn == true) return wi;   //Sara should be fixed later 
+        //    numbe++;
+        //}
 
-        kpause = false;
+        //kpause = false;
 
         if (tips[ni].ityp == 4)
         {
@@ -242,6 +240,7 @@ float ang_setting(float angi0, float& fi0, int mm, int mode, float& angi)
   
     return wi;
 }
+
 
 
 
@@ -296,6 +295,7 @@ void compute_f(float& f0, float fi0, float angi, float angii, float& angle, floa
 
 
 
+
 void fmax1(float& f0, float& angle)
 {
     // determine the fmax and angel using teh F criterion    
@@ -331,33 +331,33 @@ void fmax1(float& f0, float& angle)
        
         //GetWindowMessage(message);
 
-        if (message != ID_NoMessage)
-        {
-            if (message == winvar::ID_Pause)
-            {
-                kpause = true;    //Sara! later on use API func here
-                //pause();
-            }
-            else
-            {
-                if (message == ID_Stop)
-                {
-                    StopReturn = true;   
-                    numbe--;
-                    return;
-                }
-            }
-        }
-        if (kpause)
-        {
-			numbe--;
-			StopReturn = false;
-			//winput(1, WindowExchange, geom, stress, ng, ns, AE, joint, permeability);   //Sara!
-			if (StopReturn == true) return;
-			numbe++;
-        }
+   //     if (message != ID_NoMessage)
+   //     {
+   //         if (message == winvar::ID_Pause)
+   //         {
+   //             kpause = true;    //Sara! later on use API func here
+   //             //pause();
+   //         }
+   //         else
+   //         {
+   //             if (message == ID_Stop)
+   //             {
+   //                 StopReturn = true;   
+   //                 numbe--;
+   //                 return;
+   //             }
+   //         }
+   //     }
+   //     if (kpause)
+   //     {
+			//numbe--;
+			//StopReturn = false;
+			////winput(1, WindowExchange, geom, stress, ng, ns, AE, joint, permeability);   //Sara!
+			//if (StopReturn == true) return;
+			//numbe++;
+   //     }
 
-        kpause = false;
+   //     kpause = false;
         ang = icyc * pi / 180.0;
 
         if (be.xm == symm.xsym && (symm.ksym == 1 || symm.ksym == 4) ||
@@ -379,11 +379,7 @@ void fmax1(float& f0, float& angle)
         {
             wi = call_work1_setting_fi0(dtt, fi0, mm, 1, angi0, ang);
         }
-        /*else if(!(be.jstate == 2 && be.jslipd == -1 && icyc > 20))
-		{
-             wi = call_work1_setting_fi0(dtt, fi0, mm, 1, angi0, ang);
-		}*/
-
+       
         if (icyc < -50 || icyc > 50) continue;// next round of loop label400
         
         wii = call_work1_setting_fi0(dtt, fii0, mm, 2, angii0, ang);

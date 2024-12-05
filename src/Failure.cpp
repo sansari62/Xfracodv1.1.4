@@ -166,8 +166,6 @@ void setting_elem_and_tipn_failure(int m, int im)
 
     joint[m].aperture0 = ap_bb;
     joint[m].aperture_r = apr_bb;
-
-    //elm_list[m].jangle = atan2f(elm_list[m].sinbet, elm_list[m].cosbet) * 57.3;
     b_elm[m].jstate = 0;
     b_elm[m].jmode = im;
 

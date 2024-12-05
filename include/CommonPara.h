@@ -51,7 +51,6 @@ namespace comvar {
 	extern int mf;			      // numbe of identified failure points
 
 	extern int n_it;             //no of iteration
-	//extern int iwhole;		//no of water pressure holes, moved to water struct
 
 	extern string title;
 	extern int nc;
@@ -79,11 +78,9 @@ namespace comvar {
 	extern int mcyc0;
 	
 
-	//extern int mode;		//mode I and mode II creep problem need to check later
 	extern int lhist;		// no of monitoring lines
 	extern int ihist;		// no of monitoring points
-	//extern std::map<std::pair<float, float>, int> novalid;  // novalid keeps coordinates of points not in rock
-	//extern std::map<std::pair<float, float>, int> novalid1;    //keep all points in rock with material
+	
 
 	extern std::vector<std::pair<float, float>> valid;
 	extern std::vector<std::pair<float, float>> valid1;

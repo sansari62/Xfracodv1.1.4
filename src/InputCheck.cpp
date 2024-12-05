@@ -6,6 +6,8 @@
 using namespace CommonPara_h::comvar;
 
 
+
+
 const int len = 50;
 int ncr[len] = {0}, itip[len] = {0};
 float xcr[len][len] = {0.0}, ycr[len][len] = { 0.0 }, acr[len][len] = {0.0};

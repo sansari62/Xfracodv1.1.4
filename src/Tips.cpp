@@ -83,7 +83,6 @@ void label400_new_coordin_for_tip(int n, int mm, int mergtip, float xt, float yt
     t.dl = sqrt(pow(t.xen - t.xbe, 2) + pow(t.yen - t.ybe, 2));//later change to multiply version
     //-------------------------Add new element--------------------------
     int m = numbe; 
-    //elm_list.emplace_back(float(0.5 * (t.xen + t.xbe)),float(0.5 * (t.yen + t.ybe)),float(t.dl / 2.0),float((t.xen - t.xbe) / t.dl),float((t.yen - t.ybe) / t.dl),5,mm);
     elm_list[m].kod = 5;
     elm_list[m].a = t.dl / 2.0;
     elm_list[m].xm = 0.5 * (t.xen + t.xbe);
@@ -91,8 +90,7 @@ void label400_new_coordin_for_tip(int n, int mm, int mergtip, float xt, float yt
     elm_list[m].mat_no = mm;
     numbe++;
     BoundaryElement& be = elm_list[m];
-    //Sara! can replace it with dl
-   // float dis = sqrt((t.xen - t.xbe) * (t.xen - t.xbe) + (t.yen - t.ybe) * (t.yen - t.ybe));
+   
     be.cosbet = (t.xen - t.xbe) / t.dl;
     be.sinbet = (t.yen - t.ybe) / t.dl;
     float sinb = be.sinbet;
@@ -110,7 +108,7 @@ void label400_new_coordin_for_tip(int n, int mm, int mergtip, float xt, float yt
         float ss = (sigyy - sigxx) * sinb * cosb + sigxy * (cosb * cosb - sinb * sinb);
         float sn = sigxx * sinb * sinb - 2.0 * sigxy * sinb * cosb + sigyy * cosb * cosb;
         s4.b0[m * 2] = -ss;
-        s4.b0[m * 2 + 1] = -sn;         // - pwater(m);
+        s4.b0[m * 2 + 1] = -sn;         
         if (sn < 0 && abs(ss) > (-sn * tanf(30.0 / 180.0 * pi)))  
         {
             //additional stress applied to crack growth element
@@ -118,7 +116,7 @@ void label400_new_coordin_for_tip(int n, int mm, int mergtip, float xt, float yt
             s4.b0[m * 2 + 1] = 0;
         }
     }
-    s4.df[m * 2] = s4.d0[m * 2]; // !!!!check
+    s4.df[m * 2] = s4.d0[m * 2]; 
     s4.df[m * 2 + 1] = s4.d0[m * 2 + 1];
 
     float y0 = g.y_surf;
@@ -128,7 +126,6 @@ void label400_new_coordin_for_tip(int n, int mm, int mergtip, float xt, float yt
 
     b_elm[m].force1 = 2.0 * be.a * (-((pyy - pxx) * sinb * cosb + pxy * (cosb * cosb - sinb * sinb)));// !old b0()
     b_elm[m].force2 = 2.0 * be.a * (-(pxx * sinb * sinb - 2.0 * pxy * sinb * cosb + pyy * cosb * cosb));// !old b0()
-    //be.jangle = atan2f(be.sinbet, be.cosbet) * 57.3;
     b_elm[m].jmode = t.imode;
     b_elm[m].jstate = t.imode;
     float ss = (sigyy - sigxx) * sinb * cosb + sigxy * (cosb * cosb - sinb * sinb);
@@ -191,7 +188,6 @@ void newtips(float dr)
     {    
         int n = ni;
         int id = 0;    // return value from cross func
-        //int item = 1;
         float xt = 0, yt = 0, xt0 = 0, yt0 = 0, xbeg = 0, xend = 0, ybeg = 0,
             yend = 0, tol = 0, tol1 = 0, xc = 0, yc = 0, dbeg = 0, dend = 0;
 
@@ -563,7 +559,6 @@ void newtips(float dr)
                 if (tips[ni].imode == 1) vel = creep.v1;
                 else if (tips[ni].imode == 2) vel = creep.v2;
 
-                // WRITE(string, 10) time, deltaT, ni, growth_length(ni), angl(ni) * 180 / 3.14, SQRT(ABS(fm)), vel
                 file50 << std::scientific << std::setprecision(4);
                 file50 << std::setw(10) << creep.time << std::setw(1) << " " << std::setw(10) <<
                     creep.deltaT << std::setw(1) << " "
@@ -665,14 +660,12 @@ void newtips(float dr)
                 {
                     if (tips[ni].ityp == 0) break;
                     nelement = tips[ni].mpointer;
-                   // elm_list[nelement].jangle = atan2f(elm_list[nelement].
-                     //   sinbet, elm_list[nelement].cosbet) * 57.3;
+                  
                 }
                 return;
             }
             if (lastinput == "endf")
             {
-                //MessageBox::Show("NO CRACK GROWTH AND CRACK INITIATION FOUND");
                 MessageBox(nullptr, L"NO crack growth and crack initiation found!", L"Message!", MB_OK);
 
                 StopReturn = false;
@@ -688,8 +681,7 @@ void newtips(float dr)
             {
                 if (tips[ni].ityp == 0) break;
                 nelement = tips[ni].mpointer;
-               // elm_list[nelement].jangle = atan2f(elm_list[nelement].
-                   // sinbet, elm_list[nelement].cosbet) * 57.3;
+              
             }
 
             return;
@@ -708,14 +700,7 @@ void newtips(float dr)
         {
             if (tips[ni].ityp == 0) continue;
             if (tips[ni].ifail != 1) continue;            
-            nelement = tips[ni].mpointer;
-            /*if (elm_list[nelement].jstate == 2)
-            {
-                elm_list[nelement].jangle = 
-                    static_cast<float>(atan2(elm_list[nelement].sinbet,
-                        elm_list[nelement].cosbet)) * 57.3;
-            }
-            elm_list[numbe-1].jangle = elm_list[nelement].jangle;*/
+            nelement = tips[ni].mpointer;           
             newtips(tips[ni].angl);
             creep.creep_x[ni] = 0;         //reset the creep growth to zero
             creep.creep_y[ni] = 0;          //reset the creep growth to zero
@@ -731,8 +716,6 @@ void newtips(float dr)
         if (creep.ID_creep == 1 && creep.time >= creep.totalT)        //!creep problem,id_creep=ID_creep
         {
             geoplot();
-            //MessageBox::Show("Defined creep time is completed, continue cycle without creep","Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
-
             MessageBox(nullptr, L"Defined creep time is completed, continue cycle without creep", L"Message!", MB_OK);
             creep.ID_creep = 0;
             return;
@@ -744,8 +727,6 @@ void newtips(float dr)
             if (lastinput != "endf")
             {
                 MessageBox(nullptr, L"No more fracture propogation, continue from input file", L"Error!", MB_OK);
-
-                //MessageBox::Show("No more fracture propogation, continue from input file", "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
                 input();
             }
             else if (lastinput == "endf")

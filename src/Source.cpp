@@ -465,7 +465,7 @@ void compute_n_vlaid_all_points() {
             int n_valid = 1;
             check_point_in_rock(xp, yp, 0, n_valid);           
 
-            // Add map all points in rock
+            // Add all points in rock
             if (n_valid == 1)
             {               
                 comvar::valid.push_back(std::make_pair(xp, yp));
@@ -479,29 +479,27 @@ void compute_n_vlaid_all_points() {
 
 
 
+
+
+
 void Central_control()
 {    
     auto start = std::chrono::high_resolution_clock::now();
     if (!file50 || !file2 )
     {
-        // Check if any of the file openings failed      
         cout << "Error in opening files";
         return;
     }    
 
-    // ---------------------------------- -
-    // call codedate
-    // ---------------------------------- -
     mcyc = 0;
     creep.ID_creep = 0;
 
     n_it = 20;
     StopReturn = false;
 
-    input();   // got from winput
+    input();  
     CheckRange();
 
-    //call winput(0, WindowExchange, geom, stress, ng, ns, AE, joint, permeability)
     if (StopReturn == true) return;
 
     file2 << " Tip No.    xc       yc         Angle            W0             Wi              Wii              F\n";
@@ -560,8 +558,7 @@ void Central_control()
             //----------------------------------------------------------
             prenumbe = numbe;
             add_crack_growth();  
-            if (creep.time == creep.totalT || creep.ID_creep == 0 || creep.ID_fast_crack == 1)
-                //exit(EXIT_SUCCESS);
+            if (creep.time == creep.totalT || creep.ID_creep == 0 || creep.ID_fast_crack == 1)                
                 break;
             //if not a creep problem or if fast crack growth, exit
         } while (creep.time != creep.totalT && creep.ID_creep != 0 && creep.ID_fast_crack != 1); 
@@ -572,30 +569,22 @@ void Central_control()
                     {
                         if (lastinput != "endf")
                         {
-                            //MessageBox::Show("Defined cycle is completed, continue from input file.", "Info", MessageBoxButtons::OK, MessageBoxIcon::Exclamation);
                             MessageBox(nullptr, L"Defined cycle is completed, continue from input file.", L"Message!", MB_OK);
                             input(); 
                         }
                         else                                       
-                            {
-                                do {
+                            {                                
                                     auto end1 = std::chrono::high_resolution_clock::now();
-                                    //std::chrono::duration<double> duration = end1 - start;
                                     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end1 - start);
-                                   // Debug::WriteLine(duration.count());
-                                     cout<<duration.count();
-                                    //MessageBox::Show("End of cycle & input file, screen input or quit.", "Info", MessageBoxButtons::OK, MessageBoxIcon::Information);
-
-                                    MessageBox(nullptr, L"End of cycle & input file, screen input or quit.", L"Message!", MB_OK);
-                                    StopReturn = true;   //Sara just for now change it later
-                                    // call winput(1, WindowExchange, geom, stress, ng, ns, AE, joint, permeability)
-                                    if (StopReturn == true) return;// !stop
-                                } while (mcyc >= mcyc0);
+                                     cout<< "Run time=  "<< duration.count();
+                                    MessageBox(nullptr, L"End of cycle & input file, screen input or quit.", L"Message!", MB_OK);  
+                                    break;
+                             
                             }
                     }  
-                   // StopReturn = true;
-    }      //if StopReturn = true then it stops
-    // Get the end time
+                  
+    }     
+   
 return;   
 }
 

@@ -1,5 +1,4 @@
 #include <Mainb.h>
-//#include <Windows.h>
 #include "CommonPara.h"
 
 using namespace CommonPara_h::comvar;
@@ -8,7 +7,6 @@ using namespace CommonPara_h::comvar;
 void solve(int n, int mode)
 {
     
-    // Call SendWindowRunStatus(1);
 
     int nb = n - 1;
     for (int j = 0; j < nb; ++j) 
@@ -37,7 +35,6 @@ void solve(int n, int mode)
     for (int j = 1; j <= nb; ++j) 
     {
         int jj = n - 1 - j ;
-        //int l = jj ;//Sara not sure +1 or not
         float sum = 0.0;
         for (int i = jj + 1; i < n; ++i)
         {
@@ -45,7 +42,6 @@ void solve(int n, int mode)
         }
         s4.d[jj] = (s4.b[jj] - sum) / s4.c[jj][jj];
 
-       // if (elm_list[(int)(std::floor(jj / 2.0))].kod == 5 && mode == 0) check other version make sure
         if (elm_list[int(jj / 2)].kod == 5 && mode == 0)
         {
             if (std::abs(s4.d[jj]) > d_max)
@@ -55,6 +51,8 @@ void solve(int n, int mode)
 
     return;
 }
+
+
 
 
 
@@ -129,6 +127,7 @@ void coeff(float xi, float yi, float xj, float yj, float aj, float cosbj, float 
 
     return;
 }
+
 
 
 
@@ -215,6 +214,7 @@ void interface_matrix(int i, int j)
     matx.B_in_jn = -s2us.uxn * sinbi + s2us.uyn * cosbi;
     return;
 }
+
 
 
 
@@ -362,14 +362,14 @@ void label_500(int i, int j,int mm, int mmj,int is, int in, int js, int jn,int m
 
 
 
+
 void mainb(int mode)
 {
     int in = 0, is = 0, mm = 0, mmj = 0, jn = 0, js = 0, n =0 ;
     float xi = 0, yi = 0, cosbi = 0, sinbi = 0, xj,yj, cosbj = 0, sinbj = 0, aj = 0;
     double ks = 0.0, kn = 0.0; float ph = 0.0, pd = 0.0;
-    //float S_is_js = 0, S_is_jn = 0, S_in_js = 0, S_in_jn = 0, d_is_js = 0, d_is_jn = 0, d_in_js = 0, d_in_jn = 0;
-    double S_is_js = 0, S_is_jn = 0, S_in_js = 0, S_in_jn = 0,
-        d_is_js = 0, d_is_jn = 0, d_in_js = 0, d_in_jn = 0;
+    float S_is_js = 0, S_is_jn = 0, S_in_js = 0, S_in_jn = 0, d_is_js = 0, d_is_jn = 0, d_in_js = 0, d_in_jn = 0;
+   
   
     for (int i = 0; i < numbe; ++i)
     {
@@ -633,7 +633,6 @@ void mainb(int mode)
                         break;
                     case 2:
                        s4.c[is][js] +=  ks;
-                       //s4.c[in][jn] = s4.c[in][jn];  //Sara !later comment this
                         break;
                     }
             }
@@ -664,11 +663,7 @@ void mainb(int mode)
                    s4.c[is][js] += ks;
                    s4.c[in][jn] += kn;
                     break;
-                case 2:
-                    //meaningless!should be removed later Sara!
-                   s4.c[is][js] = s4.c[is][js];
-                   s4.c[in][jn] = s4.c[in][jn];
-                    break;
+               
                 case 3:
                     s4.c[in][jn] +=  kn;
                     s4.c[is][jn] +=  kn * tanf(ph) * b_elm[i].jslipd;

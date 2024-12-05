@@ -65,8 +65,7 @@ int main()
     
    
     cout << "The program is running";
-
-    std::ofstream file57("permeability.dat");
+    std::ofstream file57(filepath + "Cpermeability.dat");
 
     if (!file57)
     {
@@ -78,14 +77,9 @@ int main()
     b_elm.reserve(500);
 
     Central_control();
-    //auto end = std::chrono::high_resolution_clock::now();
-
-    //file3.close();
     file57.close();
     file2.close();
-    //std::chrono::duration<double> duration = end1 - start;
-
-    //Debug::WriteLine(duration.count());
+   
 
     //int maxThreads = std::thread::hardware_concurrency();  // Get number of hardware threads
 //    omp_set_num_threads(maxThreads); // Set OpenMP to use this number of threads
@@ -98,6 +92,6 @@ int main()
 //        }
 //    }
 
-    cout << "new run";
+    
     std::getline(std::cin, dummy);
 }
