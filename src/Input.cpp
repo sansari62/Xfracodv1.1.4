@@ -1493,7 +1493,7 @@ void processFracture(ifstream& inFile, ofstream& outFile)
                        //-------------- - excavation induced random cracks in an elliptical range--------
 
                            //------------------ - edge, inner or outer straigt bound.line------------
-                       else if (id == "edge ")
+                       else if (id == "edge")
                            processEdge(inFile, file2, 'S', "Straigt boundary");
 
                        //--------------------- - gost elements for preventing rigid movement------------

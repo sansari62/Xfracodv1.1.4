@@ -10,7 +10,6 @@ using namespace CommonPara_h::comvar;
  bool check_symmetry_so( float xt1, float yt1, float xt2,
     float yt2, float psize,float xp, float yp)
 {
-    //std::pair<bool, bool> jmp_label;         //used to determine to which label should jump 
     float jmp_100 = false;
 
     float xmin0 = min(xt1, xt2);
@@ -28,6 +27,9 @@ using namespace CommonPara_h::comvar;
 
     return jmp_100;
 }
+
+
+
 
 
  void label_100(int m,float psize,float& xlength, float& ylength, float & rlength, 

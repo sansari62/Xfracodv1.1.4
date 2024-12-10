@@ -331,7 +331,7 @@ void compute_stress_displ_at_specified_points(int& npoint, stringstream& buffer)
         ++it;         
     }
 
-    win_exchange.w_npoints = npoint;
+   // win_exchange.w_npoints = npoint;
     write_data_to_file2(0, npoint, buffer);
     compute_disp_boundary_and_frac_surfaces(npoint, sig1, sig2, bet, sig12, set, mm, buffer);
     return;

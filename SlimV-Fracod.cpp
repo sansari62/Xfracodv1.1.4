@@ -87,3 +87,88 @@ int main()
     
     std::getline(std::cin, dummy);
 }
+
+
+
+//
+//
+//#include <unordered_map>
+//#include <functional>
+//
+//// Sample functions to call based on keywords
+//void processKeywordA(ifstream&f) {
+//    std::cout << "Function for Keyword A called!" << std::endl;
+//}
+//
+//void processKeywordB(ifstream&f) {
+//    std::cout << "Function for Keyword B called!" << std::endl;
+//}
+//
+//void processKeywordC(ifstream& f) {
+//    std::cout << "Function for Keyword C called!" << std::endl;
+//}
+//
+//void unknownKeyword(ifstream& f) {
+//    std::cout << "Unknown keyword: " << std::endl;
+//}
+//void endoffile(ifstream& f) {}
+//
+//int input2() {
+//
+//
+//    std::ifstream inFile;      
+//   
+//    string id;
+//    string tem;
+//    string message;
+//    string lineData;
+//
+//
+//    string strPathFile = filepath + "/Example" +
+//        to_string(test_id) + ".dat";
+//    inFile.open(strPathFile.c_str(), std::ios_base::in);
+//    if (!inFile.is_open())
+//    {
+//        ////  Debug::WriteLine("Path Wrong!!!!" );
+//        exit(EXIT_FAILURE);
+//    }
+//
+//    // Map keywords to corresponding functions
+//    std::unordered_map<std::string, std::function<void(const std::ifstream&)>> funcMap =
+//    {
+//        {"titl", processKeywordA},
+//        {"symm", processKeywordB)},
+//        {"rand", processKeywordC)},
+//       {"endf",endoffile(inFile)}
+//    };
+//
+//
+//    while (std::getline(inFile, lineData)) {
+//
+//        if (lineData.empty())			// skip empty lines:
+//        {
+//            continue;
+//        }
+//        line++;
+//        if (lastinput == "endf")
+//            return 1;
+//        id = lineData.substr(0, 4);
+//       // ToLowerCase(id);
+//
+//        line++;
+//        lastinput = id;
+//        // Check if the line contains a keyword
+//        auto it = funcMap.find(id);
+//        if (it != funcMap.end()) {
+//            // Call the corresponding function
+//            it->second;
+//        }
+//        else {
+//            // Handle unknown keywords
+//           // unknownKeyword(lineData);
+//        }
+//    }
+//
+//    inFile.close();
+//    return 0;
+//}
