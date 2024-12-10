@@ -45,7 +45,7 @@ std::wstring openFileDialog() {
 
 
 
-
+#include<Input.h>
 
 int main()
 {
@@ -68,8 +68,11 @@ int main()
 
     elm_list.reserve(500);
     b_elm.reserve(500);
+    input();
+    lastinput = "";
+    input2();
 
-    Central_control();
+   // Central_control();
     file2.close();
    
 
