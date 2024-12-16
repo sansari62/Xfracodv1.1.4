@@ -11,27 +11,11 @@ Rock::Rock():
 
 
 
-void Rock::give_elastic_property(int no, float y1, float rate)
-{
-	
-	e = y1;
-	pr = rate;
-}
-
-
-
-void Rock::give_permeability_property(float v, float dens, float per0)
-{
-}
-
-
-
-
 
 int check_elastic_growth(int m)
 {
 
-    int kk = 0; // != 0 is not checking elastic growth
+    int kk = 0; // = 0 is not checking elastic growth
     float aki = 0, akii = 0, akie = 0;   
 
     int material = check_material_id(elm_list[m].xm, elm_list[m].ym );
@@ -88,10 +72,3 @@ void Rock::save_to_file(ofstream& f)
 
     }
 
-void Rock::read_from_file( ifstream& f)
-{
-    f >> e >> pr >> akic >> akiic >>
-        irock >> rphi>> rcoh >> rst;
-
-
-}

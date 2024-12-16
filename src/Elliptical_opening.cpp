@@ -23,12 +23,7 @@ void Elliptical_opening::increment_bnd_stress_along_arch(float x, float y, float
 {
 }
 
-void Elliptical_opening::read_from_file(ifstream& f)
-{
 
-	f>> diameter1 >> diameter2 >> x_cent >> y_cent;
-
-}
 void Elliptical_opening::save_to_file(ofstream& f) 
 {
 	f << " " << diameter1 << " " << diameter2 << " " << x_cent

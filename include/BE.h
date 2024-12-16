@@ -33,8 +33,8 @@ public:
 	float ss_old;
 	float sn_old;
 
+	BE() {}
 
-	BE(){}
 	BE(float ss, float sn, int ip, int js, int jslip, int jmod,float fc1, float fc2,float us, float un, float forcs, float forcn, float aks, float akn, float phi,
 		float phid, float coh, float usn, float unn, float sso, float sno):sigma_s(ss), sigma_n(sn),
 		ipair(ip), jstate(js), jslipd(jslip), us(us), un(un), forcen(forcn), forces(forcs), force1(fc1), force2(fc2), jmode(jmod), phi(phi), phid(phid),

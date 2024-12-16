@@ -6,7 +6,6 @@
 class S4
 {
 public:
-	  //what is the relation between these parameter? what thet keep and show
 	std::vector<float> b;
 	std::vector<float> d;
 	std::vector<float> b1;
@@ -19,11 +18,9 @@ public:
 
 	std::vector<float> b0;
 	std::vector<float> b0_old;
-	//Sara think about the length and size
 	S4(int length); 
-	void limit_d();     // !limit the d() value for stability
+	void limit_d();     // limit the d() value for stability
 	
-	void read_from_file(ifstream& f);
 	void save_to_file(ofstream& f);
 	
 };

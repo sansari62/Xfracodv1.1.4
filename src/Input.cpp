@@ -8,13 +8,14 @@
 #include<functional>
 #include<chrono>
 #include <unordered_map>
+#include<Save_and_Restore.h>
+
+
 using namespace CommonPara_h::comvar;
 
 
 
 std::ifstream inFile;
-
-
 
 void processEdge()
 {
@@ -46,25 +47,21 @@ void processEdge()
         {
         case 1:
         case 11:
-            bund_list[nb] = Edge(material, num, kode, xbeg, ybeg, xend, yend, bvs, bvn, 0, 0, gradsy, gradny);
-            //bund_list[nb] = new_sBound1;   //sn[nb] = bvn;   ss[nb] = bvs;
+            bund_list[nb] = Edge(material, num, kode, xbeg, ybeg, xend, yend, bvs, bvn, 0, 0, gradsy, gradny);           
             break;
         case 2:
         case 12:
             bund_list[nb] = Edge(material, num, kode, xbeg, ybeg, xend, yend, 0, 0, bvs, bvn, gradsy, gradny);
-            //bund_list[nb] = new_sBound2;      //dn[nb] = bvn; ds[nb] = bvs;
-
+            
             break;
         case 3:
         case 13:
-            bund_list[nb] = Edge(material, num, kode, xbeg, ybeg, xend, yend, 0, bvn, bvs, 0, gradsy, gradny);
-            //bund_list[nb] = new_sBound3;     // bbdn[nb] = bvn;     bbss[nb] = bvs;
+            bund_list[nb] = Edge(material, num, kode, xbeg, ybeg, xend, yend, 0, bvn, bvs, 0, gradsy, gradny);            
             break;
         case 4:
         case 14:
-            bund_list[nb] = Edge(material, num, kode, xbeg, ybeg, xend, yend, bvs, 0, 0, bvn, gradsy, gradny);
-            //bund_list[nb] = new_sBound4;             //bbdn[nb] = bvn;       bbss[nb] = bvs;
-            break;
+            bund_list[nb] = Edge(material, num, kode, xbeg, ybeg, xend, yend, bvs, 0, 0, bvn, gradsy, gradny);          
+           
         }       
         nb++;
         return;
@@ -83,10 +80,7 @@ void processGost()
     try
     {
 
-        inFile >> num >> xbeg >> ybeg >> xend >> yend >> kode >> bvs >> bvn >> material >> gradsy >> gradny;
-
-        //int mm = material;
-
+        inFile >> num >> xbeg >> ybeg >> xend >> yend >> kode >> bvs >> bvn >> material >> gradsy >> gradny;  
         file2 << "Gost element        -- from: x,y = " << xbeg << "," << ybeg << std::endl;
         file2 << "                    to        = " << xend << "," << yend << std::endl;
         file2 << "      shear stress or disp    = " << bvs << std::endl;
@@ -98,13 +92,12 @@ void processGost()
     }
     catch (std::ifstream::failure e)
     {
-        std::cerr << "Exception opening/reading/closing file:in processEdge\n";
+        MessageBox(nullptr, L"Error in input File,Gost definition!", L"Error", MB_OK);
 
     }
 
     Edge new_sBound(material, num, 7, xbeg, ybeg, xend, yend, bvs, bvn, 0, 0, gradsy, gradny);
-    bund_list[nb] = new_sBound;   //sn[nb] = bvn;   ss[nb] = bvs;
-    
+    bund_list[nb] = new_sBound;       
     nb++;
     return;
 }
@@ -114,10 +107,7 @@ void processGost()
 
 
 void ToLowerCase(string&  str) {
-   /* for (int i = 0; str[i]; i++) {
-        str[i] = tolower(str[i]);
-    }*/
-    // Convert each character to lowercase
+  
     for (char& c: str) 
     {
         c = std::tolower(c);
@@ -129,11 +119,9 @@ void ToLowerCase(string&  str) {
 
 void processFracture()
 {
-    int material = 1;
-      
+    int material = 1;      
     int num, itype, jmat;
     float xbeg, ybeg, xend, yend;
-    //Sara! there are also kod ,bvs and bvn to setting to 0 but not sure which vars 
     try
     {
         inFile >> num >> xbeg >> ybeg >> xend >> yend >> itype >> jmat >> material;       
@@ -148,8 +136,7 @@ void processFracture()
     }
     catch (std::ifstream::failure e)
     {
-        std::cerr << "Exception opening/reading/closing file:in processFracture\n";
-
+        MessageBox(nullptr, L"Error in input File,Fracture definition!", L"Error", MB_OK);
     }   
      return;
 }
@@ -159,24 +146,22 @@ void processFracture()
 
  void processLinearInterface()
     {
+     int num, mat1, mat2;
+     float xbeg, ybeg, xend, yend, bvs = 0, bvn = 0;
         try
-        {
-            int num, mat1, mat2;
-            float xbeg, ybeg, xend, yend, bvs = 0, bvn = 0;
-
-            inFile >> num >> xbeg >> ybeg >> xend >> yend >> mat1 >> mat2;
-            
+        {    
+            inFile >> num >> xbeg >> ybeg >> xend >> yend >> mat1 >> mat2;            
             file2 << "Interface -------- from: x, y =  " << xbeg << "," << ybeg << "\n" <<
                 "                    to      =  " << xend << "," << yend << "\n" <<
                 "         number of elements   = " << num << "\n";
             
-            Edge_interface new_lin_intfce(xbeg, ybeg, xend, yend, mat1, mat2,num);  //new linear intrface added
+            Edge_interface new_lin_intfce(xbeg, ybeg, xend, yend, mat1, mat2,num); 
             lin_intrfce_list[npli] = new_lin_intfce;
             npli++;
         }
         catch (std::ifstream::failure e)
         {
-            std::cerr << "Exception opening/reading/closing file:in processLinearInterface\n";
+            MessageBox(nullptr, L"Error in input File,linear interface definition!", L"Error", MB_OK);
 
         }
     }
@@ -189,9 +174,7 @@ void processFracture()
         {
             int num = 0, mat1 = 0, mat2 = 0;
             float xcen = 0, ycen = 0, diam = 0, ang1 = 0, ang2 = 0, bvs = 0, bvn = 0;
-
-            inFile >> num >> xcen >> ycen >> diam >> ang1 >> ang2 >> mat1 >> mat2;
-           
+            inFile >> num >> xcen >> ycen >> diam >> ang1 >> ang2 >> mat1 >> mat2;           
             file2 << "ARC Int- centre position: x,y  = " << xcen << "," << ycen << "\n" <<
                 "         diameter              = " << diam << "\n" <<
                 "         start angle           = " << ang1 << "\n" <<
@@ -203,18 +186,17 @@ void processFracture()
                 "         material other side   = " << mat2 << "\n";
 
             
-            //new arc interface was defined 
             Arch_interface newArcIntrfce(xcen, ycen, diam / 2., ang1 * pi / 180.,
                 ang2 * pi / 180., num, mat1, mat2);
             arc_intrface_list[nq] = newArcIntrfce;
-            int kode = 6;    //not sure why these paras considered Sara!
+            int kode = 6;   
             bvs = 0;
             bvn = 0;
             nq = nq + 1;
         }
         catch (std::ifstream::failure e)
         {
-            std::cerr << "Exception opening/reading/closing file:in processArcInterface\n";
+            MessageBox(nullptr, L"Error in input File,Arc definition!", L"Error", MB_OK);
 
         }
         return;                   
@@ -227,24 +209,19 @@ void processFracture()
     void processWaterPressure()
     {
         string id;
-        //inFile.ignore(); // Skip the rest of the line
         string lineData;
         try
         {
             getline(inFile, lineData);
             std::stringstream ss(lineData);
 
-            ss >> id ;
-           // inFile >> id;
-            // Convert id to lowercase
+            ss >> id ;           
             ToLowerCase(id);
             id = id.substr(0, 4);
-
             if (id == "hole")
             {
                 
-                int iwhole = watercm.iwhole;     //alias for index
-               // inFile.ignore();                   // Skip to next line
+                int iwhole = watercm.iwhole;               
                 ss >> watercm.w_xc[iwhole] >> watercm.w_yc[iwhole] >> watercm.w_d[iwhole]
                     >> watercm.wph[iwhole];
 
@@ -259,8 +236,7 @@ void processFracture()
             if (id == "rect")
             {
                 
-                int iwrect = watercm.iwrect;     //alias for index
-                //inFile.ignore();                     // Skip to next line
+                int iwrect = watercm.iwrect;         
 
                 ss >> watercm.w_x1[iwrect] >> watercm.w_x2[iwrect] >> watercm.w_y1[iwrect] >>
                     watercm.w_y2[iwrect] >> watercm.wpr[iwrect];
@@ -277,7 +253,7 @@ void processFracture()
         }
         catch (std::ifstream::failure e)
         {
-            std::cerr << "Exception opening/reading/closing file:in processWaterPressure\n";
+            MessageBox(nullptr, L"Error in input File,water definition!", L"Error", MB_OK);
 
         }
         return;
@@ -299,8 +275,7 @@ void processFracture()
         }
         catch (std::ifstream::failure e)
         {
-            std::cerr << "Exception opening/reading/closing file:in processPermeability\n";
-
+            MessageBox(nullptr, L"Error in input File,permeability definition!", L"Error", MB_OK);
         }
         return;
     }
@@ -310,94 +285,95 @@ void processFracture()
 
     void start_calculation()
     {   
-        string lineData;
-        getline(inFile, lineData);
-        //nc++;
-        ////string  id = "";
-        //string  tem = "";
-        //std::stringstream ss(lineData);
+        string lineData;        
+        nc++;
+        string  tem = "";
+        try
+        {
+            getline(inFile, lineData);
+            std::stringstream ss(lineData);
+            ss >> tem;
+        }
+        catch (std::ifstream::failure e)
+        {
+            MessageBox(nullptr, L"Error in input File,touc definition!", L"Error", MB_OK);
+        }
+        
+        if (tem != "    ") 
+            {
+                  file2 << tem << endl;              
+                    mcyc0 += stoi(tem);               
+            }
+        //----------------------------
+        if (mcyc != 0) return;            
+        s5u.dtol = 0.0001;            
+           
+        if (nc == 1)
+        {
+            inputcheck();
+            input_tip_check();
+          //  file7 << dispwin.xll << " " << dispwin.xur << " " << dispwin.yll << " " <<
+             //   dispwin.yur << endl;           
 
-        //ss >>  tem;
-        //if (tem != "    ") 
-        //    {
-        //       // outFile << tem << endl;  //Sara! maybe we need to add cycle =  to the outfile explaining tem
-        //     
-        //            mcyc0 += stoi(tem);
-        //       
-        //    }
-        //    //----------------------------
-        //if (mcyc != 0) return;
-        //    
-        //s5u.dtol = 0.0001;            
-        //   
-        //if (nc == 1)
-        //{
-        //    inputcheck();
-        //    input_tip_check();
-        //    file7 << dispwin.xll << " " << dispwin.xur << " " << dispwin.yll << " " <<
-        //        dispwin.yur << endl;
-        //    // }
+             //!-------------------------
+            file2 << endl;
+            file2 << " " << endl
+                << " boundary element data." << endl
+                << endl
+                << "element   kode   X(center)  Y(center)  length  angle  us or sigma-s   un or sigma-n   material No." << endl;
 
-        //     //!-------------------------
-        //    outFile << endl;
-        //    outFile << " " << endl
-        //        << " boundary element data." << endl
-        //        << endl
-        //        << "element   kode   X(center)  Y(center)  length  angle  us or sigma-s   un or sigma-n   material No." << endl;
+            float amin = 10000.0;
 
-        //    float amin = 10000.0;
+            // Calculate min
+            for (int m = 0; m < numbe; ++m)
+            {
+                amin = min(amin, elm_list[m].a);
+            }
+            s5u.dtol = amin / 1000.0;
 
-        //    // Calculate amin
-        //    for (int m = 0; m < numbe; ++m)
-        //    {
-        //        amin = min(amin, elm_list[m].a);
-        //    }
-        //    s5u.dtol = amin / 1000.0;
+            water();   
+            // Write  elementdata to file
+            for (int m = 0; m < numbe; ++m)
+            {
+                BoundaryElement& elm = elm_list[m];    
+                float size = 2.0 * elm.a;
+                float angle = 180.0 * static_cast<float>(atan2(elm.sinbet, elm.cosbet)) / pi;
+                file2 << std::setw(7) << m + 1
+                    << std::setw(6) << elm.kod
+                    << std::setw(9) << std::fixed << std::setprecision(4) << elm.xm
+                    << std::setw(9) << std::fixed << std::setprecision(4) << elm.ym
+                    << std::setw(9) << std::fixed << std::setprecision(4) << size
+                    << std::setw(8) << std::fixed << std::setprecision(2) << angle
+                    << std::setw(13) << std::scientific << s4.b0[2 * m]
+                    << std::setw(13) << std::scientific << s4.b0[2 * m + 1]
+                    << std::setw(5) << elm.mat_no << std::endl;
+            }
 
-        //    water();    //Sara! for now I commented water later think about
+            float aks_bb = 0, akn_bb = 0, phi_bb = 0; float coh_bb = 0.0f;
+            float phid_bb = 0, ap_bb = 0, apr_bb = 0;
 
-        //    // Write  elementdata to file
-        //    for (int m = 0; m < numbe; ++m)
-        //    {
-        //        BoundaryElement& elm = elm_list[m];     //elm here is alias 
-        //        float size = 2.0 * elm.a;
-        //        float angle = 180.0 * static_cast<float>(atan2(elm.sinbet, elm.cosbet)) / pi;
-        //        outFile << std::setw(7) << m + 1
-        //            << std::setw(6) << elm.kod
-        //            << std::setw(9) << std::fixed << std::setprecision(4) << elm.xm
-        //            << std::setw(9) << std::fixed << std::setprecision(4) << elm.ym
-        //            << std::setw(9) << std::fixed << std::setprecision(4) << size
-        //            << std::setw(8) << std::fixed << std::setprecision(2) << angle
-        //            << std::setw(13) << std::scientific << s4.b0[2 * m]
-        //            << std::setw(13) << std::scientific << s4.b0[2 * m + 1]
-        //            << std::setw(5) << elm.mat_no << std::endl;
-        //    }
+            // Call stiffness_bb for Tensile fractures
+            stiffness_bb(aks_bb, akn_bb, phi_bb, coh_bb, phid_bb, ap_bb, apr_bb, 1, 1);
+            file2 << "New fresh fracture properties --- Tensile fractures" << std::endl
+                << "               ks = " << std::scientific << std::setprecision(4) << aks_bb << std::endl
+                << "               kn = " << std::scientific << std::setprecision(4) << akn_bb << std::endl
+                << "              phi = " << std::fixed << std::setprecision(1) << (phi_bb * 180 / pi) << std::endl
+                << "        cohesion = " << std::scientific << std::setprecision(4) << coh_bb << std::endl
+                << "   dilation angle = " << std::fixed << std::setprecision(1) << (phid_bb * 180 / pi) << std::endl
+                << " initial aperture = " << std::scientific << std::setprecision(4) << ap_bb << std::endl
+                << "residual aperture = " << std::scientific << std::setprecision(4) << apr_bb << std::endl;
 
-        //    float aks_bb = 0, akn_bb = 0, phi_bb = 0; float coh_bb = 0.0f;
-        //    float phid_bb = 0, ap_bb = 0, apr_bb = 0;
-
-        //    // Call stiffness_bb for Tensile fractures
-        //    stiffness_bb(aks_bb, akn_bb, phi_bb, coh_bb, phid_bb, ap_bb, apr_bb, 1, 1);
-        //    outFile << "New fresh fracture properties --- Tensile fractures" << std::endl
-        //        << "               ks = " << std::scientific << std::setprecision(4) << aks_bb << std::endl
-        //        << "               kn = " << std::scientific << std::setprecision(4) << akn_bb << std::endl
-        //        << "              phi = " << std::fixed << std::setprecision(1) << (phi_bb * 180 / pi) << std::endl
-        //        << "        cohesion = " << std::scientific << std::setprecision(4) << coh_bb << std::endl
-        //        << "   dilation angle = " << std::fixed << std::setprecision(1) << (phid_bb * 180 / pi) << std::endl
-        //        << " initial aperture = " << std::scientific << std::setprecision(4) << ap_bb << std::endl
-        //        << "residual aperture = " << std::scientific << std::setprecision(4) << apr_bb << std::endl;
-
-        //    // Call stiffness_bb for Shear fractures
-        //    stiffness_bb(aks_bb, akn_bb, phi_bb, coh_bb, phid_bb, ap_bb, apr_bb, 2, 1);
-        //    outFile << "New fresh fracture properties --- Shear fractures" << std::endl
-        //        << "               ks = " << std::scientific << std::setprecision(4) << aks_bb << std::endl
-        //        << "               kn = " << std::scientific << std::setprecision(4) << akn_bb << std::endl
-        //        << "              phi = " << std::fixed << std::setprecision(1) << (phi_bb * 180 / pi) << std::endl
-        //        << "        cohesion = " << std::scientific << std::setprecision(4) << coh_bb << std::endl
-        //        << "   dilation angle = " << std::fixed << std::setprecision(1) << (phid_bb * 180 / pi) << std::endl
-        //        << " initial aperture = " << std::scientific << std::setprecision(4) << ap_bb << std::endl
-        //        << "residual aperture = " << std::scientific << std::setprecision(4) << apr_bb << std::endl;
-        //}
+            // Call stiffness_bb for Shear fractures
+            stiffness_bb(aks_bb, akn_bb, phi_bb, coh_bb, phid_bb, ap_bb, apr_bb, 2, 1);
+            file2 << "New fresh fracture properties --- Shear fractures" << std::endl
+                << "               ks = " << std::scientific << std::setprecision(4) << aks_bb << std::endl
+                << "               kn = " << std::scientific << std::setprecision(4) << akn_bb << std::endl
+                << "              phi = " << std::fixed << std::setprecision(1) << (phi_bb * 180 / pi) << std::endl
+                << "        cohesion = " << std::scientific << std::setprecision(4) << coh_bb << std::endl
+                << "   dilation angle = " << std::fixed << std::setprecision(1) << (phid_bb * 180 / pi) << std::endl
+                << " initial aperture = " << std::scientific << std::setprecision(4) << ap_bb << std::endl
+                << "residual aperture = " << std::scientific << std::setprecision(4) << apr_bb << std::endl;
+        }
                 
         return;
     }
@@ -408,31 +384,28 @@ void processFracture()
    void saveData()
    {   
        string lineData;
-       getline(inFile, lineData);
-       string id ;
+       
+       //string id ;
        string tem = "  ";
        try
        {
-           //inFile.ignore(); // Skip the rest of the line
+           getline(inFile, lineData);           
            std::stringstream ss(lineData);
-           ss >> id >> tem;
-          // inFile >> id >> tem;
-         //  ToLowerCase(id);
+           ss >> tem;         
            if (tem == "  ")
            {
-               file2 << "Incomplete input - Give a file name for saving" << endl;
-               // call SendWindowText('Incomplete input - Give a file name for saving'//CHAR(0))
+               MessageBox(nullptr, L"Incomplete input - Give a file name for saving", L"Error", MB_OK);
            }
            else
            {
                ofstream file10(tem, ios::binary);
-               //save(file10);
+               save(file10);
                file10.close();
            }
        }
        catch (std::ifstream::failure e)
        {
-           std::cerr << "Exception opening/reading/closing file10:in saveData\n";
+           MessageBox(nullptr, L"Error in input File,save definition!", L"Error", MB_OK);
 
        }      
         return;
@@ -501,7 +474,7 @@ void processFracture()
        }
        catch (std::ifstream::failure e)
        {
-           std::cerr << "Exception opening/reading/closing file:in processExcavation_Cracks\n";
+           MessageBox(nullptr, L"Error in input File,escavation_crack definition!", L"Error", MB_OK);
 
        }           
 
@@ -525,10 +498,17 @@ void processFracture()
    {     
 
         string lineData;
-        getline(inFile, lineData);
-        std::stringstream ss(lineData);
-           
-        ss >> symm.ksym >> symm.xsym >> symm.ysym;          
+        try
+        {
+            getline(inFile, lineData);
+            std::stringstream ss(lineData);
+            ss >> symm.ksym >> symm.xsym >> symm.ysym;
+        }
+        catch (std::ifstream::failure e)
+        {
+            MessageBox(nullptr, L"Error in input File,symm definition!", L"Error", MB_OK);
+
+        }                
 
         switch (symm.ksym)
         {
@@ -562,12 +542,12 @@ void processFracture()
    void frac_energy_processing()
    {
        string lineData;
-       getline(inFile, lineData);
        float gic, giic;
-       int material = 1;
-       std::stringstream ss(lineData);
+       int material = 1;      
        try
        {
+           getline(inFile, lineData);           
+           std::stringstream ss(lineData);
            ss >> gic >> giic >> material;
            int mm = material;
            file2 << "ROCK MATERIAL = " << material << std::endl;
@@ -578,7 +558,7 @@ void processFracture()
        }
        catch (std::ifstream::failure e)
        {
-           std::cerr << "Exception opening/reading/closing file:frac_energy_process\n";
+           MessageBox(nullptr, L"Error in input File,touc definition!", L"Error", MB_OK);
 
        }       
        return;
@@ -588,14 +568,14 @@ void processFracture()
 
    void frac_toughness_process()
    {
-       string lineData;
-       getline(inFile, lineData);
+       string lineData;      
        int mm = 0;
        int material = 1;
-       float akic0 = 0, akiic0 = 0;
-       std::stringstream ss(lineData);
+       float akic0 = 0, akiic0 = 0;      
        try
        {
+           getline(inFile, lineData);
+           std::stringstream ss(lineData);
            ss >> akic0 >> akiic0 >> material ;// >> material;    I removed temp vars here and assign directly the rock attrbs. Sara! check again for errors
            file2 << "ROCK MATERIAL = " << material << std::endl;
            file2 << "    Mode I toughness = " << akic0 << std::endl;
@@ -606,7 +586,7 @@ void processFracture()
        }
        catch (std::ifstream::failure e)
        {
-           std::cerr << "Exception opening/reading/closing file:infrac_toughness_process\n";
+           MessageBox(nullptr, L"Error in input File,toughness definition!", L"Error", MB_OK);
 
        }
        return;
@@ -617,15 +597,15 @@ void processFracture()
 
    void elastic_modul_processing()
    {
-       string lineData;
-       getline(inFile, lineData);
+       string lineData;       
        int material = 1;
        int mm = 0;
-       float pr0, e0;
-       std::stringstream ss(lineData);
+       float pr0, e0;       
 
        try
        {
+           getline(inFile, lineData);
+           std::stringstream ss(lineData);
            ss>>pr0 >> e0 >> material;
            mm = material;
            rock1[mm].e = e0;
@@ -636,7 +616,7 @@ void processFracture()
        }
        catch (std::ifstream::failure e)
        {
-           std::cerr << "Exception opening/reading/closing file: in elastic_modul_process\n";
+           MessageBox(nullptr, L"Error in input File,modulus definition!", L"Error", MB_OK);
 
        }
        return;
@@ -647,28 +627,25 @@ void processFracture()
 
    void dbouProcess()
    {
-       //file9 should be here defined or pass  Sara!
        std::ofstream file9("bound.dat");
        //---------------straight boundary value increment ------------------
       
            float x1, x2, y1, y2, dss, dnn;
            try
            {
-               inFile >> x1 >> x2 >> y1 >> y2 >> dss >> dnn;
-
-               // std::setw(10) << std::fixed << std::setprecision(2)    ? Sara!
+               inFile >> x1 >> x2 >> y1 >> y2 >> dss >> dnn;               
                file2 << "boundary value increment, x1,x2,y1,y2,dss,dnn =" << std::endl
                    << x1 << x2 << y1 << y2 << dss << dnn;
                file9 << "('dbou')";
-               file9 << x1 << x2 << y1 << y2 << dss << dnn;   //initue.dss  , insitu.dnn
+               file9 << x1 << x2 << y1 << y2 << dss << dnn;   
               
            }
            catch (std::ifstream::failure e) 
            {
-               std::cerr << "Exception opening/reading/closing file\n";
+               MessageBox(nullptr, L"Error in input File,dboundary definition!", L"Error", MB_OK);
 
            }
-           insituS.incres = 3;     //Sara!
+           insituS.incres = 3;    
            
            return;
    }
@@ -681,7 +658,6 @@ void processFracture()
            float xcen, ycen, diam1, diam2, ang1, ang2, dss, dnn;
            try
            {
-
                inFile >> xcen >> ycen >> diam1 >> diam2 >> ang1 >> ang2 >> dss >> dnn;
                file2 << "Arch boundary value increment, xc, xy, d1, d2, ang1, ang2, dss, dnn =\n"
                    << xcen << " " << ycen << " " << diam1 << " " << diam2 << " "
@@ -693,7 +669,7 @@ void processFracture()
            }
            catch (std::ifstream::failure e)
            {
-               std::cerr << "Exception opening/reading/closing file: in processBoundaries \n";
+               MessageBox(nullptr, L"Error in input File,darc definition!", L"Error", MB_OK);
 
            }         
            insituS.incres = 3;
@@ -708,7 +684,7 @@ void processFracture()
        string lineData;
        getline(inFile, lineData);
        ihist++;
-       MonitoringPoint mpoint;     //temp object to keep value,later add it to the mon_point list
+       MonitoringPoint mpoint;    
        std::stringstream ss(lineData);
 
        try
@@ -719,11 +695,11 @@ void processFracture()
                file2 << "ERROR: Too many monitoring points (max=19) No monitoring point set for "
                    << mpoint.xmon << " " << mpoint.ymon << std::endl;
                ihist--;
-               return;     //label100 int the fortran code
+               return;     
            }
            file2 << "history file = hist" << ihist << ".dat" << std::endl
                << "monitoring point = " << mpoint.xmon << " " << mpoint.ymon << std::endl;
-           mpoint_list.push_back(mpoint);      //add new monitoring point
+           mpoint_list.push_back(mpoint);     
 
            std::ofstream histPFile("hist" + std::to_string(ihist) + ".dat");           
            histPFile << " -- Monitoring point close to a boundary will be calculated at the boundary and marked as AT BOUNDARY ELEMENT\n"
@@ -734,8 +710,7 @@ void processFracture()
        }
        catch (std::ifstream::failure e)
        {
-           std::cerr << "Exception opening/reading/closing file: in"
-               <<"processMonitoring_points\n";
+           MessageBox(nullptr, L"Error in input File,monitoring point definition!", L"Error", MB_OK);
        }
        return;       
 
@@ -773,7 +748,7 @@ void processFracture()
        }
        catch (std::ifstream::failure e)
        {
-           std::cerr << "Exception opening/reading/closing file: in processMonitoring_lines\n";
+           MessageBox(nullptr, L"Error in input File,monitoring line definition!", L"Error", MB_OK);
 
        }
        return;
@@ -802,7 +777,7 @@ void processFracture()
        }
        catch (std::ifstream::failure e)
        {
-           std::cerr << "Exception opening/reading/closing file: processCreepParameters\n";
+           MessageBox(nullptr, L"Error in input File,creep definition!", L"Error", MB_OK);
        }
        return;
    }
@@ -812,15 +787,13 @@ void processFracture()
 
    void processInsituStress()
    {
-       float pxx0, pyy0, pxy0;  //!pxx0 etc are used to avoid interference with pxx 
-       //(which is increamental)
-       
+       float pxx0, pyy0, pxy0;         
        try
        {
            inFile >> pxx0 >> pyy0 >> pxy0;
 
-           insituS.dsxx = pxx0; // it is assumed that the initial stress field is 0
-           insituS.dsxy = pxy0; // the increase in stress field is then pxx0, pyy0, pxy0
+           insituS.dsxx = pxx0; 
+           insituS.dsxy = pxy0; 
            insituS.dsyy = pyy0;
            insituS.incres = 1;
 
@@ -831,7 +804,7 @@ void processFracture()
        }
        catch (std::ifstream::failure e)
        {
-           std::cerr << "Exception opening/reading/closing file:processInsituStress\n";
+           MessageBox(nullptr, L"Error in input File,stress definition!", L"Error", MB_OK);
 
        }
        return;
@@ -856,7 +829,7 @@ void processFracture()
        }
        catch (std::ifstream::failure e)
        {
-           std::cerr << "Exception opening/reading/closing file:processGravity\n";
+           MessageBox(nullptr, L"Error in input File,gravity definition!", L"Error", MB_OK);
 
        }
        return;
@@ -878,7 +851,6 @@ void processFracture()
            ss >> jmat >> s8[jmat].aks0 >> s8[jmat].akn0 >> s8[jmat].phi0 >> s8[jmat].coh0 >>
                s8[jmat].phid0 >> s8[jmat].apert0 >> s8[jmat].apert_r;
        }
-        //not sure about li§ne processing here
       else
       {
                    s8[jmat].phid0 = 0;
@@ -932,8 +904,7 @@ void processFracture()
        }
        catch (std::ifstream::failure e)
        {
-           std::cerr << "Exception opening/reading/closing file:"<<
-               " in processRockStrength_propert\n";
+           MessageBox(nullptr, L"Error in input File,rock definition!", L"Error", MB_OK);
 
        }
        return;
@@ -956,7 +927,7 @@ void processFracture()
        }
        catch (std::ifstream::failure e)
        {
-           std::cerr << "Exception opening/reading/closing file: in processRectWindow\n";
+           MessageBox(nullptr, L"Error in input File,window definition!", L"Error", MB_OK);;
 
        }
        return;
@@ -982,7 +953,7 @@ void processFracture()
        }
        catch (std::ifstream::failure e)
        {
-           std::cerr << "Exception opening/reading/closing file: in processCircWindow\n";
+           MessageBox(nullptr, L"Error in input File,window definition!", L"Error", MB_OK);
 
        }
        return;
@@ -1012,7 +983,7 @@ void processFracture()
        }
        catch (std::ifstream::failure e)
        {
-           std::cerr << "Exception opening/reading/closing file: in processCircWindow\n";
+           MessageBox(nullptr, L"Error in input File,window definition!", L"Error", MB_OK);
 
        }
        return;
@@ -1028,7 +999,7 @@ void processFracture()
        {
            if (!(inFile >> xcen >> ycen >> diam))
            {
-               // Handle input error
+               MessageBox(nullptr, L"Error in input File,tunnel definition!", L"Error", MB_OK);
            }
            
            tunnl.diameter[ntunnel] = diam;  //need to optimize Sara!
@@ -1103,26 +1074,25 @@ void processFracture()
            case 1:
            case 11:
                arc_list[na] = Arch(xcen, ycen, diam / 2.0, ang11, ang12, bvs, bvn, 0, 0, gradsy,
-                   gradny, num, material, kode);   //arcss(na)=bvs   arcsn(na)=bvn
+                   gradny, num, material, kode);   
                break;
 
            case 2:
            case 12:
                arc_list[na] = Arch(xcen, ycen, diam / 2.0, ang11, ang12, 0, 0, bvs, bvn, gradsy, 
-                   gradny, num, material, kode);    //arcdn(na)=bvn   arcds(na)=bvs
+                   gradny, num, material, kode);   
                break;
 
            case 3:
            case 13:
                arc_list[na] = Arch(xcen, ycen, diam / 2.0, ang11, ang12, 0, bvn, bvs, 0, gradsy,
-                   gradny, num, material, kode);    //arcsn(na)=bvn    arcds(na)=bvs
+                   gradny, num, material, kode);    
                break;
 
            case 4:
            case 14:
                arc_list[na] = Arch(xcen, ycen, diam / 2.0, ang11, ang12, bvs, 0, 0, bvn, gradsy,
-                   gradny, num, material, kode);      //arcdn(na)=bvn arcss(na)=bvs  
-             
+                   gradny, num, material, kode);                 
            }
            na++;
        }
@@ -1147,8 +1117,8 @@ void processFracture()
            inFile >> xcen >> ycen >> diam1 >> diam2 >> kode >> bvs >> bvn >> material >> gradsy >> gradny;
                
            nellipse++;
-           Elliptical_opening ep(xcen, ycen, diam1, diam2);  //new Ellip opening is defined
-           ellip_list[nellipse] = ep;    //add the new one to list of ellipopening
+           Elliptical_opening ep(xcen, ycen, diam1, diam2);  
+           ellip_list[nellipse] = ep;    
 
            file2 << "ARC ---- centre position: x,y  = " << xcen << " " << ycen << "\n"
                << "         diameter a              = " << diam1 << "\n"
@@ -1276,17 +1246,23 @@ void processFracture()
            scientific << std::setprecision(3) << s15.a_ini << std::endl;
    }
 
+
+
+
    inline void iterProcess() {
        inFile >> n_it;
        file2 << "Iteration cycle number = " << n_it << std::endl;
    }
+
+
+
 
    inline void numeProcess()
    {
        try
        {
            if (!(inFile >> k_num >> d_max)) {
-               // Handle input error
+              
            }
            file2 << "Set numerical stability parameters\n"
                << " boundary element k_num = " << k_num << "\n"
@@ -1298,6 +1274,7 @@ void processFracture()
 
        }
    }
+
 
    inline void  mlinProcess()
    {
@@ -1313,6 +1290,8 @@ void processFracture()
 
        }
    }
+
+
    inline void  dstrProcess()
    {
        try
@@ -1335,411 +1314,9 @@ void processFracture()
 
 
 
+
+
    void input()
-   {
-          
-    
-       if (!file7 ||!file2) {
-          //// Debug::WriteLine("Path Wrong!!!! in input function");
-           exit(EXIT_FAILURE);
-       }
-      
-       string id;
-       string tem;
-       string message;
-       string lineData;
-
-       //for high toughness differnet file format used
-       //string strPathFile = "C:/C++projects/Fracod2/Examples/HighToughness/Example"+
-          // to_string(test_id)+ "/Example"+
-          // to_string(test_id)+"_TOUK 1E+20.dat";             // /input.dat";
-          // Open an existing file   
-          //  
-       string strPathFile = filepath+ "/Example" +
-           to_string(test_id) + ".dat";
-       inFile.open(strPathFile.c_str(),std::ios_base::in);
-       if (!inFile.is_open())
-       {
-         ////  Debug::WriteLine("Path Wrong!!!!" );
-           exit(EXIT_FAILURE);
-       }  
-       auto start = std::chrono::high_resolution_clock::now();
-       try
-       {
-           while (getline(inFile, lineData))   
-           {
-               if (lineData.empty())			
-               {
-                   continue;
-               }
-               line++;
-               if (lastinput == "endf")
-                   return;              
-               id = lineData.substr(0,4);
-               ToLowerCase(id);
-
-               line++;
-               lastinput = id;
-
-               //---------------job title ------------------
-               if (id == "titl")
-               {
-                   titl_Process();
-               }
-
-               //--------------- symetry --------------------      
-               else if (id == "symm")
-               {
-                  // getline(inFile, tem);
-                   symmetryProcessing();
-               }
-
-                   //--------------- random fracture initiation --------------------
-               else if (id == "rand")
-               {
-                   randProcess();
-                  /* string linedata;
-                   s15.i_rand = 1, s15.l_rand = 1;
-                  
-                   try
-                   {
-                       getline(inFile,linedata);
-                       std::stringstream ss(linedata);
-                       ss >> s15.f_ini0 >> s15.l_rand;
-                       file2 << "Fracture initiation starts at " << s15.f_ini0 << " strength"
-                           << std::endl;
-                       file2 << "Random level (1 - 100%; 0 - no)" << s15.l_rand << std::endl;
-                   }
-                   catch (std::ifstream::failure e)
-                   {
-                       std::cerr << "Exception opening/reading/closing file:in input rand\n";
-
-                   }*/
-               }
-
-                   //--------------- Set fracture initiation cut-off level --------------------
-               else if (id == "setf")
-                {
-                      /* inFile >> factors.factor_f;
-                       file2 << "Fracture initiation cut-off level is set to be " << factors.factor_f
-                           << "% of max FoS" << std::endl;*/
-                   setfProcess();
-                }
-
-                //--------------- Set the F/Fc check-up value for fracture propagation --------------------
-                 //from an elastic fracture 
-                //if F / Fc < given value, no checking for elastic fracture growth
-               else if (id == "sete")
-                {
-                   seteProcess();
-                      /* inFile >> factors.factor_e;
-                       file2 << "Elastic fracture propagation checking level is set to be " << 
-                           factors.factor_e << "Kc" << std::endl;*/
-                }
-
-                   //--------------- Set the tip merging tolerance distance --------------------
-               else if (id == "sett")
-                   {
-                   settProcess();
-                       /*inFile >> factors.tolerance;
-                       file2 << "Fracture tip merging tolerance distance is set to be " << 
-                           factors.tolerance << std::endl;*/
-                   }
-
-                   //--------------- boundary fracture initiation --------------------
-               else if (id == "boun")
-                   {
-                   boundProcess();
-                       /*s15.i_bound = 1;
-                       file2 << "Fracture initiation at boundaries is allowed" << std::endl;*/
-                   }
-
-                   //--------------- internal fracture initiation --------------------
-                   else if (id == "inte") 
-                   {
-                   inteProcess();
-                      /* s15.i_intern = 1;
-                       file2 << "Fracture initiation in intact rock is allowed" << std::endl;*/
-                   }
-
-                   //--------------- fracture initiation element size --------------------
-                   else if (id == "isiz")  
-                   {
-                   isizProcess();
-                       /*inFile >> s15.a_ini;
-                       file2 << "Fracture initiation element size is set to be " <<
-                           scientific<< std::setprecision(3)<< s15.a_ini << std::endl;*/                      
-                   }
-
-                   //--------------fracture energy-------------------------------------------
-
-                   else if (id == "toug" ) 
-                   {
-                        //getline(inFile, tem);
-                        frac_energy_processing();
-                       
-                   }
-                   //!--------------fracture toughness------------------------------------------
-
-                   else if (id == "touk" )
-                   {
-                        //getline(inFile, tem);
-                       frac_toughness_process();
-                       
-                   }
-                   // ---------------elastic modulus---------------------------------------------
-
-                   else if (id == "modu" )
-                   {
-                        //getline(inFile, tem);
-                        elastic_modul_processing();
-                       
-                   }
-                   //---------------set iteration number ------------------
-
-                   else if (id == "iter" )
-                   {
-                       inFile >> n_it;
-                       file2 << "Iteration cycle number = " << n_it << std::endl;
-                   }
-                   //---------------Excavation cracks ------------------
-
-                   else if (id == "exca")
-                   {
-                       processExcavation_Cracks();
-                       
-                   }
-                   //-------------- - boundary value increment---------------------------------------------------------- 
-
-                   else if (id == "dbou") 
-                   {
-                      
-                       dbouProcess();
-                       
-                   }
-                   else if (id == "darc")
-                   {
-                       darcProcess();
-                   }
-
-                    //---------------monitoring points ----------------------------
-                   else if (id == "moni" )
-                   {
-                       //getline(inFile, tem);
-                       processMonitoring_points();
-                   }
-
-                    //---------------monitoring lines ----------------------------------
-
-                    else if (id == "monl") 
-                    {
-                        processMonitoring_lines();
-                          
-                    }
-
-                    //-------------- - set numerical stability parameters k_num and d_max--------------
-                    else if (id == "nume" )
-                    {
-                        //try
-                        //{
-                        //    if (!(inFile >> k_num >> d_max)) {
-                        //        // Handle input error
-                        //    }
-                        //    file2 << "Set numerical stability parameters\n"
-                        //        << " boundary element k_num = " << k_num << "\n"
-                        //        << " Max fracture disp = " << d_max << std::endl;
-                        //}
-                        //catch (std::ifstream::failure e)
-                        //{
-                        //    std::cerr << "Exception opening/reading/closing file\n";
-
-                        //}
-                        numeProcess();
-                     }
-
-                    // !---------------Definite which material region is concrete lining-------------------
-
-                    else if (id == "mlin" ) 
-                    {
-                        mlinProcess();
-                           /*try
-                           {
-                               inFile >> mat_lining;      
-                               file2 << "MATERIAL NO = " << mat_lining << 
-                                    " is set to be the concrete lining without insitu stresses" << std::endl;
-                           }
-                           catch (std::ifstream::failure e)
-                           {
-                               std::cerr << "Exception opening/reading/closing file\n";
-
-                           }*/
-                       }
-                       // ---------------set creep parameters --------------------------------------------------
-
-                       else if (id == "cree" )
-                       {
-                           processCreepParameters();
-                          
-                       }
-
-                       // ---------------insitu stresses---------------------------------------------------------
-
-                       else if (id == "stre" ) 
-                       {
-                           processInsituStress();
-                          
-                       }
-                       // ---------------gravity and tectonic stresses-------------------------------------------------
-
-                       else if (id == "grav" )
-                       {
-                           processGravity();
-                       }
-
-                       //!---------------insitu stress increment ----------------------------------------------
-                       else if (id == "dstr")
-                       {
-                           dstrProcess();
-                          /* try
-                           {
-
-                               inFile >> insituS.dsxx >> insituS.dsyy >> insituS.dsxy;
-
-                               file2 << "Insitu stress increment, dsxx, dsyy, dsxy = " << insituS.dsxx << " " <<
-                                   insituS.dsyy << " " << insituS.dsxy << std::endl;
-                               insituS.incres = 1;
-                           }
-                           catch (std::ifstream::failure e)
-                           {
-                               std::cerr << "Exception opening/reading/closing file in dstr\n";
-
-                           }*/
-                       }
-                       //---------------fracture contact properties------------------------------
-
-                       else if (id == "prop")
-                       {
-                          // getline(inFile, tem);
-                           process_ContactSurface_Properties();                                      
-
-                       }
-                       //---------------Intact rock strength properties----------------------------
-
-                       else if (id == "rock")
-                       {
-                           processRockStrength_properties();                          
-                       }                      
-
-                       // ---------------plot window (rectangular) for internal stress and displacement-------
-
-                       else if (id == "swin" )
-                       {
-                           processRectWindow();                          
-                       }
-                       // ---------------plot window (circular) for internal stress and displacement---------
-
-                       else if (id == "rwin")
-                       {
-                           processCircWindow();
-
-                       }
-
-                       //!---------------fracture initiation window-------------------------------------
-
-                       else if (id == "iwin" )
-                       {
-                           processFracinitWindow();
-                           
-                       }
-                       // Define locations, size, orientations and boundary conditions of
-                       //boundary elements
-
-                       // !---------------Tunnel for plotting only------------------------------------------
-
-                       else if (id == "tunn")
-                       {
-                           processTunnel();
-                       }
-
-                       // !---------------arc--------------------------------------------
-
-                       else if (id == "arch")
-                       {
-                           processArch();                          
-
-                       }
-                       // !---------------elliptical---------------------------------------------
-                       else if (id == "elli")
-                       {
-                           processEllipticalOpens();
-                       }
-
-                       //-------------- - excavation induced random cracks in an elliptical range--------
-
-                           //------------------ - edge, inner or outer straigt bound.line------------
-                       else if (id == "edge")
-                           processEdge();
-
-                       //--------------------- - gost elements for preventing rigid movement------------
-                       else if (id == "gost" )
-                           processGost();
-
-                       //!-------------------fractures------------
-                       else if (id == "frac")
-                           processFracture();
-
-                       //------------------Linear Interface of Multiregions--------------------
-                       else if (id == "lint")
-                           processLinearInterface();
-
-                       //-------------- - Arch Interface of Multiregions--------------------------
-                       else if (id == "aint")
-                           processArcInterface();
-
-
-                       //----------------Water pressure------------------
-                       else if (id == "wate")
-                           processWaterPressure();
-
-
-                       //!----------------permeability ------------------
-                       else if (id== "perm") 
-                           processPermeability();
-
-
-                       else if (id== "cycl")
-                           start_calculation();
-
-                        //!------------------save --------------------------------
-
-                      else if (id== "save")
-                               saveData();
-
-                       //!-------------end file -----------------------------
-
-                      //else if (id == "endf")    return;
-
-           }               
-               endFile();               
-           }
-       catch (std::ifstream::failure e) 
-        {
-            std::cerr << "Exception opening/reading/closing file in input\n";     
-           
-       }
-
-       auto end1 = std::chrono::high_resolution_clock::now();
-       auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end1 - start);
-       cout << "\n Run time input func =  " << duration.count();
-       inFile.close();
-       file2.close();
-       return;
-   }
-
-
-
-
-   void input2()
    {
       
        string id;
@@ -1755,57 +1332,57 @@ void processFracture()
            MessageBox(nullptr, L"File path is wrong!", L"Error", MB_OK);
            exit(EXIT_FAILURE);
        }
-       file2.open(filepath + "/Coutput.dat");
+      
        auto start = std::chrono::high_resolution_clock::now();
        using func = function<void()>;     
 
        unordered_map<string, func> mp{
 
-                {"titl", titl_Process},
-                 {"symm", symmetryProcessing},
-                 {"toug",frac_energy_processing},
-                 { "touk",frac_toughness_process},
-                 {"modu", elastic_modul_processing},
-                 {"stre" ,processInsituStress},
-                 {"swin",processRectWindow },
-                  {"arch",processArch},
-                 {"frac",processFracture},
-                 {"cycl",start_calculation},
-                  {"rand", randProcess},
-                  {"endf",endFile},
-                  {"iter",iterProcess },
-             {"prop",process_ContactSurface_Properties},
-                 {"rock",processRockStrength_properties},
-            {"inte",inteProcess},
-                 {"exca",processExcavation_Cracks},
-                 { "dbou",dbouProcess},
-           {"darc",darcProcess},
-                {"elli",processEllipticalOpens},{ "edge",processEdge},{"gost",processEdge},
-                 {"moni",processMonitoring_points},
-           {"monl",processMonitoring_lines},
-                 {"nume",numeProcess},
-                 {"mlin",mlinProcess},
-                 {"cree",processCreepParameters},
-                 {"setf",setfProcess},
-                 {"sete",seteProcess},
-                 {"sett",settProcess},
-                 {"boun",boundProcess},
-                 {"isiz",isizProcess},
-                 {"grav",processGravity},
-                 {"dstr",dstrProcess},
-                 {"rwin",processCircWindow},
-                 {"iwin",processFracinitWindow},
-                 {"tunn",processTunnel},
-                 {"lint",processLinearInterface},{ "aint",processArcInterface},{"wate",processWaterPressure},
-                 {"perm",processPermeability}
-       };
-       //{"saveData",save},
+        {"titl", titl_Process},
+        {"symm", symmetryProcessing},
+        {"toug",frac_energy_processing},
+        {"touk",frac_toughness_process},
+        {"modu", elastic_modul_processing},
+        {"stre" ,processInsituStress},
+        {"swin",processRectWindow },
+        {"arch",processArch},
+        {"frac",processFracture},
+        {"cycl",start_calculation},
+        {"rand", randProcess},
+        {"endf",endFile},
+        {"iter",iterProcess },
+        {"prop",process_ContactSurface_Properties},
+        {"rock",processRockStrength_properties},
+        {"inte",inteProcess},
+        {"exca",processExcavation_Cracks},
+        { "dbou",dbouProcess},
+        {"darc",darcProcess},
+        {"save",saveData},
+        {"elli",processEllipticalOpens},{ "edge",processEdge},{"gost",processEdge},
+        {"moni",processMonitoring_points},
+        {"monl",processMonitoring_lines},
+        {"nume",numeProcess},
+        {"mlin",mlinProcess},
+        {"cree",processCreepParameters},
+        {"setf",setfProcess},
+        {"sete",seteProcess},
+        {"sett",settProcess},
+        {"boun",boundProcess},
+        {"isiz",isizProcess},
+        {"grav",processGravity},
+        {"dstr",dstrProcess},
+        {"rwin",processCircWindow},
+        {"iwin",processFracinitWindow},
+        {"tunn",processTunnel},
+        {"lint",processLinearInterface},{ "aint",processArcInterface},{"wate",processWaterPressure},
+        {"perm",processPermeability}
+       };       
 
        try
        {
            while (std::getline(inFile, lineData))   
            {
-               if (lineData.empty())			// skip empty lines:
+               if (lineData.empty())			
                {
                    continue;
                }
@@ -1833,11 +1410,7 @@ void processFracture()
            exit(EXIT_FAILURE);
 
        }
-
-       auto end1 = std::chrono::high_resolution_clock::now();
-       auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end1 - start);
-       cout << "\n Run time input2 func=  " << duration.count();
-       inFile.close();
+       
        return;
           
    }

@@ -162,6 +162,7 @@
     <ClCompile Include="src\Plot.cpp" />
     <ClCompile Include="src\Rock.cpp" />
     <ClCompile Include="src\S4.cpp" />
+    <ClCompile Include="src\Save_and_Restore.cpp" />
     <ClCompile Include="src\Source.cpp" />
     <ClCompile Include="src\Tips.cpp" />
     <ClCompile Include="src\WinInterface.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="include\Plot.h" />
     <ClInclude Include="include\Rock.h" />
     <ClInclude Include="include\S4.h" />
+    <ClInclude Include="include\Save_and_Restore.h" />
     <ClInclude Include="include\Source.h" />
     <ClInclude Include="include\Tip.h" />
     <ClInclude Include="include\WinInterface.h" />

@@ -43,7 +43,7 @@ namespace comvar {
 	const int mem_size = 2*m0;
 	const float ge = 9.81;
 
-	int test_id = 12;
+	int test_id = 2;
 
 	int nelement = 0;
 	int mcyc = 0;
@@ -70,8 +70,8 @@ namespace comvar {
 	std::vector<std::pair<float, float>> valid;
 	std::vector<std::pair<float, float>> valid1;	
 
-	std::vector<BoundaryElement> elm_list(m0);	
-	std::vector<BE> b_elm(m0);
+	std::vector<BoundaryElement> elm_list(m0/2);	
+	std::vector<BE> b_elm(m0/2);
 	std::vector<MonitoringPoint> mpoint_list(10);
 	std::vector<MonitoringLine> mline_list(10);
 
@@ -105,7 +105,7 @@ namespace comvar {
 
 	waterCommon watercm;
 	std::vector< Rock>  rock1(10, Rock());
-	std::vector<Tip> tips(m0/2);
+	std::vector<Tip> tips(m0/3);
 	DispWindow dispwin;
 
 
@@ -113,12 +113,12 @@ namespace comvar {
 	Excavation exca;
 	SET factors;
 
-	std::vector<Limited_initiation_points>  init_point(m0/2);    //500
+	std::vector<Limited_initiation_points>  init_point(m0/2);    
 	
 	Permeability perm;
 
-	string filename1 = "filename1";
-	ofstream file7(filename1, std::ios::binary);
+	string filename1 = "BE";
+	//ofstream file7(filename1, std::ios::binary);
 	
 	std::ofstream file50("creep_results.dat");
 	string filepath = "C:/C++projects/SlimV-Fracod/Examples/Real/Example" + to_string(test_id);

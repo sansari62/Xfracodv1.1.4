@@ -55,7 +55,7 @@ void reorder_fractures(fstream& file25)
 
     for (int i = 0; i < nf; ++i) 
     {
-        Fracture& f = frac_list[i];        // f is alias for frac_list[i]
+        Fracture& f = frac_list[i];        
         for (int n = 0; n < ncr[i] + 1; ++n) 
         {
             itl = 0;

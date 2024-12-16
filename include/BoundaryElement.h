@@ -22,6 +22,8 @@ public:
 	BoundaryElement(float x, float y, float am, float cos, float sin,
 		int kd ,int mat);
 	
+	void save_to_file(ofstream& f, int m);
+	
 	void bound(int i, float& ss, float& sn, float& ustem, float& untem, float& usneg, 
 		float& unneg);
 

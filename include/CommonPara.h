@@ -24,7 +24,7 @@
 #include<map>
 #include<BE.h>
 
-#define m0 500
+#define m0 1500
 
 namespace comvar {
 

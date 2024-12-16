@@ -43,15 +43,6 @@ void Tip::assign_val(float dll, float cos, float sin, int itp, int mat)
 
 
 
-void Tip::read_from_file(ifstream& f)
-{
-    f >> dt  >> dl  >> ifail  >> nu  >> xbe  >> ybe  >>
-        xen  >> yen  >> ityp  >> imode  >>
-        mpointer  >> kindtip  >> angl  >> mat_no  >> f_value ;
-
-}
-
-
 
 void Tip::save_to_file(ofstream& f) 
 {

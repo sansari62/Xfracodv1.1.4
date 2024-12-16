@@ -374,7 +374,7 @@ void mainb(int mode)
     double ks = 0.0, kn = 0.0; float ph = 0.0, pd = 0.0;
     float S_is_js = 0, S_is_jn = 0, S_in_js = 0, S_in_jn = 0, d_is_js = 0, d_is_jn = 0, d_in_js = 0, d_in_jn = 0;
    
-  
+#pragma omp parallel for
     for (int i = 0; i < numbe; ++i)
     {
         is = 2 * i;
@@ -463,6 +463,7 @@ void mainb(int mode)
                 sinbj = elm_list[j].sinbet;
                 aj = elm_list[j].a;
                 //-------------------------------
+
                 coeff(xi, yi, xj, yj, aj, cosbj, sinbj, +1, mm);
 
                 switch (symm.ksym + 1)

@@ -6,11 +6,24 @@ using namespace  CommonPara_h::comvar;
 
 
 
-S4::S4(int length): 
-    c(length, vector<float>(length, 0.0)),c_s(length, vector<float>(length, 0.0)),
-    c_d(length, vector<float>(length, 0.0)),
-    d0(length, 0.0), d(length, 0.0), b(length, 0.0), b1(length, 0.0),
-    df0(length, 0.0), df(length, 0.0), b0(length, 0.0), b0_old(length, 0.0){}
+S4::S4(int length) :
+    c(length / 2, vector<float>(length / 2, 0.0)), c_s(length / 2, vector<float>(length / 2, 0.0)),
+    c_d(length / 2, vector<float>(length / 2, 0.0)),
+    d0(length / 2, 0.0), d(length / 2, 0.0), b(length / 2, 0.0), b1(length / 2 / 2, 0.0),
+    df0(length / 2, 0.0), df(length / 2, 0.0), b0(length / 2, 0.0), b0_old(length / 2, 0.0) {
+
+    c.reserve(length/2);
+    c_s.reserve(length/2);
+    c_d.reserve(length/2);
+    d0.reserve(length/2);  
+    d.reserve(length/2);
+    b.reserve(length/2);
+    b1.reserve(length/2);
+    b0.reserve(length/2);
+    b0_old.reserve(length/2);
+    df0.reserve(length/2);
+    df.reserve(length/2);
+}
 
 
 
@@ -63,20 +76,6 @@ void S4::limit_d()
     }
 }
 
-
-
-void S4::read_from_file(ifstream& f)
-{
-    for (int m = 0; m < numbe * 2; ++m)
-    {
-        f >> b[m] >> d[m] >> b0[m] >> b1[m] >> d0[m] >> df0[m] >> df[m];
-        for (int n = 0; n < numbe * 2; ++n) 
-        {
-            f >> c[m][n] >> c_s[m][n] >> c_d[m][n];
-        }
-    }
-    return;
-}
 
 
 

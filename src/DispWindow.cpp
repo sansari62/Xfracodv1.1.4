@@ -8,12 +8,6 @@ DispWindow::DispWindow(): xll(0), xur(0), yll(0), yur(0), numx(0),numy(0), xc0(0
 radium(0), numr(0), numa(0), ID_win(0) {}
 
 
-void DispWindow::read_from_file(ifstream& f)
-{
-
-   f >> xll >> xur >> yll >> yur >> numx >> numy >> xc0 >> yc0 >>
-       radium >> numr >> numa >> ID_win;
-}
 
 
 void DispWindow::save_to_file(ofstream & f)

@@ -5,7 +5,5 @@
 float dxi(float& angle, bool flagB);
 
 
-
-
-#endif // !DX_h
+#endif 
 

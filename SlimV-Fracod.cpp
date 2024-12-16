@@ -68,11 +68,9 @@ int main()
 
     elm_list.reserve(500);
     b_elm.reserve(500);
-    input();
-    lastinput = "";
-    input2();
+    input();   
 
-   // Central_control();
+    Central_control();
     file2.close();
    
 

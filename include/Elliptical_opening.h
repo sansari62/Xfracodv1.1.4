@@ -28,7 +28,7 @@ public:
 		void def_arch_boundary(int elem_num, float x, float y, float r1, float r2, float ang1, float ang2);
 		void increment_bnd_stress_along_arch(float x, float y, float r1, float r2, float ang1, float ang2, float dss, float dnn);
 
-		void read_from_file(ifstream& f);
+		
 		void save_to_file(ofstream & f);
 
 

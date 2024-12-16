@@ -16,7 +16,7 @@ public:
 	int jmat;
 
 
-	Fracture();
+	Fracture() {};
 	Fracture(float x1, float y1, float x2, float y2, int mat, int eno, int jmat1);
 	
 	void frac_reassign_values(int eno, float x1, float y1, float x2, float y2, int kode, int mat, int jmat1);

@@ -21,11 +21,7 @@ public:
 
 	
 	Rock();
-	void give_elastic_property(int nom, float y1, float rate);
-	void give_permeability_property(float v, float dens, float per0);
 	void save_to_file(ofstream & f);
-	void read_from_file(ifstream & f);
-
 
 };
 int  check_elastic_growth(int material_no);
