@@ -17,10 +17,8 @@ public:
 	float ypp[10];
 	float dd[10];
 	
-	Borehole();
+	Borehole();	
 	
-	
-	void read_from_file(ifstream& f);
 	void save_to_file(ofstream& f);
 	
 

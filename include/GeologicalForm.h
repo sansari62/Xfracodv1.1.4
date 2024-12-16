@@ -21,7 +21,6 @@ public:
 	 int getElem_no();
 	 int getBoundtype();
 	
-	void init_GeologicalForm(int mat, int eleno,int kode);
 
 	void cross_current_or_save_element(float xb1, float yb1, float xe1, float ye1, float xcross, float ycross, int m,int ii);
 

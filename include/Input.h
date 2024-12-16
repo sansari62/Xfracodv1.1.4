@@ -3,7 +3,8 @@
 #define Input_h
 
 void input();
+void input2();
 
 
-#endif // !Input_h
+#endif
 

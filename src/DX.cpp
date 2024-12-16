@@ -27,6 +27,9 @@ using namespace comvar;
 //        break;
 //    }
 
+
+
+
 void check_all_tips(float& xt, float& yt, float xt0, float yt0,bool flagB)
 {
     int n = ni;  //not sure Sara!
@@ -267,10 +270,12 @@ void check_all_tips(float& xt, float& yt, float xt0, float yt0,bool flagB)
 
 
 
+
+
 float label_200(float xt, float yt, float xt0, float yt0, float& angle,bool flagB)
 {
+
     float dtt = sqrt((xt - xt0) * (xt - xt0) + (yt - yt0) * (yt - yt0));
-   // float angle1 = 0.0;
     if (dtt == 0) dtt = tips[ni].dl;
     if (!flagB)
     {
@@ -291,9 +296,7 @@ float label_200(float xt, float yt, float xt0, float yt0, float& angle,bool flag
             atan2f(tips[ni].sintem, tips[ni].costem);
     }  
 
-    //if (abs(angle1 - angle) > 0.01)
-       // angle = angle1;        
-
+   
     return dtt;
 }
 
@@ -344,6 +347,8 @@ void recalculate_boundary_element_m(float xt, float yt, float xt0, float yt0,int
 
     return;
 }
+
+
 
 
 
@@ -412,7 +417,7 @@ float dxi(float& angle, bool flagB)
         {
             if ((xt - symm.xsym) * (xt0 - symm.xsym) <= 0)
             {
-                //!element cross the symmetry line
+                //element cross the symmetry line
                 yt = yt - (xt - symm.xsym) / (xt - xt0) * (yt - yt0);
                 xt = symm.xsym;
                 dtt = label_200(xt, yt, xt0, yt0, angle, flagB);
@@ -422,7 +427,7 @@ float dxi(float& angle, bool flagB)
         }
         if (symm.ksym == 2 || symm.ksym == 4)
         {
-            //!element cross the symmetry line
+            //element cross the symmetry line
             if ((yt - symm.ysym) * (yt0 - symm.ysym) <= 0)
             {
                 xt = xt - (yt - symm.ysym) / (yt - yt0) * (xt - xt0);

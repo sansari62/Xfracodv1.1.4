@@ -54,40 +54,40 @@ bool for_i_loop(int k, float x, float y,int m, int numbe0)
                     }
                 }
 
-                if (symm.ksym == 2 || symm.ksym == 4)
+            if (symm.ksym == 2 || symm.ksym == 4)
+            {
+                xend2 = xbeg1;
+                yend2 = 2.0 * symm.ysym - ybeg1;
+                xbeg2 = xend1;
+                ybeg2 = 2.0 * symm.ysym - yend1;
+
+                dist = min(sqrt(std::pow(x - xbeg2, 2) + std::pow(y - ybeg2, 2)),
+                    sqrt(std::pow(x - xend2, 2) + std::pow(y - yend2, 2)));
+
+                if (dist < min(elm_list[m].a, elm_list[i].a) / 100.0)
                 {
-                    xend2 = xbeg1;
-                    yend2 = 2.0 * symm.ysym - ybeg1;
-                    xbeg2 = xend1;
-                    ybeg2 = 2.0 * symm.ysym - yend1;
-
-                    dist = min(sqrt(std::pow(x - xbeg2, 2) + std::pow(y - ybeg2, 2)),
-                        sqrt(std::pow(x - xend2, 2) + std::pow(y - yend2, 2)));
-
-                    if (dist < min(elm_list[m].a, elm_list[i].a) / 100.0)
-                    {
-                        jmp1500 = true;
-                        return jmp1500;
-                    }
+                    jmp1500 = true;
+                    return jmp1500;
+                }
                    
-                }
-                //Sara ! use else for optim
-                if (symm.ksym == 3)
+            }
+               
+            if (symm.ksym == 3)
+            {
+                xbeg2 = 2 * symm.xsym - xbeg1;
+                ybeg2 = 2 * symm.ysym - ybeg1;
+                xend2 = 2 * symm.xsym - xend1;
+                yend2 = 2 * symm.ysym - yend1;
+
+                dist = min(sqrt(std::pow(x - xbeg2, 2) + std::pow(y - ybeg2, 2)),
+                    sqrt(std::pow(x - xend2, 2) + std::pow(y - yend2, 2)));
+
+                if (dist < min(elm_list[m].a, elm_list[i].a) / 100.0)
                 {
-                    xbeg2 = 2 * symm.xsym - xbeg1;
-                    ybeg2 = 2 * symm.ysym - ybeg1;
-                    xend2 = 2 * symm.xsym - xend1;
-                    yend2 = 2 * symm.ysym - yend1;
-
-                    dist = min(sqrt(std::pow(x - xbeg2, 2) + std::pow(y - ybeg2, 2)),
-                        sqrt(std::pow(x - xend2, 2) + std::pow(y - yend2, 2)));
-
-                    if (dist < min(elm_list[m].a, elm_list[i].a) / 100.0)
-                    {
-                        jmp1500 = true;
-                        return jmp1500;
-                    }
+                    jmp1500 = true;
+                    return jmp1500;
                 }
+            }
             }        
     }
     return jmp1500;
@@ -97,25 +97,15 @@ bool for_i_loop(int k, float x, float y,int m, int numbe0)
 
 
 
+
+
 void reassigning_boundary_values(int ID,int m,int j,int k, float beta, float x, float y,
     float& st, float& bet)
 {
     BoundaryElement& be = elm_list[m];  //be is an alias 
     if (j == numbe)
         j--;
-
-    /*float ss_m =be.sigma_s ; float sn_m =be.sigma_n ; float ustem_m =be.us;
-
-    float untem_m =be.un; float us_m =be.us_neg; float un_m =be.un_neg;
-
-    float ss_n = elm_list[j].sigma_s ;
-    float sn_n = elm_list[j].sigma_n ; 
-    float ustem_n = elm_list[j].us ;
-
-    float untem_n = elm_list[j].un ; 
-    float us_n = elm_list[j].us_neg ; 
-    float un_n = elm_list[j].un_neg ;
-    */
+        
 
     float ss_m = b_elm[m].sigma_s; float sn_m = b_elm[m].sigma_n; float ustem_m = b_elm[m].us;
 
@@ -280,10 +270,7 @@ void reassigning_boundary_values(int ID,int m,int j,int k, float beta, float x, 
     int seed = int((1 + x + y) * 1000);          //random failure
     std::mt19937 gen(seed);        
     
-    //random_number(rand);                 //random failure
-    std::uniform_real_distribution<float> distribution(0.0, 1.0);
-    ///float rand = std::generate_canonical<float, std::numeric_limits<float>::
-        ///digits>(gen);   
+    std::uniform_real_distribution<float> distribution(0.0, 1.0);   
     float randn = distribution(gen);
     randn = randn * s15.i_rand * s15.l_rand;          //i_rand = 1 or 0;
        
@@ -404,6 +391,10 @@ std::pair<bool, bool> for_symm_similarity(int j, int m, float xt, float yt, floa
 }
 
 
+
+
+
+
 std::pair<bool, bool> symm_similar_internal(int j, int m, float xt, float yt, float xbeg1, float ybeg1,
     float xend1, float yend1, int k, float& beta, float& x, float& y, int& ID, int symcase)
 {
@@ -431,7 +422,7 @@ std::pair<bool, bool> symm_similar_internal(int j, int m, float xt, float yt, fl
     else
         min_val = min(elm_list[m].a, elm_list[j].a) / 1000.0;
 
-    if (dist <= min_val)     //min used instead of Amin1
+    if (dist <= min_val)    
     {
         x = xt;
         y = yt;
@@ -462,15 +453,17 @@ std::pair<bool, bool> symm_similar_internal(int j, int m, float xt, float yt, fl
 
 
 
+
+
 std::pair<bool,bool> for_j_loop(int k, int m, float xt, float yt, float & x, float& y,
                                 int& ID, float& beta, int& jj, int numbe0,bool intern_cal)
     
     /*this function called by both initiation and internal functions
     flag intern_call differentiatie these calls*/
 {
-    //beta = 0;
-    //jj = 0;
-    //ID = 0;
+   
+
+
     float xt1, yt1;
     int mm = elm_list[m].mat_no;
     std::pair<bool, bool> jmp;
@@ -601,6 +594,7 @@ std::pair<bool,bool> for_j_loop(int k, int m, float xt, float yt, float & x, flo
 
 
 
+
 void InitiationB()
 {
     float xtem[m0] = { 0 }, ytem[m0] = { 0 };
@@ -681,6 +675,8 @@ void InitiationB()
 
 
 
+
+
 float call_point_and_cal_sig_sum(int index, float xp, float yp, float alphas1, int mm,
      float r)
 {
@@ -708,6 +704,8 @@ float call_point_and_cal_sig_sum(int index, float xp, float yp, float alphas1, i
     return sig_sum1;
 
 }
+
+
 
 
 
@@ -789,6 +787,8 @@ void InitiationR()
         ++it;   
     }   
   }
+
+
 
 
 

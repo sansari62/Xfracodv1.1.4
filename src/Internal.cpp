@@ -117,7 +117,7 @@ void compute_disp_boundary_and_frac_surfaces(int & npoint, float  sig1, float si
        
 
         // Write data to file and store in stress array
-        write_data_to_file( be.xm, be.ym, sig1, sig2, bet, sig12, set, disp, zet, mm, buffer);
+       // write_data_to_file( be.xm, be.ym, sig1, sig2, bet, sig12, set, disp, zet, mm, buffer);
                
         Stress st(be.xm, be.ym, 0, 0, 0, 0, 0, disp, zet, mm);   //new stress input defined
         stress[npoint] = st;
@@ -131,7 +131,7 @@ void compute_disp_boundary_and_frac_surfaces(int & npoint, float  sig1, float si
                 ((uxpos < 0.) ? pi + atanf(uypos / uxpos) :
                 1.57 * copysign(1, uypos));
 
-            write_data_to_file( be.xm, be.ym, sig1, sig2, bet, sig12, set, disp1, zet1, mm, buffer);
+           // write_data_to_file( be.xm, be.ym, sig1, sig2, bet, sig12, set, disp1, zet1, mm, buffer);
                         
             Stress st(be.xm, be.ym, 0, 0, 0, 0, 0, disp1, zet1, mm);   //new stress input defined
             stress[npoint] = st;
@@ -145,14 +145,14 @@ void compute_disp_boundary_and_frac_surfaces(int & npoint, float  sig1, float si
             if (symm.ksym == 1 || symm.ksym == 4)
             {
                 float xval = 2.0 * symm.xsym - be.xm;
-                write_data_to_file(xval, be.ym, sig1, sig2, bet, sig12, set, disp, pi - zet, mm, buffer);
+               // write_data_to_file(xval, be.ym, sig1, sig2, bet, sig12, set, disp, pi - zet, mm, buffer);
                 Stress st(xval, be.ym, 0, 0, 0, 0, 0, disp, pi - zet, mm);   //new stress input defined
                 stress[npoint] = st;
                 npoint++;
 
                 if (be.kod == 5)
                 {
-                    write_data_to_file(xval, be.ym, sig1, sig2, bet, sig12, set, disp1, pi - zet1, mm, buffer);
+                   // write_data_to_file(xval, be.ym, sig1, sig2, bet, sig12, set, disp1, pi - zet1, mm, buffer);
 
                     Stress st(xval, be.ym, 0, 0, 0, 0, 0, disp1, pi - zet1, mm);   //new stress input defined
                     stress[npoint] = st;
@@ -163,7 +163,7 @@ void compute_disp_boundary_and_frac_surfaces(int & npoint, float  sig1, float si
             if (symm.ksym == 2 || symm.ksym == 4)
             {
                 float yval = 2.0 * symm.ysym - be.ym;
-                write_data_to_file(be.xm, yval, sig1, sig2, bet, sig12, set, disp, -zet, mm, buffer);
+               // write_data_to_file(be.xm, yval, sig1, sig2, bet, sig12, set, disp, -zet, mm, buffer);
                 Stress st(be.xm, yval, 0, 0, 0, 0, 0, disp, -zet, mm);   //new stress input defined
                 stress[npoint] = st;
                 npoint++;
@@ -180,14 +180,14 @@ void compute_disp_boundary_and_frac_surfaces(int & npoint, float  sig1, float si
             {
                 float xval = 2.0 * symm.xsym - be.xm;
                 float yval = 2.0 * symm.ysym - be.ym;
-                write_data_to_file(xval, yval, sig1, sig2, bet, sig12, set, disp, pi + zet, mm, buffer);
+               // write_data_to_file(xval, yval, sig1, sig2, bet, sig12, set, disp, pi + zet, mm, buffer);
                 Stress st(xval, yval, 0, 0, 0, 0, 0, disp, pi + zet, mm);   //new stress input defined
                 stress[npoint] = st;
                 npoint++;
 
                 if (be.kod == 5)
                 {
-                   write_data_to_file(xval, yval, sig1, sig2, bet, sig12, set, disp1, pi + zet1, mm, buffer);
+                  // write_data_to_file(xval, yval, sig1, sig2, bet, sig12, set, disp1, pi + zet1, mm, buffer);
                     Stress st(xval, yval, 0, 0, 0, 0, 0, disp1, pi + zet1, mm);   //new stress input defined
                     stress[npoint] = st;
                     npoint++;
@@ -213,7 +213,7 @@ void  for_j_loop(int mm, float& sigxx, float& sigyy, float& sigxy, float& ux, fl
             continue;
         int js = 2 * j;
         int jn = js + 1;
-                   //fix the index
+                  
         s2us.reset();            //reset function is initl();
         float xj = be.xm;
         float yj = be.ym;
@@ -331,8 +331,8 @@ void compute_stress_displ_at_specified_points(int& npoint, stringstream& buffer)
         ++it;         
     }
 
-    win_exchange.w_npoints = npoint;
-    write_data_to_file2(0, npoint, buffer);
+   // win_exchange.w_npoints = npoint;
+   // write_data_to_file2(0, npoint, buffer);
     compute_disp_boundary_and_frac_surfaces(npoint, sig1, sig2, bet, sig12, set, mm, buffer);
     return;
 }
@@ -346,7 +346,7 @@ void final_stress_assignment(int & npoint, float x, float y, float sig1, float s
     float disp, float zet, int mm, stringstream& buffer)
 {
 
-    write_data_to_file(x, y, sig1, sig2, bet, sig12, set, disp, zet, mm, buffer);
+    //write_data_to_file(x, y, sig1, sig2, bet, sig12, set, disp, zet, mm, buffer);
    
     Stress st(x, y, sig1, sig2, bet, sig12, set, disp, zet,mm);   //new stress input defined
     stress[npoint] = st;
@@ -355,7 +355,7 @@ void final_stress_assignment(int & npoint, float x, float y, float sig1, float s
       if (symm.ksym == 1 || symm.ksym == 4)
         {
             float xval = 2.0 * symm.xsym - x;
-            write_data_to_file(xval, y, sig1, sig2, bet, sig12, set, disp, -zet, mm, buffer);
+           // write_data_to_file(xval, y, sig1, sig2, bet, sig12, set, disp, -zet, mm, buffer);
 
             Stress st(xval, y, sig1, sig2, pi - bet, sig12, pi - set, disp, pi - zet ,mm);   //new stress input defined
             stress[npoint] = st;
@@ -366,7 +366,7 @@ void final_stress_assignment(int & npoint, float x, float y, float sig1, float s
         if (symm.ksym == 2 || symm. ksym == 4)
         {
             float yval = 2.0 * symm.ysym - y;
-            write_data_to_file(x, yval, sig1, sig2, bet, sig12, set, disp, -zet, mm, buffer);
+           // write_data_to_file(x, yval, sig1, sig2, bet, sig12, set, disp, -zet, mm, buffer);
 
             Stress st(x, yval, sig1, sig2, -bet, sig12, -set, disp, -zet, mm);   //new stress input defined
             stress[npoint] = st;
@@ -377,7 +377,7 @@ void final_stress_assignment(int & npoint, float x, float y, float sig1, float s
         {
             float xval = 2.0 * symm.xsym - x;
             float yval = 2.0 * symm.ysym - y;
-            write_data_to_file(xval, yval, sig1, sig2, bet, sig12, set, disp, pi + zet, mm, buffer);
+          //  write_data_to_file(xval, yval, sig1, sig2, bet, sig12, set, disp, pi + zet, mm, buffer);
 
             Stress st(xval, yval, sig1, sig2, pi + bet, sig12, pi + set, disp, pi + zet, mm);   //new stress input defined
             stress[npoint] = st;
@@ -633,30 +633,43 @@ void save_buffer_to_file(ofstream& file4, stringstream& buffer)
 
 
 
-
 void internal(int id , int& npoint)
 {
     /* internal grid point stresses and displacements */
 
-
-    std::ofstream file4(filepath1);
+    string filename = "Stress" + std::to_string(mcyc) + ".csv";
+    std::ofstream file4(filename);
     auto old_flags = file4.flags();
     file4.setf(ios::fixed, ios::floatfield);  // Fixed-point format for floats
+    stringstream buffer;
 
-    file4 << "  xp        yp       sig1        sig2      bet      sig12       set      disp      zet     mat region" << std::endl;
-    file4 << "------------------------------------------------------------------------------------------------------------" << std::endl;
+    //buffer << "  xp        yp       sig1        sig2      bet      sig12       set      disp      zet     mat region" << std::endl;
+    //buffer << "------------------------------------------------------------------------------------------------------------" << std::endl;
+
+    buffer << "xp,yp,sig1,sig2,bet,sig12,set,disp,zet,mat-region" << std::endl;
+
 
     // compute displacements and stresses at specified points in body.
-    npoint = 0;
-    stringstream buffer;    
+    npoint = 0;     
     compute_stress_displ_at_specified_points(npoint, buffer);
     
-    //win_exchange.w_npoints = npoint;   //!give C the total number
     compute_stress_on_boundary_surfaces(npoint, buffer);
-    save_buffer_to_file(file4, buffer);    
+    int perc = 2;
+    buffer.precision(perc + 1);    
+        for (size_t i = 0; i < npoint; ++i) {
+           buffer << setw(7) << stress[i].w_yp << ","
+            << setw(10) <<  stress[i].w_sig1 << ","
+            << setw(10) << scientific << setprecision(perc) << stress[i].w_sig2 << ","
+            << setprecision(3) << stress[i].w_bet <<","
+            << setw(10) << scientific << setprecision(perc) << stress[i].w_sig12 <<","
+            << setprecision(perc + 1) << stress[i].w_set <<","
+            << scientific << setprecision(perc) << stress[i].w_disp << ","
+            << scientific << setprecision(perc) << stress[i].w_zet << ","
+            << stress[i].w_mat << endl;
 
-    //  Windowexchange is a separate  object
-    winvar::win_exchange.w_npointg = npoint - winvar::win_exchange.w_npoints;
+            }     
+   
+    save_buffer_to_file(file4, buffer);    
     buffer.flags(old_flags);
     file4.close();
     

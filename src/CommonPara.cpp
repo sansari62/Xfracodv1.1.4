@@ -1,5 +1,8 @@
 #include "CommonPara.h"
 #include<map>
+
+
+
 namespace comvar {
 
 	int no = 0;
@@ -19,7 +22,6 @@ namespace comvar {
 
 	int npli = 0;
 	int nq = 0;
-	//int iwhole = 0;
 
 	float k_num = 0.0;
 	float d_max = 1000;
@@ -41,9 +43,7 @@ namespace comvar {
 	const int mem_size = 2*m0;
 	const float ge = 9.81;
 
-	const float zerof = 0.0f;
-
-	int test_id = 12;
+	int test_id = 2;
 
 	int nelement = 0;
 	int mcyc = 0;
@@ -70,8 +70,8 @@ namespace comvar {
 	std::vector<std::pair<float, float>> valid;
 	std::vector<std::pair<float, float>> valid1;	
 
-	std::vector<BoundaryElement> elm_list(m0);	
-	std::vector<BE> b_elm(m0);
+	std::vector<BoundaryElement> elm_list(m0/2);	
+	std::vector<BE> b_elm(m0/2);
 	std::vector<MonitoringPoint> mpoint_list(10);
 	std::vector<MonitoringLine> mline_list(10);
 
@@ -105,32 +105,31 @@ namespace comvar {
 
 	waterCommon watercm;
 	std::vector< Rock>  rock1(10, Rock());
-	std::vector<Tip> tips(500);
+	std::vector<Tip> tips(m0/3);
 	DispWindow dispwin;
 
 
-	std::vector<Joint> joint(m0);     //join includes aperture0 and aperture_r
+	std::vector<Joint> joint(m0);       //join includes aperture0 and aperture_r
 	Excavation exca;
 	SET factors;
 
-	std::vector<Limited_initiation_points>  init_point(500);   
-	//Limited_initiation_points init_point;
-	//num_stablility num_stabil;
+	std::vector<Limited_initiation_points>  init_point(m0/2);    
+	
 	Permeability perm;
 
-	string filename1 = "filename1";
-	ofstream file7(filename1, std::ios::binary);
+	string filename1 = "BE";
+	//ofstream file7(filename1, std::ios::binary);
 	
 	std::ofstream file50("creep_results.dat");
-	//string filepath = "C:/C++projects/Fracod2/Examples/Real/Example" + to_string(test_id);   //old version in oct 2024
 	string filepath = "C:/C++projects/SlimV-Fracod/Examples/Real/Example" + to_string(test_id);
-
 		
 	
 	//string filepath = "C:/C++projects/Fracod2/Examples/HighToughness/Example" +
 		//to_string(test_id);
 	std::ofstream file2(filepath+"/Coutput.dat");
 	string filepath1 = filepath + "/Csplot" + to_string(test_id) + ".dat";
+	std::ofstream file57(filepath + "Cpermeability.dat");
+
 	
 	
 	

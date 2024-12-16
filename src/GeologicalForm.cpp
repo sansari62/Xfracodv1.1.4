@@ -22,7 +22,7 @@ int GeologicalForm::getBoundtype() { return bound_type; }
 
 
 void GeologicalForm::chk_potential_crack_growth(float xbeg, float ybeg,float xend,float yend,int numbe0,int itype)
-{
+{   
     float x1 = 0, y1 = 0,x2 = 0, y2 = 0;
    
     if (itype == 0) return;

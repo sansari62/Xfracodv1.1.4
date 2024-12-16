@@ -29,7 +29,6 @@ public:
 
 	Creep();
 
-	void read_from_file(ifstream& f);
 	void save_to_file(ofstream& f);
 
 };

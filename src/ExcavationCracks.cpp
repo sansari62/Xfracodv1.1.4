@@ -67,6 +67,9 @@ void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, fl
           
  }
 
+
+
+
 //xc = 0.106459185   yc = 0.05171147
 
     int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, int flagB)
@@ -281,6 +284,7 @@ void check_symm_and_set_n_valid(float xp, float yp, bool flag, int& n_valid)
 
 
 
+
 void  check_point_in_rock(float xp, float yp, bool flag, int& n_valid)
 {
     /*
@@ -469,6 +473,8 @@ void  check_point_in_rock(float xp, float yp, bool flag, int& n_valid)
 
     return ;
 }
+
+
 
 
 

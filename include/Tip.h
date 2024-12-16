@@ -34,7 +34,6 @@ public:
 	void assign_val(float dll, float cos, float sin, int itp, int mat);
 
 	Tip();
-	void read_from_file(ifstream& f);
 	void save_to_file(ofstream& f);
 
 

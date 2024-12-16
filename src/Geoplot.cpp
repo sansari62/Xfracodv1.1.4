@@ -17,6 +17,8 @@ using namespace CommonPara_h::comvar;
 void geoplot() 
 {
     int numbe_real = 0;             // Exclude the ghost elements
+    string filename = filename1 + to_string(mcyc) + ".csv";
+    std::ofstream BEfile(filename);
 
     win_exchange.w_title = title;
     win_exchange.w_xmin = dispwin.xll;
@@ -140,47 +142,30 @@ void geoplot()
         }
     }
 
-    // Write data to file    Sara! filename1 for file7 should be taken from the user
-   // string filename1 = "file7";
-    //ofstream file7("filename1");
-    file7 << numbe_real<< endl;
-
+    std::stringstream buffer;
+    buffer << "x1"<<","<<"y1" << "," << "x2" << "," << "y2" << "," << "jstat" << "," << "kod" << "," << "jwater" << "," << "mat" << endl;
     for (int l = 0; l < numbe_real; ++l)
-        file7 << geom[l].w_xbeg << " " << geom[l].w_ybeg << " " << geom[l].w_xend << " " << geom[l].w_xend << " " <<
-        geom[l].w_jstat << " " << geom[l].w_kod << " " <<
-        geom[l].w_jwater << " " << geom[l].w_mat << endl;
+        buffer << geom[l].w_xbeg << "," << geom[l].w_ybeg << "," << geom[l].w_xend << "," << geom[l].w_xend << "," <<
+        geom[l].w_jstat << "," << geom[l].w_kod <<"," <<
+        geom[l].w_jwater << "," << geom[l].w_mat << endl;
 
+    BEfile << buffer.str();
         
-    // Open output file here and write data using ofstream or other file
-    //  writing mechanisms in C++
 
     win_exchange.w_numbe = numbe_real;
     int npoint, jpoint, npointp;
-    AcousticE();
+    //AcousticE();
     internal(0, npoint);   
     fracture_defo(0, jpoint);
-    permeability_plot(0, npointp);
+    //permeability_plot(0, npointp);
 
 
-    file7 << win_exchange.w_title << endl;
+   /* file7 << win_exchange.w_title << endl;
     file7 << win_exchange.w_pxx << "  " << win_exchange.w_pyy << "  " << win_exchange.w_pxy << endl;
     file7 << win_exchange.w_time << "  " << win_exchange.w_deltaT << "  " << win_exchange.w_vel_creep_max << endl;
-    file7 << win_exchange.w_mcyc << "  " << win_exchange.w_mcyc0 << endl;
+    file7 << win_exchange.w_mcyc << "  " << win_exchange.w_mcyc0 << endl;*/
           
-    // call SendWindowMessage(ID_PlotGeomNow);  //Sara! plot geom now   
-    //MessageBox(nullptr, L, L"Message!", MB_OK);
-
-    //call system_clock(nsec0, n1, n2)
-       // 502 
-    // Wait for 1 second to allow plot
-    // //later uncomment the following
-    ////auto nsec0 = std::chrono::system_clock::now().time_since_epoch() / std::chrono::seconds(1);
-    ////std::this_thread::sleep_for(std::chrono::seconds(1));
-    ////auto nsec1 = std::chrono::system_clock::now().time_since_epoch() / std::chrono::seconds(1);
-
-    ////// Check if 1 second has elapsed
-    ////while ((nsec1 - nsec0) < 1 * n1)
-    ////    nsec1 = std::chrono::system_clock::now().time_since_epoch() / std::chrono::seconds(1);
+    
 
         return;
 }

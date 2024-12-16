@@ -1,9 +1,11 @@
 #ifndef Work_h
 #define Work_h
 
+
+
 void safety_check();
 void third_correction_run();
-void run_check();
+void run_check(int mode);
 void calc_bound_stress(int it);
 void work0(int mode);
 void work1(int mode);
@@ -17,5 +19,5 @@ void point(float xp, float yp, float& sig1, float& sig2, float& bet, float& sig1
     float& set, float& disp, float& zet);
 
 
-#endif // !Work_h
+#endif 
 

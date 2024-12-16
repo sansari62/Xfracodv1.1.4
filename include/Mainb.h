@@ -10,4 +10,4 @@ void coeff(float xi, float yi, float xj, float yj, float aj, float cosbj, float 
 void solve(int n, int mode);
 
 
-#endif // !Mainb_h
+#endif
