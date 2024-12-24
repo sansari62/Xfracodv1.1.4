@@ -54,7 +54,7 @@ namespace comvar {
 
 	extern string title;
 	extern int nc;
-
+	extern int state;
 	//others
 	extern int nelement;
 
@@ -70,6 +70,9 @@ namespace comvar {
 	extern float dist_thr;
 
 	extern int test_id;
+	extern std::wstring selectedFile;
+	extern wstring dir;
+
 
 	extern float k_num;            //stiffness for boundary element;    struct in origincode
 	extern float  d_max;		     //d_max - max joint disp in each step
@@ -130,7 +133,7 @@ namespace comvar {
 	extern std::ofstream file50;
 
 
-	extern string filepath;
+	extern wstring filepath;
 	extern string filepath1;
 
 

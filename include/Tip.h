@@ -43,7 +43,7 @@ void newtips(float dr);
 void arrangetip();
 
 void check_crack_growth();
-void If_No_tip();
+void If_No_tip(wstring);
 
 void add_crack_growth();
 void input_tip_check();

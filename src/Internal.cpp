@@ -637,7 +637,7 @@ void internal(int id , int& npoint)
 {
     /* internal grid point stresses and displacements */
 
-    string filename = "Stress" + std::to_string(mcyc) + ".csv";
+    wstring filename = dir + L"/Stress" + std::to_wstring(state) + L".csv";
     std::ofstream file4(filename);
     auto old_flags = file4.flags();
     file4.setf(ios::fixed, ios::floatfield);  // Fixed-point format for floats

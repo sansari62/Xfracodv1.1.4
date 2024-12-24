@@ -35,6 +35,7 @@ namespace comvar {
 	float w1 = 0.0;
 
 	int mf = 0;
+	std::wstring selectedFile;
 
 	const int m1 = 1500;
 	const int m2 = 3000;
@@ -43,7 +44,7 @@ namespace comvar {
 	const int mem_size = 2*m0;
 	const float ge = 9.81;
 
-	int test_id = 2;
+	int test_id = 12;
 
 	int nelement = 0;
 	int mcyc = 0;
@@ -65,6 +66,7 @@ namespace comvar {
 	float dist_thr = 1e-10;
 	float ang_thr = 1;
 	float stres_thr = 1;
+	int state = 0;
 	
 
 	std::vector<std::pair<float, float>> valid;
@@ -117,24 +119,23 @@ namespace comvar {
 	
 	Permeability perm;
 
-	string filename1 = "BE";
 	//ofstream file7(filename1, std::ios::binary);
 	
 	std::ofstream file50("creep_results.dat");
-	string filepath = "C:/C++projects/SlimV-Fracod/Examples/Real/Example" + to_string(test_id);
-		
-	
+	//string filepath = "C:/C++projects/SlimV-Fracod/Examples/Real/Example" + to_string(test_id);
+	wstring filepath = L"";
+
+	wstring dir = L"";
 	//string filepath = "C:/C++projects/Fracod2/Examples/HighToughness/Example" +
 		//to_string(test_id);
-	std::ofstream file2(filepath+"/Coutput.dat");
-	string filepath1 = filepath + "/Csplot" + to_string(test_id) + ".dat";
-	std::ofstream file57(filepath + "Cpermeability.dat");
+	std::ofstream file2; //(filepath + L"/Coutput.dat");
 
-	
+
+	std::ofstream file57(filepath + L"Cpermeability.dat");
+
 	
 	
 }
-
  
 
 

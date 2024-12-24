@@ -634,18 +634,16 @@ void newtips(float dr)
 
 
 
-    void If_No_tip()
+    void If_No_tip(wstring selectedFile)
     {
         if (no == 0)
         {
             work0(0);   
             if (irock == 1)  initiation();      //if rock strength is given
             geoplot();
-            //prenumbe = numbe;
             if (no != 0)
             {
                 geoplot();
-                //prenumbe = numbe;
                 //------ - Initialising the seed elements for growth---------
                 for (ni = 0; ni < no; ni++)
                 {
@@ -663,7 +661,7 @@ void newtips(float dr)
                 // winput(1, WindowExchange, geom, stress, ng, ns, AE, joint, permeability)
                 if (StopReturn == true) return;  // !stop
                 else
-                    input(); //first time to call input()  
+                    input(selectedFile); //first time to call input()  
                 return;
 
             }
@@ -699,7 +697,7 @@ void newtips(float dr)
         }
 
         arrangetip();
-        if (irock == 1)       //Sara! double check
+        if (irock == 1)       
         {                 
             initiation();
             return;
@@ -718,7 +716,7 @@ void newtips(float dr)
             if (lastinput != "endf")
             {
                 MessageBox(nullptr, L"No more fracture propogation, continue from input file", L"Error!", MB_OK);
-                input();
+                input(selectedFile);
             }
             else if (lastinput == "endf")
             {
@@ -736,6 +734,7 @@ void newtips(float dr)
 
         return;
     }
+
 
 
 

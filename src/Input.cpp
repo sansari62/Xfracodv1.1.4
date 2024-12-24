@@ -1316,7 +1316,7 @@ void processFracture()
 
 
 
-   void input()
+   void input(std::wstring selectedFile)
    {
       
        string id;
@@ -1324,9 +1324,11 @@ void processFracture()
        string message;
        string lineData;
       
-       string strPathFile = filepath + "/Example" +
-           to_string(test_id) + ".dat";
-       inFile.open(strPathFile.c_str(), std::ios_base::in);
+      // string strPathFile = filepath + "/Example" +
+          // to_string(test_id) + ".dat";
+      // inFile.open(strPathFile.c_str(), std::ios_base::in);
+       inFile.open(selectedFile.c_str(), std::ios_base::in);
+
        if (!inFile.is_open())
        {
            MessageBox(nullptr, L"File path is wrong!", L"Error", MB_OK);

@@ -2,8 +2,7 @@
 #ifndef Input_h
 #define Input_h
 
-void input();
-void input2();
+void input(wstring);
 
 
 #endif

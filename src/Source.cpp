@@ -482,7 +482,7 @@ void compute_n_vlaid_all_points() {
 
 
 
-void Central_control()
+void Central_control(wstring selectedFile)
 {    
     auto start = std::chrono::high_resolution_clock::now();
     if (!file50 || !file2 )
@@ -497,7 +497,7 @@ void Central_control()
     n_it = 20;
     StopReturn = false;
 
-    input();  
+    input(selectedFile);
     CheckRange();
 
     if (StopReturn == true) return;
@@ -506,7 +506,7 @@ void Central_control()
     compute_n_vlaid_all_points();
     if(irock==1)
         finding_in_rock_iniR();
-    geoplot ();
+    geoplot();
     prenumbe = numbe;
     if (exca.ID_Exca == 1)
     {
@@ -514,7 +514,7 @@ void Central_control()
         geoplot();
         prenumbe = numbe;
     }
-    If_No_tip();    //Check possibility of fracture initiation if no tip
+    If_No_tip(selectedFile);    //Check possibility of fracture initiation if no tip
 
     //--------------------------Creep functions---------------    
     file50 << "   time     time step    Tip no.    Creep growth length    growth angle      K/Kc      Crack velocity\n";
@@ -570,7 +570,7 @@ void Central_control()
                         if (lastinput != "endf")
                         {
                             MessageBox(nullptr, L"Defined cycle is completed, continue from input file.", L"Message!", MB_OK);
-                            input(); 
+                            input(selectedFile);
                         }
                         else                                       
                             {                                
