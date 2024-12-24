@@ -424,6 +424,8 @@ creep_results.dat
 Coutput.dat
 filename1
 *.csv
+filename1.mvi
+SlimV-Fracod.h
 
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
