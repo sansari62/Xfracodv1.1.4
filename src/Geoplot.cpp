@@ -18,7 +18,7 @@ void geoplot()
 {
     int numbe_real = 0;             // Exclude the ghost elements
 
-    wstring filename = dir + L"/BE" + std::to_wstring(state) + L".csv";
+    wstring filename = dir + L"/BE" + std::to_wstring(mcyc) + L".csv";
     std::ofstream BEfile(filename);
 
     int n1 = 0;

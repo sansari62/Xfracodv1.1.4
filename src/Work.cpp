@@ -400,9 +400,9 @@ void third_correction_run()
             if (elm_list[m].kod != 5 && elm_list[m].kod != 6 &&
                 elm_list[m].kod != 7)
             {
-                dist = sqrt(pow(comvar::elm_list[m].xm - mpoint_list[m].xmon, 2) +
-                    pow(elm_list[m].ym - mpoint_list[m].ymon, 2));
-                if (dist <= 1.1f * elm_list[m].a)
+                dist = sqrt(pow(comvar::elm_list[m].xm - mpoint_list[i].xmon, 2) +
+                    pow(elm_list[m].ym - mpoint_list[i].ymon, 2));
+                if (dist <= 1.1 * elm_list[m].a)
                 {
 
                     ss = b_elm[m].sigma_s;
@@ -415,21 +415,21 @@ void third_correction_run()
 
                     float sinbt = elm_list[m].sinbet;
 
-                    if (abs(sinbt) > 0.95) 
+                    if (abs(sinbt) >= 0.95) 
                     {
                         sigxx = sn;
                         sigyy = 0.0;
                         sigxy = ss;
                     }
 
-                    else if (abs(sinbt) < 0.05)
+                    else if (abs(sinbt) <= 0.05)
                     {
                         sigxx = 0.0;
                         sigyy = sn;
                         sigxy = ss;
                     }
 
-                    else //if (abs(sinbt) >= 0.05 && abs(sinbt) <= 0.95)
+                    else if (abs(sinbt) >= 0.05 && abs(sinbt) <= 0.95)
                     {
                         sigxx = sn;
                         sigyy = sn;

@@ -331,19 +331,23 @@ void populate_boudary_i(fstream& file25)
         case 11:
             b.take_bvn(bvn);
             b.take_bvs(bvs);
-
+            break;
         case 2:
         case 12:
             b.take_ds(bvs);
             b.take_dn(bvn);
+            break;
         case 3:
         case 13:
             b.take_bvn(bvn);
             b.take_ds(bvs);
+            break;
         case 4:
         case 14:
             b.take_dn(bvn);
             b.take_bvs(bvs);
+            break;
+
         case 7:
             b.take_dn(bvn);             //gost element
             b.take_bvs(bvs);
@@ -411,13 +415,14 @@ void reorder_boundaries(fstream & file25)
                 ybeg = b.get_ybeg();
             }
           
-            xend = (n == ncr[i] + 1) ? b.get_xend() : xcr[i][n];
-            yend = (n == ncr[i] + 1) ? b.get_yend() : ycr[i][n];
+            xend = (n == ncr[i]) ? b.get_xend() : xcr[i][n];
+            yend = (n == ncr[i]) ? b.get_yend() : ycr[i][n];
             float tem = (b.elem_no * std::sqrt(std::pow(xend - xbeg, 2) + std::pow(yend - ybeg, 2))) /
                 std::sqrt(std::pow(b.get_xend() - b.get_xbeg(), 2) + std::pow(b.get_yend() - b.get_ybeg(), 2));
 
             int num = int(tem);
-            if (tem - num > 0)
+            //if (tem - num > 0)
+            if (tem - int(tem) > 0.0009)
                 num++;
 
             if ( (xbeg == xend && ybeg == yend) || (num == 0) )

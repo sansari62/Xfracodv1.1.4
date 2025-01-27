@@ -655,9 +655,11 @@ void internal(int id , int& npoint)
     
     compute_stress_on_boundary_surfaces(npoint, buffer);
     int perc = 2;
-    buffer.precision(perc + 1);    
+    buffer.precision(perc + 1);  
+    
         for (size_t i = 0; i < npoint; ++i) {
-           buffer << setw(7) << stress[i].w_yp << ","
+           buffer << fixed << setprecision(perc + 1)<<setw(7) << stress[i].w_xp<< ","<< setw(7) <<
+               stress[i].w_yp << ","
             << setw(10) <<  stress[i].w_sig1 << ","
             << setw(10) << scientific << setprecision(perc) << stress[i].w_sig2 << ","
             << setprecision(3) << stress[i].w_bet <<","

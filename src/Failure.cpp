@@ -270,8 +270,8 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
             return;
         }
         //FFFF
-        if(symm.ksym == 4 && abs(xp - symm.xsym) < s5u.dtol || abs(yp - symm.ysym) <
-            s5u.dtol)           
+        if(symm.ksym == 4 && (abs(xp - symm.xsym) < s5u.dtol || abs(yp - symm.ysym) <
+            s5u.dtol))           
         {
             numbe = m;
             return;

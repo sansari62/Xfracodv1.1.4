@@ -15,7 +15,7 @@ using namespace CommonPara_h::comvar;
 
 
 
-std::ifstream inFile;
+//std::ifstream inFile;
 
 void processEdge()
 {
@@ -23,11 +23,15 @@ void processEdge()
        float gradsy = 0, gradny = 0;        
        int num, kode;
        float xbeg, ybeg, xend, yend, bvs, bvn;
-                
+       string lineData;
+      
        try
        {
+           getline(inFile, lineData);
+           std::stringstream ss(lineData);
+
            
-           inFile >> num >> xbeg >> ybeg >> xend >> yend >> kode >> bvs >> bvn >> material >> gradsy >> gradny;
+           ss >> num >> xbeg >> ybeg >> xend >> yend >> kode >> bvs >> bvn >> material >> gradsy >> gradny;
            file2 << "Straigt boundary-- from: x,y = " << xbeg << "," << ybeg << std::endl;
            file2 << "                    to        = " << xend << "," << yend << std::endl;
            file2 << "      shear stress or disp    = " << bvs << std::endl;
@@ -122,9 +126,12 @@ void processFracture()
     int material = 1;      
     int num, itype, jmat;
     float xbeg, ybeg, xend, yend;
+    string lineData;
     try
     {
-        inFile >> num >> xbeg >> ybeg >> xend >> yend >> itype >> jmat >> material;       
+       getline(inFile, lineData);
+       std::stringstream ss(lineData);
+        ss >> num >> xbeg >> ybeg >> xend >> yend >> itype >> jmat >> material;       
         file2 << "Fracture ------ from: x, y =  " << xbeg << "," << ybeg << "," <<
             "     to     =  " << xend << "," << yend << "\n" <<
             "      number of elements   = " << num << "\n" << "        material     =   " << material << "\n";
@@ -148,9 +155,12 @@ void processFracture()
     {
      int num, mat1, mat2;
      float xbeg, ybeg, xend, yend, bvs = 0, bvn = 0;
+     string lineData;
         try
         {    
-            inFile >> num >> xbeg >> ybeg >> xend >> yend >> mat1 >> mat2;            
+            getline(inFile, lineData);
+            std::stringstream ss(lineData);
+            ss >> num >> xbeg >> ybeg >> xend >> yend >> mat1 >> mat2;            
             file2 << "Interface -------- from: x, y =  " << xbeg << "," << ybeg << "\n" <<
                 "                    to      =  " << xend << "," << yend << "\n" <<
                 "         number of elements   = " << num << "\n";
@@ -170,11 +180,14 @@ void processFracture()
 
     void processArcInterface()
     {
+        string lineData;
+        int num = 0, mat1 = 0, mat2 = 0;
+        float xcen = 0, ycen = 0, diam = 0, ang1 = 0, ang2 = 0, bvs = 0, bvn = 0;
         try
-        {
-            int num = 0, mat1 = 0, mat2 = 0;
-            float xcen = 0, ycen = 0, diam = 0, ang1 = 0, ang2 = 0, bvs = 0, bvn = 0;
-            inFile >> num >> xcen >> ycen >> diam >> ang1 >> ang2 >> mat1 >> mat2;           
+        {            
+            getline(inFile, lineData);
+            std::stringstream ss(lineData);
+            ss >> num >> xcen >> ycen >> diam >> ang1 >> ang2 >> mat1 >> mat2;           
             file2 << "ARC Int- centre position: x,y  = " << xcen << "," << ycen << "\n" <<
                 "         diameter              = " << diam << "\n" <<
                 "         start angle           = " << ang1 << "\n" <<
@@ -264,10 +277,12 @@ void processFracture()
 
     void processPermeability()
     {
-    
+        string lineData;
         try
         {
-            inFile >> perm.viscosity >> perm.density >> perm.perm0;
+            getline(inFile, lineData);
+            std::stringstream ss(lineData);        
+            ss >> perm.viscosity >> perm.density >> perm.perm0;
             file2 << "permeability parameters" << endl
                 << "     fluid viscosity = " << perm.viscosity << " kg/(m s)" << endl
                 << "     fluid density = " << perm.density << " kg/m3" << endl
@@ -299,7 +314,7 @@ void processFracture()
             MessageBox(nullptr, L"Error in input File,touc definition!", L"Error", MB_OK);
         }
         
-        if (tem != "    ") 
+        if (tem != " ") 
             {
                   file2 << tem << endl;              
                     mcyc0 += stoi(tem);               
@@ -349,7 +364,7 @@ void processFracture()
                     << std::setw(5) << elm.mat_no << std::endl;
             }
 
-            float aks_bb = 0, akn_bb = 0, phi_bb = 0; float coh_bb = 0.0f;
+            float aks_bb = 0, akn_bb = 0, phi_bb = 0; float coh_bb = 0.0;
             float phid_bb = 0, ap_bb = 0, apr_bb = 0;
 
             // Call stiffness_bb for Tensile fractures
@@ -418,6 +433,7 @@ void processFracture()
    {
        string id;
        string message;
+       lastinput = "endf";
        //try
        //{
        //    inFile >> id;
@@ -465,9 +481,12 @@ void processFracture()
    void processExcavation_Cracks()
    {
        exca.ID_Exca = 1;
+       string lineData;
        try
        {
-           inFile >> exca.d_wall >> exca.rand_e;
+           getline(inFile, lineData);
+           std::stringstream ss(lineData);      
+           ss >> exca.d_wall >> exca.rand_e;
            file2 << "Excavation induced cracks: " << std::endl;
            file2 << "     Distance into wall = " << exca.d_wall << std::endl;
            file2 << "     Percentage of points with cracks = " << exca.rand_e * 100 << "%" << std::endl;
@@ -631,9 +650,12 @@ void processFracture()
        //---------------straight boundary value increment ------------------
       
            float x1, x2, y1, y2, dss, dnn;
+           string lineData;
            try
            {
-               inFile >> x1 >> x2 >> y1 >> y2 >> dss >> dnn;               
+               getline(inFile, lineData);
+               std::stringstream ss(lineData);           
+               ss >> x1 >> x2 >> y1 >> y2 >> dss >> dnn;               
                file2 << "boundary value increment, x1,x2,y1,y2,dss,dnn =" << std::endl
                    << x1 << x2 << y1 << y2 << dss << dnn;
                file9 << "('dbou')";
@@ -656,9 +678,12 @@ void processFracture()
        //---------------arch boundary value increment ------------------
       
            float xcen, ycen, diam1, diam2, ang1, ang2, dss, dnn;
+           string lineData;
            try
            {
-               inFile >> xcen >> ycen >> diam1 >> diam2 >> ang1 >> ang2 >> dss >> dnn;
+               getline(inFile, lineData);
+               std::stringstream ss(lineData);
+                ss >> xcen >> ycen >> diam1 >> diam2 >> ang1 >> ang2 >> dss >> dnn;
                file2 << "Arch boundary value increment, xc, xy, d1, d2, ang1, ang2, dss, dnn =\n"
                    << xcen << " " << ycen << " " << diam1 << " " << diam2 << " "
                    << ang1 << " " << ang2 << " " << dss << " " << dnn << std::endl;
@@ -682,14 +707,15 @@ void processFracture()
    void  processMonitoring_points()
    {
        string lineData;
-       getline(inFile, lineData);
-       ihist++;
-       MonitoringPoint mpoint;    
-       std::stringstream ss(lineData);
-
+       MonitoringPoint mpoint;
+       
        try
        {
+           getline(inFile, lineData);
+           std::stringstream ss(lineData);
            ss >> mpoint.xmon >> mpoint.ymon;
+           mpoint_list[ihist] = mpoint;
+           ihist++;
            if (ihist > 19)
            {
                file2 << "ERROR: Too many monitoring points (max=19) No monitoring point set for "
@@ -699,15 +725,15 @@ void processFracture()
            }
            file2 << "history file = hist" << ihist << ".dat" << std::endl
                << "monitoring point = " << mpoint.xmon << " " << mpoint.ymon << std::endl;
-           mpoint_list.push_back(mpoint);     
-
-           std::ofstream histPFile("hist" + std::to_string(ihist) + ".dat");           
+           //mpoint_list.push_back(mpoint);     
+           //not sure why need this file comment for now
+          /* std::ofstream histPFile("hist" + std::to_string(ihist) + ".dat");           
            histPFile << " -- Monitoring point close to a boundary will be calculated at the boundary and marked as AT BOUNDARY ELEMENT\n"
                << " -- in this case, the boundary normal and shear stress will be provided by sigxx, sigyy, and sigxy\n"
                << " -- if the boundary is vertical or horizontal, the normal stress = sigxx or sigyy, shear stress = sigxy\n"
                << " -- if the boundary is inclined, the normal stress = sigxx = sigyy, shear stress = sigxy\n\n"
                << "  Cycle(iteration)     Time         xp       yp        sigxx         sigyy       sigxy         dx          dy     max creep velocity\n";
-       }
+     */  }
        catch (std::ifstream::failure e)
        {
            MessageBox(nullptr, L"Error in input File,monitoring point definition!", L"Error", MB_OK);
@@ -720,11 +746,15 @@ void processFracture()
 
    void  processMonitoring_lines()
    {
-       lhist++;
        MonitoringLine monlin;
+       string lineData;
        try
        {
-           inFile >> monlin.x1l >> monlin.y1l >> monlin.x2l >> monlin.y2l >> monlin.npl;
+           getline(inFile, lineData);
+           std::stringstream ss(lineData);
+           ss >> monlin.x1l >> monlin.y1l >> monlin.x2l >> monlin.y2l >> monlin.npl;
+           mline_list[lhist] = monlin;
+           lhist++;
 
            if (lhist > 9)
            {
@@ -737,14 +767,16 @@ void processFracture()
                << "monitoring line = " << monlin.npl << " " << monlin.x1l << " " << monlin.y1l << " \n"
                << monlin.x2l << " " << monlin.y2l << std::endl;
 
-           std::ofstream histLFile("hist_line" + std::to_string(lhist) + ".dat");
-           if (!histLFile) {
-               // Handle file open error
-           }
-           histLFile << " -- Monitoring points in a line will ignore the existence of boundary elements or fractures\n"
-               << " -- User should check if any points are too close to the existing elements\n"
-               << " -- incorrect results could be resulted at these points\n\n"
-               << "  Cycle(iteration)     Time     Line     xp       yp        sigxx         sigyy       sigxy         dx          dy              max creep velocity\n";
+           //5.01.2025 not sure how to use this file cmment for now
+       //   // std::ofstream histLFile("hist_line" + std::to_string(lhist) + ".dat");
+       //   // if (!histLFile) {
+       //        // Handle file open error
+       //   // }
+       //    histLFile << " -- Monitoring points in a line will ignore the existence of boundary elements or fractures\n"
+       //        << " -- User should check if any points are too close to the existing elements\n"
+       //        << " -- incorrect results could be resulted at these points\n\n"
+       //        << "  Cycle(iteration)     Time     Line     xp       yp        sigxx         sigyy       sigxy         dx          dy              max creep velocity\n";
+       //
        }
        catch (std::ifstream::failure e)
        {
@@ -760,10 +792,14 @@ void processFracture()
 
    void processCreepParameters()
    {
+       
+       string lineData;
        try
-       {           
-           inFile >> creep.v1 >> creep.nn1 >> creep.v2 >> creep.nn2 >>
-               creep.totalT >> creep.deltaT_min >> creep.deltaT_max;
+       {
+           getline(inFile, lineData);
+           std::stringstream ss(lineData); 
+           ss >> creep.v1 >> creep.nn1 >> creep.v2 >> creep.nn2 >>
+           creep.totalT >> creep.deltaT_min >> creep.deltaT_max;
            int ID_creep = 1;   //not sure Sara!
            if (creep.totalT < 20.0)
            {
@@ -787,11 +823,13 @@ void processFracture()
 
    void processInsituStress()
    {
-       float pxx0, pyy0, pxy0;         
+       float pxx0, pyy0, pxy0;  
+       string lineData;
        try
        {
-           inFile >> pxx0 >> pyy0 >> pxy0;
-
+           getline(inFile, lineData);
+           std::stringstream ss(lineData);
+           ss >> pxx0 >> pyy0 >> pxy0;
            insituS.dsxx = pxx0; 
            insituS.dsxy = pxy0; 
            insituS.dsyy = pyy0;
@@ -816,9 +854,12 @@ void processFracture()
    void processGravity()
    {
        float dens_rock, gy, sh_sv_ratio; // y_surf - surface height
+       string lineData;
        try
        {
-           inFile >> dens_rock >> gy >> sh_sv_ratio >> g.y_surf;
+           getline(inFile, lineData);
+           std::stringstream ss(lineData);
+           ss >> dens_rock >> gy >> sh_sv_ratio >> g.y_surf;
            g.sky = dens_rock * gy;
            g.skx = g.sky * sh_sv_ratio;
            file2 << "Gravitational & tectonic stress:\n"
@@ -889,9 +930,12 @@ void processFracture()
        irock = 1;
        int material = 1;
        float rphi_tem, rcoh_tem, rst_tem;
+       string lineData;
        try
        {
-           inFile >> rphi_tem >> rcoh_tem >> rst_tem >> material;
+           getline(inFile, lineData);
+           std::stringstream ss(lineData);
+           ss >> rphi_tem >> rcoh_tem >> rst_tem >> material;
            int mm = material;
            rock1[mm].rphi = rphi_tem;
            rock1[mm].rcoh = rcoh_tem;
@@ -916,9 +960,12 @@ void processFracture()
    void processRectWindow()
    {
        dispwin.ID_win = 1;
+       string lineData;
        try
        {
-           inFile >> dispwin.xll >> dispwin.xur >> dispwin.yll >> dispwin.yur >>
+           getline(inFile, lineData);
+           std::stringstream ss(lineData);
+           ss >> dispwin.xll >> dispwin.xur >> dispwin.yll >> dispwin.yur >>
                dispwin.numx >> dispwin.numy;               
           
            file2 << "Plot window (rect):  x = " << dispwin.xll << " " << dispwin.xur << "\n"
@@ -939,9 +986,12 @@ void processFracture()
    void  processCircWindow()
    {
        dispwin.ID_win = 2;
+       string lineData;
        try
        {
-           inFile >> dispwin.xc0 >> dispwin.yc0 >> dispwin.radium >> dispwin.numr >> dispwin.numa;
+           getline(inFile, lineData);
+           std::stringstream ss(lineData);
+            ss >> dispwin.xc0 >> dispwin.yc0 >> dispwin.radium >> dispwin.numr >> dispwin.numa;
            file2 << "Plot window (circle):  centre = " << dispwin.xc0 << " " << dispwin.yc0 << "\n"
                << "                       radium = " << dispwin.radium << "\n"
                << "       rid number: r and seta = " << dispwin.numr << " " << dispwin.numa << std::endl;
@@ -965,9 +1015,12 @@ void processFracture()
    void processFracinitWindow()
    {
        int iwin = 1;
+       string lineData;
        try
        {
-           inFile >> s5u.xmin >> s5u.xmax >> s5u.ymin >> s5u.ymax;
+           getline(inFile, lineData);
+           std::stringstream ss(lineData);
+            ss >> s5u.xmin >> s5u.xmax >> s5u.ymin >> s5u.ymax;
 
            file2 << "Fracture initiation window:  X = " << s5u.xmin << " " << s5u.xmax << "\n"
                << "                             Y = " << s5u.ymin << " " << s5u.ymax << std::endl;
@@ -1112,9 +1165,12 @@ void processFracture()
        int num = 0;
        int material = 1;
        float xcen, ycen, diam1, diam2, kode, bvs, bvn, gradsy, gradny;
+       string lineData;
        try
        {
-           inFile >> xcen >> ycen >> diam1 >> diam2 >> kode >> bvs >> bvn >> material >> gradsy >> gradny;
+           getline(inFile, lineData);
+           std::stringstream ss(lineData);
+           ss >> xcen >> ycen >> diam1 >> diam2 >> kode >> bvs >> bvn >> material >> gradsy >> gradny;
                
            nellipse++;
            Elliptical_opening ep(xcen, ycen, diam1, diam2);  
@@ -1182,9 +1238,21 @@ void processFracture()
 
   inline  void settProcess()
    {
-       inFile >> factors.tolerance;
-       file2 << "Fracture tip merging tolerance distance is set to be " <<
-           factors.tolerance << std::endl;
+      string lineData;
+      try
+      {
+          getline(inFile, lineData);
+          std::stringstream ss(lineData);
+          ss >> factors.tolerance;
+          file2 << "Fracture tip merging tolerance distance is set to be " <<
+              factors.tolerance << std::endl;
+      }
+      catch (std::ifstream::failure e)
+      {
+          std::cerr << "Exception opening/reading/closing file: in processEllipticalOpens\n";
+
+      }
+      return;
 
    }
 
@@ -1259,11 +1327,12 @@ void processFracture()
 
    inline void numeProcess()
    {
+       string lineData;
        try
        {
-           if (!(inFile >> k_num >> d_max)) {
-              
-           }
+           getline(inFile, lineData);
+           std::stringstream ss(lineData);
+           ss >> k_num >> d_max;
            file2 << "Set numerical stability parameters\n"
                << " boundary element k_num = " << k_num << "\n"
                << " Max fracture disp = " << d_max << std::endl;
@@ -1294,10 +1363,12 @@ void processFracture()
 
    inline void  dstrProcess()
    {
+       string lineData;
        try
        {
-
-           inFile >> insituS.dsxx >> insituS.dsyy >> insituS.dsxy;
+           getline(inFile, lineData);
+           std::stringstream ss(lineData);
+           ss >> insituS.dsxx >> insituS.dsyy >> insituS.dsxy;
 
            file2 << "Insitu stress increment, dsxx, dsyy, dsxy = " << insituS.dsxx << " " <<
                insituS.dsyy << " " << insituS.dsxy << std::endl;
@@ -1316,7 +1387,7 @@ void processFracture()
 
 
 
-   void input(std::wstring selectedFile)
+   void input()
    {
       
        string id;
@@ -1324,16 +1395,6 @@ void processFracture()
        string message;
        string lineData;
       
-      // string strPathFile = filepath + "/Example" +
-          // to_string(test_id) + ".dat";
-      // inFile.open(strPathFile.c_str(), std::ios_base::in);
-       inFile.open(selectedFile.c_str(), std::ios_base::in);
-
-       if (!inFile.is_open())
-       {
-           MessageBox(nullptr, L"File path is wrong!", L"Error", MB_OK);
-           exit(EXIT_FAILURE);
-       }
       
        auto start = std::chrono::high_resolution_clock::now();
        using func = function<void()>;     
@@ -1360,7 +1421,7 @@ void processFracture()
         { "dbou",dbouProcess},
         {"darc",darcProcess},
         {"save",saveData},
-        {"elli",processEllipticalOpens},{ "edge",processEdge},{"gost",processEdge},
+        {"elli",processEllipticalOpens},{ "edge",processEdge},{"gost",processGost},
         {"moni",processMonitoring_points},
         {"monl",processMonitoring_lines},
         {"nume",numeProcess},
@@ -1384,10 +1445,16 @@ void processFracture()
        {
            while (std::getline(inFile, lineData))   
            {
-               if (lineData.empty())			
+               if (lineData.empty() )
                {
                    continue;
                }
+               else if (lineData.front() == '*')
+               {
+                   std::getline(inFile, lineData); // Read and discard the next line
+                   continue;
+               }
+               
                line++;
                if (lastinput == "endf")
                    return;
@@ -1401,9 +1468,24 @@ void processFracture()
                    it->second();
                }
                else {
-                   MessageBox(nullptr, L"Error in input file.", L"Error", MB_OK);
-                  exit(EXIT_FAILURE);
+                   std::string firstWord = lineData.substr(0, lineData.find(' '));
+                   std::wstring wideString(firstWord.begin(), firstWord.end());
+
+                   std::wstring fullMessage = L"Error in input file: " + wideString + L" .Do you want to continue?";
+
+                   int response = MessageBox(nullptr, fullMessage.c_str(), L"Confirmation", MB_OKCANCEL | MB_ICONQUESTION);                    
+                   if (response == IDOK) {
+                       continue;
+                   }
+                   else if (response == IDCANCEL) {
+                       exit(EXIT_FAILURE);
+                   }
+
                }
+           }
+           if (inFile.eof()) {
+               lastinput = "endf";
+               return;
            }
        }
        catch (std::ifstream::failure e)

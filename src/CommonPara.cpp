@@ -74,7 +74,7 @@ namespace comvar {
 
 	std::vector<BoundaryElement> elm_list(m0/2);	
 	std::vector<BE> b_elm(m0/2);
-	std::vector<MonitoringPoint> mpoint_list(10);
+	std::vector<MonitoringPoint> mpoint_list(20);
 	std::vector<MonitoringLine> mline_list(10);
 
 	std::vector < Elliptical_opening>ellip_list(10);	//list of elliptical opening 
@@ -130,8 +130,8 @@ namespace comvar {
 		//to_string(test_id);
 	std::ofstream file2; //(filepath + L"/Coutput.dat");
 
-
 	std::ofstream file57(filepath + L"Cpermeability.dat");
+	std::ifstream inFile;
 
 	
 	

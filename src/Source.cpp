@@ -482,12 +482,12 @@ void compute_n_vlaid_all_points() {
 
 
 
-void Central_control(wstring selectedFile)
+void Central_control()
 {    
     auto start = std::chrono::high_resolution_clock::now();
     if (!file50 || !file2 )
     {
-        cout << "Error in opening files";
+        cout << "Error in opening output files2 or file50!";
         return;
     }    
 
@@ -497,7 +497,7 @@ void Central_control(wstring selectedFile)
     n_it = 20;
     StopReturn = false;
 
-    input(selectedFile);
+    input();
     CheckRange();
 
     if (StopReturn == true) return;
@@ -522,7 +522,9 @@ void Central_control(wstring selectedFile)
     creep.time = 0;
     while (!StopReturn)
     {
-        mcyc++;          
+        mcyc++;  
+        cout << "\n cycle " << comvar::mcyc << " is running.... ";
+
         creep.deltaT = creep.deltaT_min;         //Creep iteration
         creep.ID_creep = (creep.time < creep.totalT) ? 1 : 0;
        
@@ -557,7 +559,8 @@ void Central_control(wstring selectedFile)
 
             //----------------------------------------------------------
             prenumbe = numbe;
-            add_crack_growth();  
+            add_crack_growth(); 
+            cout << " finished!!! ";
             if (creep.time == creep.totalT || creep.ID_creep == 0 || creep.ID_fast_crack == 1)                
                 break;
             //if not a creep problem or if fast crack growth, exit
@@ -569,20 +572,18 @@ void Central_control(wstring selectedFile)
                     {
                         if (lastinput != "endf")
                         {
-                            MessageBox(nullptr, L"Defined cycle is completed, continue from input file.", L"Message!", MB_OK);
-                            input(selectedFile);
+                            //MessageBox(nullptr, L"Defined cycle is completed, continue from input file.", L"Message!", MB_OK);
+                            input();
                         }
                         else                                       
                             {                                
                                     auto end1 = std::chrono::high_resolution_clock::now();
                                     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end1 - start);
                                      cout<< "Run time=  "<< duration.count();
-                                    MessageBox(nullptr, L"End of cycle & input file, screen input or quit.", L"Message!", MB_OK);  
-                                    break;
-                             
+                                    MessageBox(nullptr, L"End of cycle & input file! press OK to quit.", L"Message!", MB_OK);  
+                                    return;                             
                             }
-                    }  
-                  
+                    }                    
     }     
    
 return;   

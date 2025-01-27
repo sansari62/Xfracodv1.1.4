@@ -131,7 +131,7 @@ namespace comvar {
 	extern ofstream file7;
 	extern std::ofstream file2;
 	extern std::ofstream file50;
-
+	extern std::ifstream inFile;
 
 	extern wstring filepath;
 	extern string filepath1;

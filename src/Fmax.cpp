@@ -190,39 +190,14 @@ float ang_setting(float angi0, float& fi0, int mm, int mode, float& angi)
 
         s_index = int(angi0 - 8);
         e_index = int(angi0 + 8);
-    }
-    
+    }    
 
 
     for (int icyc = s_index; icyc <= e_index; icyc += 2)
     {
         ang = icyc * pi / 180.0;
 
-        //if (message == ID_Pause)
-        //{
-        //    kpause = true;  //Sara!
-        //    //pause();
-        //}
-        //else if (message == ID_Stop)
-        //{
-        //    StopReturn = true;
-        //    if (mode == 2)
-        //    {
-        //        numbe--;
-        //        return wi;
-        //    }
-        //}
-
-        //if (kpause == true)
-        //{
-        //    numbe--;
-        //    StopReturn = false;
-        //    if (StopReturn == true) return wi;   //Sara should be fixed later 
-        //    numbe++;
-        //}
-
-        //kpause = false;
-
+        
         if (tips[ni].ityp == 4)
         {
             dtt = dxi(ang, true); // first fracture initiation from boundary
@@ -325,36 +300,6 @@ void fmax1(float& f0, float& angle)
 
     for (int icyc = 100; icyc >= -100; icyc -= 10)
     {
-       
-        //GetWindowMessage(message);
-
-   //     if (message != ID_NoMessage)
-   //     {
-   //         if (message == winvar::ID_Pause)
-   //         {
-   //             kpause = true;    //Sara! later on use API func here
-   //             //pause();
-   //         }
-   //         else
-   //         {
-   //             if (message == ID_Stop)
-   //             {
-   //                 StopReturn = true;   
-   //                 numbe--;
-   //                 return;
-   //             }
-   //         }
-   //     }
-   //     if (kpause)
-   //     {
-			//numbe--;
-			//StopReturn = false;
-			////winput(1, WindowExchange, geom, stress, ng, ns, AE, joint, permeability);   //Sara!
-			//if (StopReturn == true) return;
-			//numbe++;
-   //     }
-
-   //     kpause = false;
         ang = icyc * pi / 180.0;
 
         if (be.xm == symm.xsym && (symm.ksym == 1 || symm.ksym == 4) ||

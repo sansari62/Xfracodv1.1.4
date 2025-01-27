@@ -59,9 +59,6 @@ std::wstring openFileDialog() {
 
 int main()
 {
-    std::string dummy;
-
-   // std::cout << "Please select an input file..." << std::endl;
     std::wstring selectedFile = openFileDialog();
 
     if (!selectedFile.empty()) {
@@ -70,7 +67,6 @@ int main()
     else {
         std::cout << "No file was selected or an error occurred." << std::endl;
     }
-    
     filepath = std::filesystem::path{ selectedFile }.parent_path();
     wstring filename = std::filesystem::path{ selectedFile }.filename();     // "file.txt"
 
@@ -79,7 +75,7 @@ int main()
 
     elm_list.reserve(500);
     b_elm.reserve(500);
-    wstring filename1 = std::filesystem::path{ selectedFile }.stem();     // "file.txt"
+    wstring filename1 = std::filesystem::path{ selectedFile }.stem();     
 
     dir = filepath + L"\\" + filename1 + L"_Results";
     
@@ -91,8 +87,16 @@ int main()
     }
     file2.open(dir + L"/Coutput.dat");
 
-    Central_control(selectedFile);
+    inFile.open(selectedFile.c_str(), std::ios_base::in);
+
+    if (!inFile.is_open())
+    {
+        MessageBox(nullptr, L"File path is wrong!", L"Error", MB_OK);
+        exit(EXIT_FAILURE);
+    }
+
+    Central_control();
     file2.close();
           
-    std::getline(std::cin, dummy);
+    return 0;
 }
