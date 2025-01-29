@@ -15,7 +15,9 @@ using namespace CommonPara_h::comvar;
 
 
 
-//std::ifstream inFile;
+
+
+
 
 void processEdge()
 {
@@ -130,6 +132,7 @@ void processFracture()
     try
     {
        getline(inFile, lineData);
+       //removeCommas(lineData);
        std::stringstream ss(lineData);
         ss >> num >> xbeg >> ybeg >> xend >> yend >> itype >> jmat >> material;       
         file2 << "Fracture ------ from: x, y =  " << xbeg << "," << ybeg << "," <<
@@ -1080,11 +1083,13 @@ void processFracture()
            gradny = 0.0;
        int num, kode;
        string lineData;
-       getline(inFile,lineData);
-       std::stringstream ss(lineData);
+       
       
        try
        {
+           getline(inFile, lineData);
+           //removeCommas(lineData);
+           std::stringstream ss(lineData);
            ss >> num >> xcen >> ycen >> diam >> ang1 >> ang2 >> kode >> bvs >> bvn >>
                material >> gradsy >> gradny;
            float angle = 0;
@@ -1439,7 +1444,9 @@ void processFracture()
         {"tunn",processTunnel},
         {"lint",processLinearInterface},{ "aint",processArcInterface},{"wate",processWaterPressure},
         {"perm",processPermeability}
-       };       
+       };  
+
+
 
        try
        {

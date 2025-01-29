@@ -25,6 +25,31 @@ using namespace std;
 
 
 
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+#include <cctype>
+
+
+
+
+void removeCommas(std::string& line) {
+    line.erase(std::remove(line.begin(), line.end(), ','), line.end());
+}
+
+
+
+
+bool startsWithNumber(const std::string& line) {
+    for (char ch : line) {
+        if (std::isdigit(ch)) return true;  // Found a digit at the start (ignoring spaces)
+        if (!std::isspace(ch)) return false;  // If non-space & not a digit, return false
+    }
+    return false;
+}
+
+
+
 
 
 std::wstring openFileDialog() {
@@ -52,7 +77,35 @@ std::wstring openFileDialog() {
 
 
 
+void  file_preprocesing(const std::wstring& filename)
+{
 
+    std::ifstream file(filename);
+    if (!file) {
+        std::cerr << "Error opening file!" << std::endl;
+        return;
+    }
+
+    std::ostringstream buffer;
+    std::string line;
+    while (std::getline(file, line)) {
+        if (startsWithNumber(line)) {
+            removeCommas(line);  // Remove commas only from numerical lines
+        }
+        buffer << line << "\n";  // Store processed line in buffer
+    }
+    file.close();
+
+    // Overwrite the original file with cleaned data
+    std::ofstream outFile(filename);
+    if (!outFile) {
+        std::cerr << "Error writing to file!" << std::endl;
+        return;
+    }
+    outFile << buffer.str();
+    outFile.close();
+    return;
+}
 
 
 
@@ -68,7 +121,7 @@ int main()
         std::cout << "No file was selected or an error occurred." << std::endl;
     }
     filepath = std::filesystem::path{ selectedFile }.parent_path();
-    wstring filename = std::filesystem::path{ selectedFile }.filename();     // "file.txt"
+    wstring filename = std::filesystem::path{ selectedFile }.filename();    
 
 
     wcout << L"The program is running\n";   
@@ -86,6 +139,8 @@ int main()
         std::cout << "Failed to create directory.\n";
     }
     file2.open(dir + L"/Coutput.dat");
+
+    file_preprocesing(selectedFile);
 
     inFile.open(selectedFile.c_str(), std::ios_base::in);
 
