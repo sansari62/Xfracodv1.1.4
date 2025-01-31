@@ -161,7 +161,6 @@
     <ClCompile Include="src\InputCheck.cpp" />
     <ClCompile Include="src\Internal.cpp" />
     <ClCompile Include="src\Mainb.cpp" />
-    <ClCompile Include="src\Plot.cpp" />
     <ClCompile Include="src\Rock.cpp" />
     <ClCompile Include="src\S4.cpp" />
     <ClCompile Include="src\Save_and_Restore.cpp" />
@@ -200,7 +199,6 @@
     <ClInclude Include="include\Mainb.h" />
     <ClInclude Include="include\MonitoringLine.h" />
     <ClInclude Include="include\MonitoringPoint.h" />
-    <ClInclude Include="include\Plot.h" />
     <ClInclude Include="include\Rock.h" />
     <ClInclude Include="include\S4.h" />
     <ClInclude Include="include\Save_and_Restore.h" />

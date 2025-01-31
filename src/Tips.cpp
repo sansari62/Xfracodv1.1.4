@@ -634,13 +634,17 @@ void newtips(float dr)
 
 
 
+
     void If_No_tip(wstring selectedFile)
     {
         if (no == 0)
         {
             work0(0);   
-            if (irock == 1)  initiation();      //if rock strength is given
-           // geoplot();
+            if (irock == 1)
+            {
+                initiation();      //if rock strength is given
+                geoplot();
+            }
             if (no != 0)
             {
                // geoplot();
@@ -655,16 +659,16 @@ void newtips(float dr)
             }
             if (lastinput == "endf")
             {
-                MessageBox(nullptr, L"NO crack growth and crack initiation found!", L"Message!", MB_OK);
+                //MessageBox(nullptr, L"NO crack growth and crack initiation found!", L"Message!", MB_OK);
 
                 StopReturn = true;    //5.01.25 change from false to true
-                // winput(1, WindowExchange, geom, stress, ng, ns, AE, joint, permeability)
-                if (StopReturn == true) return;  // !stop
-                else
-                    input(); //first time to call input()  
-                return;
-
+                return;  // !stop
             }
+            else
+                input(); //first time to call input()  
+            return;
+
+        }
             //------ - Initialising the seed elements for growth----
             for (ni = 0; ni < no; ni++)
             {
@@ -674,8 +678,8 @@ void newtips(float dr)
             }
 
             return;
-        }
-    }    
+    }
+      
 
 
 

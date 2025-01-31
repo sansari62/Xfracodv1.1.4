@@ -243,8 +243,8 @@ void Interface(int num, float xbeg, float ybeg, float xend, float yend, int mat1
     {
        
         numbe += 2;
-        m = numbe - 1;
-        n = numbe;
+        m = numbe - 2;
+        n = numbe - 1;
         BoundaryElement& be = elm_list[m];
 
         sw = st / num;
@@ -308,7 +308,7 @@ void Interface(int num, float xbeg, float ybeg, float xend, float yend, int mat1
         // Zero at interface - it is not real boundary value; for concrete lining insitu stresses should not be included
         if (be.mat_no == mat_lining || elm_list[n].mat_no == mat_lining)
         {
-            s4.b0[ms] = -ss;                //!interface element
+            s4.b0[ms] = -ss;                //interface element
             s4.b0[mn] = -sn;
         }
         else 

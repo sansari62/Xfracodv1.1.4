@@ -637,7 +637,7 @@ void internal(int id , int& npoint)
 {
     /* internal grid point stresses and displacements */
 
-    wstring filename = dir + L"/Stress" + std::to_wstring(state) + L".csv";
+    wstring filename = dir + L"/Stress" + std::to_wstring(mcyc) + L".csv";
     std::ofstream file4(filename);
     auto old_flags = file4.flags();
     file4.setf(ios::fixed, ios::floatfield);  // Fixed-point format for floats
@@ -646,7 +646,7 @@ void internal(int id , int& npoint)
     //buffer << "  xp        yp       sig1        sig2      bet      sig12       set      disp      zet     mat region" << std::endl;
     //buffer << "------------------------------------------------------------------------------------------------------------" << std::endl;
 
-    buffer << "xp,yp,sig1,sig2,bet,sig12,set,disp,zet,mat-region" << std::endl;
+    buffer << "xp , yp, sig1, sig2, bet, sig12, set, disp, zet, mat-region" << std::endl;
 
 
     // compute displacements and stresses at specified points in body.
@@ -660,7 +660,7 @@ void internal(int id , int& npoint)
         for (size_t i = 0; i < npoint; ++i) {
            buffer << fixed << setprecision(perc + 1)<<setw(7) << stress[i].w_xp<< ","<< setw(7) <<
                stress[i].w_yp << ","
-            << setw(10) <<  stress[i].w_sig1 << ","
+            << setw(10) << scientific <<  setprecision(perc) <<stress[i].w_sig1 << ","
             << setw(10) << scientific << setprecision(perc) << stress[i].w_sig2 << ","
             << setprecision(3) << stress[i].w_bet <<","
             << setw(10) << scientific << setprecision(perc) << stress[i].w_sig12 <<","

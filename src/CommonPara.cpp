@@ -133,6 +133,8 @@ namespace comvar {
 	std::ofstream file57(filepath + L"Cpermeability.dat");
 	std::ifstream inFile;
 
+	std::ofstream file9("Cbound.dat");
+
 	
 	
 }

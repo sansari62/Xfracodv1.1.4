@@ -433,47 +433,8 @@ void processFracture()
 
 
    void endFile()
-   {
-       string id;
-       string message;
-       lastinput = "endf";
-       //try
-       //{
-       //    inFile >> id;
-
-       //    // Error handling     not sure Sara!
-       //    if (id == "ERR")
-       //    {
-       //        int errorCode;
-       //        inFile >> errorCode;
-       //        file2 << "Input data format error, line=" << line << "***" << id << "***" << endl;
-       //        file2 << "Error code: " << errorCode << endl;
-       //        // Read the rest of the line
-       //        getline(inFile, message);
-       //        //call SendWindowText(message//CHAR(0))
-       //        outFile << message << endl;
-       //        return;
-       //    }
-       //    else if (id == "INSF")
-       //    {
-       //        outFile << "Insufficient input data, line=" << line << "***" << id << "***" << endl;
-       //        // Read the rest of the line
-       //        getline(inFile, message);
-       //        //call SendWindowText(message//CHAR(0))
-       //        file2 << message << endl;
-       //        return;
-       //    }
-       //    // End of input file
-       //    //call SendWindowText('End of input file'//CHAR(0))
-       //    lastinput = "endf";
-       //    // file2 << "End of input file" << endl;}
-
-       //}
-       //catch (std::ifstream::failure e)
-       //{
-       //    std::cerr << "Exception opening/reading/closing file:in endFile func\n";
-
-       //}
+   {       
+       lastinput = "endf";  
 
        return;
    }
@@ -647,11 +608,15 @@ void processFracture()
 
 
 
+
    void dbouProcess()
    {
-       std::ofstream file9("bound.dat");
-       //---------------straight boundary value increment ------------------
-      
+       
+       if (!file9) {
+           std::cerr << "Error opening boundary file!" << std::endl;
+           return ;
+       }
+       //---------------straight boundary value increment ------------------      
            float x1, x2, y1, y2, dss, dnn;
            string lineData;
            try
@@ -659,10 +624,11 @@ void processFracture()
                getline(inFile, lineData);
                std::stringstream ss(lineData);           
                ss >> x1 >> x2 >> y1 >> y2 >> dss >> dnn;               
-               file2 << "boundary value increment, x1,x2,y1,y2,dss,dnn =" << std::endl
-                   << x1 << x2 << y1 << y2 << dss << dnn;
-               file9 << "('dbou')";
-               file9 << x1 << x2 << y1 << y2 << dss << dnn;   
+               file2 << "boundary value increment, x1,x2,y1,y2,dss,dnn =" << endl;
+               file2 << std::fixed << std::setprecision(2) << std::setw(10) << x1 << std::setw(10) << x2 << std::setw(10) << y1 << std::setw(10)
+                   << y2 << std::setw(10) << dss << std::setw(10) << dnn << std::endl;
+               file9 << "dbou" << std::endl;
+               file9 << x1 << x2 << y1 << y2 << dss << dnn << std::endl;
               
            }
            catch (std::ifstream::failure e) 
@@ -676,24 +642,31 @@ void processFracture()
    }
 
 
+
+
+
+
    void darcProcess()
    {
        //---------------arch boundary value increment ------------------
       
            float xcen, ycen, diam1, diam2, ang1, ang2, dss, dnn;
            string lineData;
+           if (!file9) {
+               std::cerr << "Error opening file boundary!" << std::endl;
+               return;
+           }
            try
            {
                getline(inFile, lineData);
                std::stringstream ss(lineData);
                 ss >> xcen >> ycen >> diam1 >> diam2 >> ang1 >> ang2 >> dss >> dnn;
                file2 << "Arch boundary value increment, xc, xy, d1, d2, ang1, ang2, dss, dnn =\n"
-                   << xcen << " " << ycen << " " << diam1 << " " << diam2 << " "
+                   << std::fixed << std::setprecision(2) << std::setw(10)<<xcen << std::setw(10) << ycen << " " << diam1 << " " << diam2 << " "
                    << ang1 << " " << ang2 << " " << dss << " " << dnn << std::endl;
-               std::ofstream file9("darc.dat");
-
-               file9 << xcen << " " << ycen << " " << diam1 << " " << diam2 << " "
-                   << ang1 << " " << ang2 << " " << dss << " " << dnn << std::endl;
+              
+               file9 << "darc" << std::endl;
+               file9 << xcen <<  ycen <<  diam1 <<  diam2 << ang1 <<  ang2 << dss << dnn << std::endl;
            }
            catch (std::ifstream::failure e)
            {
@@ -704,6 +677,8 @@ void processFracture()
      
        return;
    }
+
+
 
 
 
@@ -1175,12 +1150,11 @@ void processFracture()
        {
            getline(inFile, lineData);
            std::stringstream ss(lineData);
-           ss >> xcen >> ycen >> diam1 >> diam2 >> kode >> bvs >> bvn >> material >> gradsy >> gradny;
-               
-           nellipse++;
-           Elliptical_opening ep(xcen, ycen, diam1, diam2);  
+           ss >>num>> xcen >> ycen >> diam1 >> diam2 >> kode >> bvs >> bvn >> material >> gradsy >> gradny;                    
+           Elliptical_opening ep(xcen, ycen, diam1, diam2);
+           
            ellip_list[nellipse] = ep;    
-
+          
            file2 << "ARC ---- centre position: x,y  = " << xcen << " " << ycen << "\n"
                << "         diameter a              = " << diam1 << "\n"
                << "         diameter b              = " << diam2 << "\n"
@@ -1196,17 +1170,21 @@ void processFracture()
            switch (symm.ksym)
            {
            case 0:
-               seta1 = 0.0;
-               seta2 = 2.0 * pi;
-           case 2:
-               seta1 = -pi / 2.0;
-               seta2 = pi / 2.0;
+               seta1 = 0;
+               seta2 = 2.0 * pi; 
+               break;
+           case 1:
+               seta1 = 0;
+               seta2 = pi;
+               break;
+           case 2:               
            case 3:
-               seta1 = 0.0;
+               seta1 = 0;
                seta2 = pi;
+               break;
            case 4:
-               seta1 = 0.0;
-               seta2 = pi;
+               seta1 = 0;
+               seta2 = pi/2.0;
            }
            float dseta = (seta2 - seta1) / num;
 
@@ -1218,20 +1196,19 @@ void processFracture()
                float ybeg = ycen + 0.5 * diam2 * sinf(seta_b);
                float xend = xcen + 0.5 * diam1 * cosf(seta_e);
                float yend = ycen + 0.5 * diam2 * sinf(seta_e);
-
-               int num0 = 1;
+               
                int jmat = 1; // jmat here is meaningless
                int itype = 0; // meaningless
-               ellip_list[nellipse].def_boundary_elements_for_Geoform(num0,xbeg, ybeg,
-                   xend, yend, bvs, bvn, gradsy, gradny,
-                   itype, jmat);
+               ellip_list[nellipse].def_boundary_elements_for_Geoform(1,xbeg, ybeg,
+                   xend, yend, bvs, bvn, gradsy, gradny,itype, jmat);
            }
        }
        catch (std::ifstream::failure e)
        {
-           std::cerr << "Exception opening/reading/closing file: in processEllipticalOpens\n";
+           std::cerr << "Exception reading file: in processEllipticalOpens\n";
 
        }
+       nellipse++;
        return;
 
    }
@@ -1423,7 +1400,7 @@ void processFracture()
         {"rock",processRockStrength_properties},
         {"inte",inteProcess},
         {"exca",processExcavation_Cracks},
-        { "dbou",dbouProcess},
+        {"dbou",dbouProcess},
         {"darc",darcProcess},
         {"save",saveData},
         {"elli",processEllipticalOpens},{ "edge",processEdge},{"gost",processGost},

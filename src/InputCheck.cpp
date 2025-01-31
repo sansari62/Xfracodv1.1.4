@@ -934,8 +934,8 @@ void final_wrap_up()
                 float ybeg = ei.get_ybeg();
                 float xend = ei.get_xend();
                 float yend = ei.get_yend();
-                int mat1 = ei.get_pos_matno();
-                int mat2 = ei.get_neg_matno();
+                int mat2 = ei.get_pos_matno();
+                int mat1 = ei.get_neg_matno();
                 int num = ei.get_elemno();
                 Interface(num, xbeg, ybeg, xend, yend, mat1, mat2);
             }
@@ -951,8 +951,8 @@ void final_wrap_up()
             float ang1 = ai.get_beg_ang();
             float ang2 = ai.get_end_ang();
             //int kode = 6;  seems unneccessary
-            int mat1 =ai.get_pos_mat();
-            int mat2 = ai.get_neg_mat();
+            int mat2 =ai.get_pos_mat();
+            int mat1 = ai.get_neg_mat();
            
             for (int m = 0; m < nume; ++m)
             {

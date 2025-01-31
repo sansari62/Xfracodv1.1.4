@@ -4,6 +4,9 @@
 #include<Source.h>
 using namespace CommonPara_h::comvar;
 
+
+
+
 void safety_check()
 {
     //check if the values for each element are reasonable
@@ -50,6 +53,8 @@ void safety_check()
 
 
 
+
+
 void increment()
 {
     /*This subroutine provides the up-to-date matrix s4.b0() in any iteration cycle
@@ -57,6 +62,7 @@ void increment()
 !    The newly grown elements have their s4.b0() brought from the failure process, and defined in newtip*/
 
     int ms = 0, mn = 0;
+    float dss, dnn;   //add in 31.01.2025 still not sure if it's insitue.dss or local var
 
     // Far-field stress change
     if (insituS.incres == 1)
@@ -65,10 +71,8 @@ void increment()
         symm.pxy1 += insituS.dsxy / n_it;
         symm.pyy1 += insituS.dsyy / n_it;
     }
-    else
-    {
-        // All boundaries have stress change
-        if (insituS.incres == 2)
+    // All boundaries have stress change
+    else if (insituS.incres == 2)
         {
             for (int m = 0; m < numbe_old; ++m)
             {
@@ -82,19 +86,18 @@ void increment()
                 s4.b1[mn] += insituS.dnn / n_it;
             }
         }
-        else
-            // Some boundaries stress change
-            if (insituS.incres == 3)
+    // Some boundaries stress change
+        else if (insituS.incres == 3)
             {
                 ifstream inFile("Cbound.dat");
                 string IDD;
 
-                while (inFile >> IDD)
+                while(inFile >> IDD)
                 {
                     if (IDD == "dbou")
                     {
                         float x1 = 0, x2 = 0, y1 = 0, y2 = 0;
-                        inFile >> x1 >> x2 >> y1 >> y2 >> insituS.dss >> insituS.dnn;  //not sure about dss and dnn here Sara!
+                        inFile >> x1 >> x2 >> y1 >> y2 >> dss >> dnn;  //not sure about dss and dnn here Sara!
 
                         for (int m = 0; m < numbe_old; ++m)
                         {
@@ -112,7 +115,7 @@ void increment()
                     }
                     else if (IDD == "darc")
                     {
-                        float xcen, ycen, diam1, diam2, ang1, ang2, dss, dnn;
+                        float xcen, ycen, diam1, diam2, ang1, ang2;
                         inFile >> xcen >> ycen >> diam1 >> diam2 >> ang1 >> ang2 >> dss >> dnn;
 
                         for (int m = 0; m < numbe_old; ++m)
@@ -121,8 +124,8 @@ void increment()
                                 continue;
 
                             float radius = sqrt(pow(elm_list[m].xm - xcen, 2) + pow(elm_list[m].ym - ycen, 2));
-                            float ang = static_cast<float>(atan2((elm_list[m].ym - ycen) / radius,
-                                (elm_list[m].xm - xcen) / radius)) * 180.0 / 3.14;  //ang = -pi, pi
+                            float ang = atan2f((elm_list[m].ym - ycen) / radius,
+                                (elm_list[m].xm - xcen) / radius) * 180.0 / 3.14;  //ang = -pi, pi
 
                             if (radius < diam1 / 2 || radius > diam2 / 2 || ang < ang1 || ang > ang2)
                                 continue;
@@ -134,12 +137,11 @@ void increment()
                             s4.b1[mn] += dnn / n_it;
                         }
                     }
-                }
+                }             
 
                 inFile.close();
             }
-    }
-
+   
     // Final treatment
     for (int m = 0; m < numbe_old; ++m)
     {
