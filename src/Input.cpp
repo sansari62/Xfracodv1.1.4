@@ -132,7 +132,6 @@ void processFracture()
     try
     {
        getline(inFile, lineData);
-       //removeCommas(lineData);
        std::stringstream ss(lineData);
         ss >> num >> xbeg >> ybeg >> xend >> yend >> itype >> jmat >> material;       
         file2 << "Fracture ------ from: x, y =  " << xbeg << "," << ybeg << "," <<

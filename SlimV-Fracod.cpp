@@ -1,23 +1,13 @@
 // SlimV-Fracod.cpp : This file contains the 'main' function. Program execution begins and ends there.
 
 
-//#include <iostream>
-//#include<string>
 #include<CommonPara.h>
 #include<Source.h>
-
-//#include <windows.h>
-//#include <commdlg.h>
 #include <filesystem> 
-
-
-//#include<Input.h>
-//#include <conio.h>
-//#include <process.h>
-//#include <stdio.h>
-
-
-
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+#include <cctype>
 
 
 using namespace CommonPara_h::comvar;
@@ -25,10 +15,6 @@ using namespace std;
 
 
 
-#include <fstream>
-#include <sstream>
-#include <algorithm>
-#include <cctype>
 
 
 
@@ -77,6 +63,8 @@ std::wstring openFileDialog() {
 
 
 
+
+
 void  file_preprocesing(const std::wstring& filename)
 {
 
@@ -110,6 +98,7 @@ void  file_preprocesing(const std::wstring& filename)
 
 
 
+
 int main()
 {
     std::wstring selectedFile = openFileDialog();
@@ -124,7 +113,7 @@ int main()
     wstring filename = std::filesystem::path{ selectedFile }.filename();    
 
 
-    wcout << L"The program is running\n";   
+    wcout << L"The simulation is running\n";   
 
     elm_list.reserve(500);
     b_elm.reserve(500);
@@ -133,7 +122,7 @@ int main()
     dir = filepath + L"\\" + filename1 + L"_Results";
     
     if (std::filesystem::create_directory(dir) || ERROR_ALREADY_EXISTS == GetLastError()) {
-        std::cout << "Directory created successfully.\n";
+        std::cout << "Result's Directory created successfully.\n";
     }
     else {
         std::cout << "Failed to create directory.\n";

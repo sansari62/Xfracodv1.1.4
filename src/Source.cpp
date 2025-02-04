@@ -102,8 +102,9 @@ int  check_material_id(float xp, float yp)
 
     int k = 0;
     float xc = 0, yc = 0, xt = 0, yt = 0, dist = 0;
+    //remove prenumbe from for loop becaause of the issue with multi region problem
 
-    for (int m = 0 + prenumbe; m < numbe; ++m)
+    for (int m = 0 ; m < numbe; ++m)
     {
         dist = std::sqrt(std::pow(xp - elm_list[m].xm, 2) + std::pow(yp - elm_list[m].ym, 2));
 

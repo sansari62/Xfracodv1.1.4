@@ -661,7 +661,7 @@ void newtips(float dr)
             {
                 //MessageBox(nullptr, L"NO crack growth and crack initiation found!", L"Message!", MB_OK);
 
-                StopReturn = true;    //5.01.25 change from false to true
+                //StopReturn = true;    //5.01.25 change from false to true
                 return;  // !stop
             }
             else
@@ -724,15 +724,10 @@ void newtips(float dr)
             }
             else if (lastinput == "endf")
             {
-                geoplot();
+               // geoplot();
                 StopReturn = false;
-                             
-                MessageBox(nullptr, L"End of input file, screen input or quit", L"Message!", MB_OK);
-                return;   
-                 //Sara remove this after Api
-                  //SAra not sure just for testing 
-                // call winput(1, WindowExchange, geom, stress, ng, ns, AE, joint, permeability)    Sara! call API here 
-                if (StopReturn == true) return; //!stop
+                return;                    
+               
             }
         }   
 

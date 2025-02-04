@@ -70,10 +70,10 @@ void reorder_fractures(fstream& file25)
                 itl = 1;
             }
 
-            float c = xcr[i][n];
+            float xend = xcr[i][n];
             float yend = ycr[i][n];
             //I removed +1 in the condition !Sara float check later 
-            if (n == (ncr[i] ))
+            if (n == ncr[i] )
             {
                 xend = f.get_xend();
                 yend = f.get_yend();
@@ -124,13 +124,11 @@ void reorder_fractures(fstream& file25)
         }
 
     }   //end for 
-   //file25.close();
+
     file25.seekg(0, std::ios::beg);
-    //file.seekp(0, std::ios::beg);
     nf = k;
 
     int  mat_no = 0, joint_mat = 0, elem_no = 0, bound_type = 0;
-   // ifstream inFile("temp001.dat");
     if (!file25)
     {
         std::cerr << "Failed to open file for reading." << std::endl;
@@ -154,7 +152,6 @@ void reorder_fractures(fstream& file25)
         std::cerr << "Exception opening/reading file:in fracture_reordering2\n";
 
     }
-    //inFile.close();
     return;
 }
 
@@ -191,9 +188,8 @@ void check_fracture_cross()
             xb2 = f2.get_xbeg();
             yb2 = f2.get_ybeg();
             xe2 = f2.get_xend();
-            ye2 = f2.get_yend();           
+            ye2 = f2.get_yend();        
                
-         //not sure where  to put close  check later 
 
             if (xe2 == xb2)
                 tan2 = 10e20;
@@ -201,14 +197,14 @@ void check_fracture_cross()
                 tan2 = (ye2 - yb2) / (xe2 - xb2);
             if (tan1 == tan2)
                 continue;
+
+
             if (xe2 == xb2)
                 xcross = xe2;
             else
                 xcross = (yb2 - yb1 + tan1 * xb1 - tan2 * xb2) / (tan1 - tan2);
             ycross = (tan1 * tan2 * (xb1 - xb2) + tan1 * yb2 - tan2 * yb1) / (tan1 - tan2);
 
-
-            //better to write * instead of pow, Sara!
             d1 = std::sqrt(std::pow(xe1 - xb1, 2) + std::pow(ye1 - yb1, 2));
             db1 = std::sqrt(std::pow(xcross - xb1, 2) + std::pow(ycross - yb1, 2));
             de1 = std::sqrt(std::pow(xcross - xe1, 2) + std::pow(ycross - ye1, 2));

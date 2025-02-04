@@ -390,6 +390,7 @@ void final_stress_assignment(int & npoint, float x, float y, float sig1, float s
 
 
 
+
 void reassigning_boundary_values2(int& npoint, int ID, int m, int j, int k, float beta, float x,
     float y, stringstream& buffer)
 {    
@@ -530,6 +531,9 @@ void reassigning_boundary_values2(int& npoint, int ID, int m, int j, int k, floa
 
 
 
+
+
+
 void compute_stress_on_boundary_surfaces(int& npoint, stringstream& buffer)
 {
     std::vector<float> xtem(numbe,0), ytem(numbe,0);
@@ -637,16 +641,16 @@ void internal(int id , int& npoint)
 {
     /* internal grid point stresses and displacements */
 
-    wstring filename = dir + L"/Stress" + std::to_wstring(mcyc) + L".csv";
+    wstring filename = dir + L"/Stress" + std::to_wstring(mcyc) + L".dat";
     std::ofstream file4(filename);
     auto old_flags = file4.flags();
     file4.setf(ios::fixed, ios::floatfield);  // Fixed-point format for floats
     stringstream buffer;
 
-    //buffer << "  xp        yp       sig1        sig2      bet      sig12       set      disp      zet     mat region" << std::endl;
-    //buffer << "------------------------------------------------------------------------------------------------------------" << std::endl;
+    buffer << "  xp        yp       sig1        sig2      bet      sig12       set      disp      zet     mat region" << std::endl;
+    buffer << "------------------------------------------------------------------------------------------------------------" << std::endl;
 
-    buffer << "xp , yp, sig1, sig2, bet, sig12, set, disp, zet, mat-region" << std::endl;
+    //buffer << "xp , yp, sig1, sig2, bet, sig12, set, disp, zet, mat-region" << std::endl;
 
 
     // compute displacements and stresses at specified points in body.
@@ -657,7 +661,7 @@ void internal(int id , int& npoint)
     int perc = 2;
     buffer.precision(perc + 1);  
     
-        for (size_t i = 0; i < npoint; ++i) {
+        for (size_t i = 0; i < npoint; ++i) /*{
            buffer << fixed << setprecision(perc + 1)<<setw(7) << stress[i].w_xp<< ","<< setw(7) <<
                stress[i].w_yp << ","
             << setw(10) << scientific <<  setprecision(perc) <<stress[i].w_sig1 << ","
@@ -669,7 +673,22 @@ void internal(int id , int& npoint)
             << scientific << setprecision(perc) << stress[i].w_zet << ","
             << stress[i].w_mat << endl;
 
-            }     
+            }   */
+        {
+            Stress& st = stress[i];
+            buffer << fixed << setprecision(perc + 1) << setw(7) << st.w_xp << "  "
+                << setw(7) << st.w_yp << "  "
+                << setw(10) << scientific << setprecision(perc) << st.w_sig1 << "  "
+                << setw(10) << scientific << setprecision(perc) << st.w_sig2 << "  "
+                << setprecision(3) << st.w_bet << "   "
+                << setw(10) << scientific << setprecision(perc) << st.w_sig12 << "  "
+                << setprecision(perc + 1) << st.w_set << "  "
+                << scientific << setprecision(perc) << st.w_disp << "   "
+                << scientific << setprecision(perc) << st.w_zet << "    "
+                << st.w_mat << endl;
+        
+        
+        }
    
     save_buffer_to_file(file4, buffer);    
     buffer.flags(old_flags);
