@@ -22,18 +22,46 @@ using namespace std;
 void removeCommas(std::string& line) {
     line.erase(std::remove(line.begin(), line.end(), ','), line.end());
 }
+    
+
+
+
+void  fixCommas( std::string& line) {
+    std::string result;
+    bool lastWasDigit = false;  // Track if last character was a digit
+
+    for (char ch : line) {
+        if (ch == ',') {
+            if (!result.empty() && lastWasDigit) result += ' ';  // Add space if last was a digit
+        }
+        else {
+            result += ch;
+            lastWasDigit = std::isdigit(ch);
+        }
+    }
+    line.swap(result);
+    return ;
+}
 
 
 
 
 bool startsWithNumber(const std::string& line) {
-    for (char ch : line) {
-        if (std::isdigit(ch)) return true;  // Found a digit at the start (ignoring spaces)
-        if (!std::isspace(ch)) return false;  // If non-space & not a digit, return false
-    }
-    return false;
-}
+    std::size_t i = 0;
 
+    // Skip leading spaces
+    while (i < line.size() && std::isspace(line[i])) {
+        i++;
+    }
+
+    // Check if the first non-space character is a minus sign
+    if (i < line.size() && line[i] == '-') {
+        i++;  // Move to the next character
+    }
+
+    // Ensure the next character is a digit
+    return (i < line.size() && std::isdigit(line[i]));
+}
 
 
 
@@ -78,7 +106,7 @@ void  file_preprocesing(const std::wstring& filename)
     std::string line;
     while (std::getline(file, line)) {
         if (startsWithNumber(line)) {
-            removeCommas(line);  // Remove commas only from numerical lines
+            fixCommas(line);  // Remove commas only from numerical lines
         }
         buffer << line << "\n";  // Store processed line in buffer
     }

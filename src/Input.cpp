@@ -232,9 +232,11 @@ void processFracture()
 
             ss >> id ;           
             ToLowerCase(id);
-            id = id.substr(0, 4);
+           // id = id.substr(0, 4);
             if (id == "hole")
             {
+                getline(inFile, lineData);
+                std::stringstream ss(lineData);
                 
                 int iwhole = watercm.iwhole;               
                 ss >> watercm.w_xc[iwhole] >> watercm.w_yc[iwhole] >> watercm.w_d[iwhole]
@@ -248,9 +250,10 @@ void processFracture()
                     << "     diameter = " << watercm.w_d[iwhole] << endl
                     << "     pressure = " << watercm.wph[iwhole] << endl << endl;
             }
-            if (id == "rect")
+            else if (id == "rect")
             {
-                
+                getline(inFile, lineData);
+                std::stringstream ss(lineData);
                 int iwrect = watercm.iwrect;         
 
                 ss >> watercm.w_x1[iwrect] >> watercm.w_x2[iwrect] >> watercm.w_y1[iwrect] >>
@@ -272,6 +275,68 @@ void processFracture()
 
         }
         return;
+    }
+
+
+    void processRect()
+    {
+        string lineData;
+        try
+        {
+            getline(inFile, lineData);
+            std::stringstream ss(lineData);           
+            int iwrect = watercm.iwrect;
+
+             ss >> watercm.w_x1[iwrect] >> watercm.w_x2[iwrect] >> watercm.w_y1[iwrect] >>
+            watercm.w_y2[iwrect] >> watercm.wpr[iwrect];
+
+            watercm.ID_range = 2;
+            watercm.iwrect++;
+            file2 << "Water pressure in rectangular opening" << endl
+                << "     x1 = " << watercm.w_x1[iwrect] << endl
+                << "     x2 = " << watercm.w_x2[iwrect] << endl
+                << "     y1 = " << watercm.w_y1[iwrect] << endl
+                << "     y2 = " << watercm.w_y2[iwrect] << endl
+                << "     pressure = " << watercm.wpr[iwrect] << endl << endl;
+        }
+        catch (std::ifstream::failure e)
+        {
+            MessageBox(nullptr, L"Error in input File,rect definition!", L"Error", MB_OK);
+
+        }
+        return;
+    }
+
+
+
+
+    void processHole()
+    {
+        string lineData;
+        try
+        {
+            getline(inFile, lineData);
+            std::stringstream ss(lineData);
+
+            int iwhole = watercm.iwhole;
+            ss >> watercm.w_xc[iwhole] >> watercm.w_yc[iwhole] >> watercm.w_d[iwhole]
+                >> watercm.wph[iwhole];
+
+            watercm.ID_range = 1;
+            watercm.iwhole++;
+            file2 << "Water pressure in hole" << endl
+                << "     center x = " << watercm.w_xc[iwhole] << endl
+                << "     center y = " << watercm.w_yc[iwhole] << endl
+                << "     diameter = " << watercm.w_d[iwhole] << endl
+                << "     pressure = " << watercm.wph[iwhole] << endl << endl;
+        }
+        catch (std::ifstream::failure e)
+        {
+            MessageBox(nullptr, L"Error in input File,hole definition!", L"Error", MB_OK);
+
+        }
+        return;
+
     }
 
 
@@ -1419,7 +1484,9 @@ void processFracture()
         {"iwin",processFracinitWindow},
         {"tunn",processTunnel},
         {"lint",processLinearInterface},{ "aint",processArcInterface},{"wate",processWaterPressure},
-        {"perm",processPermeability}
+        {"perm",processPermeability},
+       {"rect",processRect},
+        {"hole",processHole}
        };  
 
 
