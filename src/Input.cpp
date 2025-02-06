@@ -1495,11 +1495,12 @@ void processFracture()
        {
            while (std::getline(inFile, lineData))   
            {
-               if (lineData.empty() )
+               /*if (lineData.empty() || lineData=="\t")
                {
                    continue;
                }
-               else if (lineData.front() == '*')
+               else*/ 
+               if (lineData.front() == '*')
                {
                    std::getline(inFile, lineData); // Read and discard the next line
                    continue;
@@ -1518,12 +1519,10 @@ void processFracture()
                    it->second();
                }
                else {
-                   std::string firstWord = lineData.substr(0, lineData.find(' '));
-                   std::wstring wideString(firstWord.begin(), firstWord.end());
+                   
+                   std::wstring fullMessage = L"Error in input file: line " + std::to_wstring(line-1) + L" .Do you want to continue?";
 
-                   std::wstring fullMessage = L"Error in input file: " + wideString + L" .Do you want to continue?";
-
-                   int response = MessageBox(nullptr, fullMessage.c_str(), L"Confirmation", MB_OKCANCEL | MB_ICONQUESTION);                    
+                   int response = MessageBox(nullptr, fullMessage.c_str(), L"Confirmation", MB_OKCANCEL | MB_ICONQUESTION);
                    if (response == IDOK) {
                        continue;
                    }

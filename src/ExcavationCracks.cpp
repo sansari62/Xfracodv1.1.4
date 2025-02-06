@@ -436,8 +436,7 @@ void  check_point_in_rock(float xp, float yp, bool flag, int& n_valid)
         }
     }
     float thr = 0;//0.0006;
-    //Sara! need to be optimized !!!
-   // float xc = 0, yc = 0, dist = 0, xb = 0, yb = 0, xe = 0, ye = 0;
+  
     for (int l = 0 + prenumbe; l < numbe ; ++l)
     {
         BoundaryElement& be = elm_list[l];

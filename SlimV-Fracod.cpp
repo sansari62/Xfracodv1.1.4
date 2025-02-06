@@ -8,6 +8,8 @@
 #include <sstream>
 #include <algorithm>
 #include <cctype>
+#include <regex>
+
 
 
 using namespace CommonPara_h::comvar;
@@ -104,10 +106,13 @@ void  file_preprocesing(const std::wstring& filename)
 
     std::ostringstream buffer;
     std::string line;
+    std::regex empty_line_regex("^\\s*$");   //("^\\s*$|^\\s*\\*")
     while (std::getline(file, line)) {
         if (startsWithNumber(line)) {
             fixCommas(line);  // Remove commas only from numerical lines
         }
+        else if (std::regex_match(line, empty_line_regex))
+            continue;
         buffer << line << "\n";  // Store processed line in buffer
     }
     file.close();

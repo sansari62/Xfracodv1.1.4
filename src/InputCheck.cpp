@@ -162,7 +162,7 @@ void check_fracture_cross()
 {   
    // size_t frac_no = frac_list.size();                        // no of fracture 
 
-    float  xb1, xe1, xb2, xe2, yb1, yb2, ye1, ye2, xcross, ycross;   // temp variables shows coorinates of the fracture Sara I removed tan1 and tan2 here 
+    float  xb1, xe1, xb2, xe2, yb1, yb2, ye1, ye2, xcross, ycross;   // temp variables shows coorinates of the fracture 
     float d1, db1, de1, d2, db2, de2;
     float dtol = s5u.dtol;
     float tan1 = 0, tan2 = 0;   //Sara not sure 
