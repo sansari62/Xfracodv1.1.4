@@ -650,10 +650,8 @@ void newtips(float dr)
             }
             if (lastinput == "endf")
             {
-                //MessageBox(nullptr, L"NO crack growth and crack initiation found!", L"Message!", MB_OK);
-
-                //StopReturn = true;    //5.01.25 change from false to true
-                return;  // !stop
+                
+                return;  // stop
             }
             else
                 input(); //first time to call input()  
@@ -697,7 +695,7 @@ void newtips(float dr)
             initiation();
             return;
         }
-        if (creep.ID_creep == 1 && creep.time >= creep.totalT)        //!creep problem,id_creep=ID_creep
+        if (creep.ID_creep == 1 && creep.time >= creep.totalT)        //creep problem,id_creep=ID_creep
         {
             geoplot();
             MessageBox(nullptr, L"Defined creep time is completed, continue cycle without creep", L"Message!", MB_OK);
@@ -705,7 +703,7 @@ void newtips(float dr)
             return;
         }
 
-        else if (creep.ID_creep == 0 && ktipgrow == false)        //!non - creep problem
+        else if (creep.ID_creep == 0 && ktipgrow == false)        //non - creep problem
         {
             geoplot();
             if (lastinput != "endf")

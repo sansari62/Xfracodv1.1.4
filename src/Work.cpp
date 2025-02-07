@@ -712,9 +712,7 @@ void work0(int mode)
         case 5:
         case 6:
             w0 += 0.5 * be.forces * be.us + 0.5 * be.forcen * be.un;   //similar to 1 check it in test later
-           
-        default:
-            break;
+       
         }
     }
 
@@ -742,6 +740,8 @@ void work0(int mode)
 }
 
        
+
+
 
 void work1(int mode)
 {

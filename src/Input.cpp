@@ -1497,11 +1497,11 @@ void processFracture()
        {
            while (std::getline(inFile, lineData))   
            {
-               /*if (lineData.empty() || lineData=="\t")
+               if (lineData.empty() || lineData=="\t")
                {
                    continue;
                }
-               else*/ 
+               else 
                if (lineData.front() == '*')
                {
                    std::getline(inFile, lineData); // Read and discard the next line
