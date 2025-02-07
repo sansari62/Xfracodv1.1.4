@@ -9,8 +9,6 @@ namespace winvar
 	vector<Geom> geom(ng);
 	std::vector<Stress> stress(ns, Stress());
 	std::vector<Wjoint> wjoint(2*ng);
-	//wjoint.reserve(1000000);
-
 	std::vector<PermeabilityS> permeability(ns);
 	std::vector<AcousricE> AE(ng);
 }

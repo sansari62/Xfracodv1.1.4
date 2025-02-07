@@ -77,7 +77,7 @@ namespace comvar {
 	std::vector<MonitoringPoint> mpoint_list(20);
 	std::vector<MonitoringLine> mline_list(10);
 
-	std::vector < Elliptical_opening>ellip_list(10);	//list of elliptical opening 
+	std::vector < Elliptical_opening>ellip_list(10);	
 	//std::vector<Borehole> tunnl_list = {};
 
 
@@ -97,12 +97,12 @@ namespace comvar {
 	s2 s2us;
 
 	gravity g;
-	S4 s4(mem_size);  //size should be 2*numbe
+	S4 s4(mem_size);  
 	s5 s5u;
 	S15 s15;
 	matrix matx;
 
-	std::vector<S8> s8(20);		// the length of list is 20 in the fortran code
+	std::vector<S8> s8(20);		
 	Creep creep;
 
 	waterCommon watercm;
@@ -122,13 +122,11 @@ namespace comvar {
 	//ofstream file7(filename1, std::ios::binary);
 	
 	std::ofstream file50("creep_results.dat");
-	//string filepath = "C:/C++projects/SlimV-Fracod/Examples/Real/Example" + to_string(test_id);
 	wstring filepath = L"";
 
 	wstring dir = L"";
-	//string filepath = "C:/C++projects/Fracod2/Examples/HighToughness/Example" +
-		//to_string(test_id);
-	std::ofstream file2; //(filepath + L"/Coutput.dat");
+	
+	std::ofstream file2; 
 
 	std::ofstream file57(filepath + L"Cpermeability.dat");
 	std::ifstream inFile;

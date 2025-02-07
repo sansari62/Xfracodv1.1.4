@@ -231,8 +231,6 @@ void fracture_defo(int id, int& jpoint) {
 
     wstring filename = dir + L"/Fract_defo" + std::to_wstring(state) + L".csv";
 
-   // string filepath1 = filepath + "/CFract_defom.dat";
-
     std::ofstream outfile(filename);
 
     outfile << "     xp        yp         ds        bet        dn        set      aperture    zet\n";
@@ -253,8 +251,6 @@ void fracture_defo(int id, int& jpoint) {
 
     write_to_file(buffer,jpoint);
     outfile << buffer.str();    
-
-   // win_exchange.w_jpoint = jpoint;  
     outfile.close();
     return;
 }

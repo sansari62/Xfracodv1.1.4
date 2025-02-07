@@ -767,18 +767,21 @@ void processFracture()
            }
            file2 << "history file = hist" << ihist << ".dat" << std::endl
                << "monitoring point = " << mpoint.xmon << " " << mpoint.ymon << std::endl;
-           //mpoint_list.push_back(mpoint);     
-           //not sure why need this file comment for now
-          /* std::ofstream histPFile("hist" + std::to_string(ihist) + ".dat");           
+           std::ofstream histPFile("hist" + std::to_string(ihist) + ".dat");     
+           if (!histPFile.is_open()) {
+               MessageBox(nullptr, L"Error in creating ihist File!", L"Error", MB_OK);
+               }
+           
+
            histPFile << " -- Monitoring point close to a boundary will be calculated at the boundary and marked as AT BOUNDARY ELEMENT\n"
                << " -- in this case, the boundary normal and shear stress will be provided by sigxx, sigyy, and sigxy\n"
                << " -- if the boundary is vertical or horizontal, the normal stress = sigxx or sigyy, shear stress = sigxy\n"
                << " -- if the boundary is inclined, the normal stress = sigxx = sigyy, shear stress = sigxy\n\n"
                << "  Cycle(iteration)     Time         xp       yp        sigxx         sigyy       sigxy         dx          dy     max creep velocity\n";
-     */  }
+       }
        catch (std::ifstream::failure e)
        {
-           MessageBox(nullptr, L"Error in input File,monitoring point definition!", L"Error", MB_OK);
+           MessageBox(nullptr, L"Error in input File: monitoring point definition!", L"Error", MB_OK);
        }
        return;       
 
@@ -809,20 +812,19 @@ void processFracture()
                << "monitoring line = " << monlin.npl << " " << monlin.x1l << " " << monlin.y1l << " \n"
                << monlin.x2l << " " << monlin.y2l << std::endl;
 
-           //5.01.2025 not sure how to use this file cmment for now
-       //   // std::ofstream histLFile("hist_line" + std::to_string(lhist) + ".dat");
-       //   // if (!histLFile) {
-       //        // Handle file open error
-       //   // }
-       //    histLFile << " -- Monitoring points in a line will ignore the existence of boundary elements or fractures\n"
-       //        << " -- User should check if any points are too close to the existing elements\n"
-       //        << " -- incorrect results could be resulted at these points\n\n"
-       //        << "  Cycle(iteration)     Time     Line     xp       yp        sigxx         sigyy       sigxy         dx          dy              max creep velocity\n";
-       //
+           std::ofstream histLFile("hist_line" + std::to_string(lhist) + ".dat");
+        if (!histLFile) {
+            MessageBox(nullptr, L"Error in creating hist_line File!", L"Error", MB_OK);
+       }
+           histLFile << " -- Monitoring points in a line will ignore the existence of boundary elements or fractures\n"
+               << " -- User should check if any points are too close to the existing elements\n"
+               << " -- incorrect results could be resulted at these points\n\n"
+               << "  Cycle(iteration)     Time     Line     xp       yp        sigxx         sigyy       sigxy         dx          dy              max creep velocity\n";
+       
        }
        catch (std::ifstream::failure e)
        {
-           MessageBox(nullptr, L"Error in input File,monitoring line definition!", L"Error", MB_OK);
+           MessageBox(nullptr, L"Error in input File: monitoring line definition!", L"Error", MB_OK);
 
        }
        return;

@@ -31,7 +31,6 @@ public:
 
 	void assign_val(float x1, float y1, float x2, float y2, float dll, float cos1,
 		float sin1, int itp, int mat);
-	void assign_val(float dll, float cos, float sin, int itp, int mat);
 
 	Tip();
 	void save_to_file(ofstream& f);

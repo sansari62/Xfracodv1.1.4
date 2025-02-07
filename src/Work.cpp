@@ -16,20 +16,13 @@ void safety_check()
          if (elm_list[m].a == 0.0)  
              MessageBox(nullptr, L"Element length is zero", L"Warning!", MB_OK);
 
-             //MessageBox::Show("Element length is zero", "Warning", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-
         if (elm_list[m].kod == 5)
         {
             if (b_elm[m].aks == 0.0 || b_elm[m].akn == 0.0)
                 MessageBox(nullptr, L"Element stiffness is zero", L"Warning!", MB_OK);
 
-                //MessageBox::Show("Element stiffness is zero", "Warning", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-
-
             if (joint[m].aperture0 == 0.0 || joint[m].aperture_r == 0.0)
                 MessageBox(nullptr, L"Joint aperture is zero", L"Warning!", MB_OK);
-
-               // MessageBox::Show("Joint aperture is zero", "Warning", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 
         }
         for (int n = m + 1; n < numbe; n++)
@@ -39,10 +32,7 @@ void safety_check()
             {  
                 MessageBox(nullptr, L"Elements overlapped", L"Warning!", MB_OK);
 
-                //MessageBox::Show(" Elements overlapped", "Warning", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-
                 string messag = "element n has overlap with m " + to_string(n);
-                //Debug::WriteLine(messag.c_str());
                 OutputDebugStringA(messag.c_str());
                 exit(EXIT_FAILURE);
             }
@@ -192,7 +182,7 @@ void water()
 
             if (dist <= watercm.w_d[i] / 2.0)
             {
-                watercm.jwater[m] = 1.0;   //Sara not sure
+                watercm.jwater[m] = 1;   
                 watercm.pwater[m] = watercm.wph[i];
             }
         }
@@ -283,6 +273,7 @@ void water()
 
     return;
 }
+
 
 
 
@@ -411,7 +402,7 @@ void third_correction_run()
                     sn = b_elm[m].sigma_n;
                     usneg = b_elm[m].us_neg;
                     unneg = b_elm[m].un_neg;
-                    angle0 = static_cast<float>(atan2(elm_list[m].sinbet, elm_list[m].cosbet)) * 180 / pi; 
+                    angle0 = atan2f(elm_list[m].sinbet, elm_list[m].cosbet) * 180 / pi; 
                     uxneg = usneg * elm_list[m].cosbet - unneg * elm_list[m].sinbet;
                     uyneg = usneg * elm_list[m].sinbet + unneg * elm_list[m].cosbet;
 
@@ -436,14 +427,12 @@ void third_correction_run()
                         sigxx = sn;
                         sigyy = sn;
                         sigxy = ss;
-                    }
-                    //writing all data in files  19 files used here , need to add a method for this
+                    }                   
                 }
             } //end if
         }
 
     //call monitoring_point with the sigxx,xy,yy parameters  need to add this method
-    // write again data in 19 files so the method should be called here again                
     }
     return;
  }
@@ -471,11 +460,9 @@ void calc_bound_stress(int it)
 {
     float ss = 0, sn = 0, unneg=0, usneg = 0, untem = 0, ustem = 0;
     float ssd = 0, snd = 0;
-    //this should be checked in bound function , the values returned fromthis func
    
     for (int m = 0; m < numbe; ++m)
     {
-        //BoundaryElement& be = elm_list[m];
         BE& be = b_elm[m];
         elm_list[m].bound(m, ss, sn, ustem, untem, usneg, unneg);  //not sure Sara!
         ssd = ss - be.ss_old;
@@ -488,7 +475,7 @@ void calc_bound_stress(int it)
         be.un_neg = unneg;
         be.us = ustem;
         be.un = untem;           
-        //  !----------------------------------------------------------------
+        //  ----------------------------------------------------------------
         //Growth element becomes old normal fracture element now, and 
         // s4.b0() and s4.b0_old()
         // will be calculated in normal way for other elements
@@ -510,7 +497,7 @@ void calc_bound_stress(int it)
 
 
 
-//!mode = -1, back step; = 0 normal w0 calculation; should not be 1 or 2 there
+//mode = -1, back step; = 0 normal w0 calculation; should not be 1 or 2 there
 
 void work0(int mode)
 {
@@ -534,7 +521,7 @@ void work0(int mode)
         for (int k = 0; k < numbe; k++)
         {
             int tk = k * 2;
-            //!for old grown elements, s4.b0() needs to be calculated from pxx etc.
+            //for old grown elements, s4.b0() needs to be calculated from pxx etc.
             if ( n_it == 1 && k < numbe_old ) 
             {
                 s4.b0_old[tk] = s4.b0[tk];
@@ -549,7 +536,6 @@ void work0(int mode)
         float Sigma_n_prime = 0, sntem = 0, beta = 0;
         float  S_error = 0, T_error = 0;
         float ustem = 0, untem = 0, ss = 0, sn = 0, usneg = 0, unneg = 0;
-        //int  ncorrection = 0;
 
         for (int m = 0; m < numbe; ++m)
         {
@@ -572,10 +558,10 @@ void work0(int mode)
             be.un = untem;
 
             /* open fracture
-           !for initially open fractures, sigma_n is nearly 0, untem is high in open (negative)
-           !for initially sliding fractures, sigma_n is high (negative), but untem is nearly 0 (depending on kn)
-           !when reverse loading, both sigma_n and untem need to be considered. Otherwise, wrong fracture openning
-           !state will be resulted at the initial step where fractures are assumed to be elastic.*/
+           for initially open fractures, sigma_n is nearly 0, untem is high in open (negative)
+           for initially sliding fractures, sigma_n is high (negative), but untem is nearly 0 (depending on kn)
+           when reverse loading, both sigma_n and untem need to be considered. Otherwise, wrong fracture openning
+           state will be resulted at the initial step where fractures are assumed to be elastic.*/
 
             if (elm_list[m].kod == 5)
             {
@@ -615,9 +601,7 @@ void work0(int mode)
                 }
             }
             //label30
-            //undo the sigma_s() etc accumulation for use in the 2nd run
-            //elm_list[m].sigma_s -= ssd;       
-            //elm_list[m].sigma_n -= snd;
+            //undo the sigma_s() etc accumulation for use in the 2nd run           
 
             be.sigma_s -= ssd;
             be.sigma_n -= snd;
@@ -864,7 +848,7 @@ void monitoring_point(float xp, float yp, float& sigxx, float& sigyy, float& sig
         int material = check_material_id(xp, yp);
         mm = material;
 
-        s2us.reset();                             //instead of calling initl();
+        s2us.reset();                        
         ux = 0.0;
         uy = 0.0;
       
@@ -933,12 +917,11 @@ void monitoring_point(float xp, float yp, float& sigxx, float& sigyy, float& sig
                   
             }
 
-           // continue;   //not sure it should be here or not ambigious 
-            ux = ux + s2us.uxs * s4.d0[js] + s2us.uxn * s4.d0[jn];
-            uy = uy + s2us.uys * s4.d0[js] + s2us.uyn * s4.d0[jn];
-            sigxx = sigxx + s2us.sxxs * s4.d0[js] + s2us.sxxn * s4.d0[jn];
-            sigyy = sigyy + s2us.syys * s4.d0[js] + s2us.syyn * s4.d0[jn];
-            sigxy = sigxy + s2us.sxys * s4.d0[js] + s2us.sxyn * s4.d0[jn];
+            ux += s2us.uxs * s4.d0[js] + s2us.uxn * s4.d0[jn];
+            uy += s2us.uys * s4.d0[js] + s2us.uyn * s4.d0[jn];
+            sigxx +=  s2us.sxxs * s4.d0[js] + s2us.sxxn * s4.d0[jn];
+            sigyy += s2us.syys * s4.d0[js] + s2us.syyn * s4.d0[jn];
+            sigxy += s2us.sxys * s4.d0[js] + s2us.sxyn * s4.d0[jn];
 
         }
 

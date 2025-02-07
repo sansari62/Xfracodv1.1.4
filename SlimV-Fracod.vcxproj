@@ -141,7 +141,6 @@
     <ClCompile Include="src\Arch_interface.cpp" />
     <ClCompile Include="src\Borehole.cpp" />
     <ClCompile Include="src\BoundaryElement.cpp" />
-    <ClCompile Include="src\BoundaryStress.cpp" />
     <ClCompile Include="src\CommonPara.cpp" />
     <ClCompile Include="src\Creep.cpp" />
     <ClCompile Include="src\DispWindow.cpp" />

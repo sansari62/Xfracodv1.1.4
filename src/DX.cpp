@@ -6,27 +6,6 @@
 using namespace comvar;
 
 
-//void symm_1_or_4(double& xt, double& yt, double& xt0, double& yt0, double& xbeg, double& ybeg, double& xend, double& yend, double xc)
-//{
-//    double tol1 = factors.tolerance;
-//    dc = min(std::sqrt((xt - (2. * symm.xsym - xc)) * (xt - (2. * symm.xsym - xc)) + (yt - yc) * (yt - yc)),
-//        std::sqrt((xt0 - (2. * symm.xsym - xc)) * (xt0 - (2. * symm.xsym - xc)) + (yt0 - yc) * (yt0 - yc)));
-//
-//    if (dc <= tol1 * max(elm_list[i].a, 0 * tips[n].dl)) {
-//        dbeg = sqrt((xt - (2. * symm.xsym - xbeg)) * (xt - (2. * symm.xsym - xbeg)) + (yt - ybeg) * (yt - ybeg));
-//        dend = sqrt((xt - (2. * symm.xsym - xend)) * (xt - (2. * symm.xsym - xend)) + (yt - yend) * (yt - yend));
-//
-//        if (dbeg <= dend) {
-//            xt = 2. * symm.xsym - xbeg;
-//            yt = ybeg;
-//        }
-//        else {
-//            xt = 2. * symm.xsym - xend;
-//            yt = yend;
-//        }
-//        break;
-//    }
-
 
 
 

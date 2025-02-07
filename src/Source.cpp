@@ -102,7 +102,7 @@ int  check_material_id(float xp, float yp)
 
     int k = 0;
     float xc = 0, yc = 0, xt = 0, yt = 0, dist = 0;
-    //remove prenumbe from for loop becaause of the issue with multi region problem
+    //remove prenumbe from for loop because of the issue with multi region problem
 
     for (int m = 0 ; m < numbe; ++m)
     {
@@ -161,7 +161,7 @@ int  check_material_id(float xp, float yp)
 
     if (elm_list[mclosest].kod != 6)
     {
-        mm = elm_list[mclosest].mat_no;        //mat_no instead of mat
+        mm = elm_list[mclosest].mat_no;       
         return mm;
     }
     else
@@ -297,7 +297,7 @@ void Interface(int num, float xbeg, float ybeg, float xend, float yend, int mat1
 
         //------------------ Adjust stress boundary values to account for initial stresses-------------------------
         float y0 = g.y_surf;
-        pxx = symm.pxx1 + g.skx * (y0 - be.ym);    //sure?
+        pxx = symm.pxx1 + g.skx * (y0 - be.ym);    
         pyy = symm.pyy1 + g.sky * (y0 - be.ym);
         pxy = symm.pxy1;
 

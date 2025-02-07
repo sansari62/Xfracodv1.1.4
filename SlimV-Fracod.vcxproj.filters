@@ -33,9 +33,6 @@
     <ClCompile Include="src\BoundaryElement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\BoundaryStress.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\CommonPara.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

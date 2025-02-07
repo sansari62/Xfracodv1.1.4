@@ -59,6 +59,7 @@ struct AcousricE
 
 extern std::vector<AcousricE> AE;
 
+
  struct Wjoint
 {
     float w_xp, w_yp, w_ds, w_bet, w_dn, w_set, w_aperture, w_zet;

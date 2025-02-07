@@ -140,10 +140,10 @@ void reorder_fractures(fstream& file25)
     {
         for (int i = 0; i < nf; i++)
         {
-            Fracture& f = frac_list[i];        // f is alias for frac_list[i]
+            Fracture& f = frac_list[i];       
             file25 >> elem_no>> xbeg >> ybeg >> xend >>
                 yend >> bound_type >> itip[i] >> joint_mat >> mat_no;
-            f.frac_reassign_values(elem_no,xbeg,ybeg,xend,yend,bound_type,mat_no,joint_mat);   //fracture i is assigned with new coordination and so                       
+            f.frac_reassign_values(elem_no,xbeg,ybeg,xend,yend,bound_type,mat_no,joint_mat);                         
 
         }
     }
@@ -160,16 +160,15 @@ void reorder_fractures(fstream& file25)
 
 void check_fracture_cross()
 {   
-   // size_t frac_no = frac_list.size();                        // no of fracture 
 
-    float  xb1, xe1, xb2, xe2, yb1, yb2, ye1, ye2, xcross, ycross;   // temp variables shows coorinates of the fracture 
+    float  xb1, xe1, xb2, xe2, yb1, yb2, ye1, ye2, xcross, ycross;   
     float d1, db1, de1, d2, db2, de2;
     float dtol = s5u.dtol;
-    float tan1 = 0, tan2 = 0;   //Sara not sure 
+    float tan1 = 0, tan2 = 0;    
    
     for (int i = 0; i < nf; i++)
     {
-        Fracture& f = frac_list[i];        // f is alias for frac_list[i]
+        Fracture& f = frac_list[i];       
         xb1 = f.get_xbeg();
         yb1 = f.get_ybeg();
         xe1 = f.get_xend();
@@ -308,7 +307,6 @@ void populate_boudary_i(fstream& file25)
 {
     float bvs, bvn, xb, yb, xe, ye, gsy, gny;
     int elm_no, kode, material;
-    //ifstream file25("temp001.dat");
     file25.seekg(0, std::ios::beg);
 
     for (int i = 0; i < nb; ++i)
@@ -366,10 +364,7 @@ void reorder_boundaries(fstream & file25)
         Edge& obj = bund_list[i];   //obj is alias for bund_list[i]
 
         float xbeg = obj.get_xbeg();
-        float ybeg = obj.get_ybeg();
-        //double xe1 = obj.get_xend();
-        //double ye1 = obj.get_yend();
-        
+        float ybeg = obj.get_ybeg();             
 
         if (ncr[i] < 2)
             continue;
@@ -476,7 +471,7 @@ void check_cross_boundaries()
 
         for (int j = 0; j < nf; j++)
         {
-            Fracture& f = frac_list[j];        // f is alias for frac_list[i]
+            Fracture& f = frac_list[j];       
             xb2 = f.get_xbeg();
             yb2 = f.get_ybeg();
             xe2 = f.get_xend();
@@ -608,7 +603,6 @@ void populate_arc_i(int k,fstream & file25)
     float bvs, bvn;
     float  xc, yc, arcbeg, arcend, gsy = 0.0, gny = 0.0, r;
     int elm_no, kode, material;
-    //std::ifstream file25("temp001.dat");
     string lineData;
     file25.seekg(0, std::ios::beg);
     
@@ -731,7 +725,7 @@ void arc_reordering(fstream& file25)
             float ange = (n == ncr[i])? arc.get_arcend(): acr[i][n];
            
             float tem = arc.elem_no * (ange - angb) / ( arc.get_arcend() - arc.get_arcbeg());
-            int num = (int)tem;   //Sara! num?
+            int num = (int)tem;   
             if (tem - int(tem) > 0.0009)
                 num++;
 
@@ -946,7 +940,6 @@ void final_wrap_up()
             float diam = 2.0 *ai.get_diameter();
             float ang1 = ai.get_beg_ang();
             float ang2 = ai.get_end_ang();
-            //int kode = 6;  seems unneccessary
             int mat2 =ai.get_pos_mat();
             int mat1 = ai.get_neg_mat();
            
@@ -976,7 +969,7 @@ void cross_arc_with_boundaries(int i, float  xc, float yc, float angb, float ang
 
     for (int j = 0; j < nb; ++j)
     {
-        Edge& obj = bund_list[j];   //obj is alias for bund_list[j]
+        Edge& obj = bund_list[j];   
 
         float xb = obj.get_xbeg();
         float yb = obj.get_ybeg();

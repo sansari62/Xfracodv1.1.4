@@ -70,7 +70,7 @@ void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, fl
 
 
 
-//xc = 0.106459185   yc = 0.05171147
+
 
     int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, int flagB)
     {
@@ -78,10 +78,10 @@ void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, fl
         //one more condition added to loop, maybe need to optimized
 
         int legal = 1;
-        float x1 = xc - ac * cosbeta;   //x1 = 0.1062517
-        float y1 = yc - ac * sinbeta;   //y1 = 0.0500896052
-        float x2 = xc + ac * cosbeta;   //x2 = 0.106666669
-        float y2 = yc + ac * sinbeta;   //y2 = 0.0533333346
+        float x1 = xc - ac * cosbeta;  
+        float y1 = yc - ac * sinbeta;   
+        float x2 = xc + ac * cosbeta;   
+        float y2 = yc + ac * sinbeta;   
         int  en;
         float thr =  0.0003; //6e-4;
         if (flagB == 0)
@@ -103,7 +103,7 @@ void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, fl
             
             if (min(dist1, dist2) - thr <= factors.tolerance * max(ac, be.a)  )
             {
-                //legal = 0;
+               
                 return(0);
             }
 
@@ -115,7 +115,7 @@ void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, fl
                     powf(y2 - be.ym, 2));
                 if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a) )
                 {
-                    //legal = 0;
+                   
                     return(0);
                 }
 
@@ -127,7 +127,7 @@ void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, fl
                 dist2 = sqrt(pow(x2 - be.xm, 2) + powf(y2 - (2.0 * symm.ysym - be.ym), 2));
                 if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a))
                 {
-                    //legal = 0;
+                   
                     return(0);
                 }
             }
@@ -138,7 +138,7 @@ void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, fl
                 dist2 = sqrt(powf(x2 - (2.0 * symm.xsym - be.xm), 2) + powf(y2 - (2.0 * symm.ysym - be.ym), 2));
                 if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a) )
                 {
-                    //legal = 0;
+                    
                     return(0);
                 }
             }
@@ -148,7 +148,7 @@ void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, fl
         {
             if ((x1 - symm.xsym) * (x2 - symm.xsym) < -s5u.dtol) 
             {
-                //legal = 0;
+               
                 return(0);
             }
         }
@@ -513,7 +513,7 @@ void ExcavationCracks()
 
         if (dist > exca.d_wall) continue;            
         float randn;
-        srand(time(nullptr));      // Seed for random_comvar::number
+        srand(time(nullptr));      
         randn = static_cast<float>(std::rand()) / RAND_MAX;
         if (randn > exca.rand_e) continue;
 

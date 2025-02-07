@@ -14,7 +14,7 @@ using namespace CommonPara_h::comvar;
 
 void newcoord(float dr)
 {    
-    float sigxx = 0, sigyy = 0, sigxy = 0;   //user for return parameters in NewFracCentralpoint  later think about 
+    float sigxx = 0, sigyy = 0, sigxy = 0;  
     float xd = 0, yd = 0, sw = 0, cosb = 0, sinb = 0, ss = 0, sn = 0,
         pxx = 0, pyy = 0, pxy = 0, y0 = 0;
 
@@ -153,7 +153,6 @@ float ang_setting(float angi0, float& fi0, int mm, int mode, float& angi)
     float ang = 0.0;
     bool kpause = false;
     float wi = 0.0;
-    int message = 0;  //message from input Sara
     float s_index;
     float e_index;
       

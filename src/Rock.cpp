@@ -28,7 +28,7 @@ int check_elastic_growth(int m)
     {
         aki = 0;
     }
-    else //if (s4.d0[mn] <= 0) 
+    else 
     {
         aki = abs( rock1[mm].e / (8 * pi * (1 - (rock1[mm].pr * rock1[mm].pr))) *
             sqrt(2 * pi / elm_list[m].a) * s4.d0[mn]) * 2.5; // 2.5 is a correction factor

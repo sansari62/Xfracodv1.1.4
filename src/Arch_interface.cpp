@@ -1,6 +1,9 @@
 #include "Arch_interface.h"
 
-Arch_interface::Arch_interface() {}
+
+Arch_interface::Arch_interface():x_cent(0), y_cent(0), diameter(0), beg_angle(0), end_angle(0),
+elem_no(1), pos_mat(1), neg_mat(1) {}
+
 
 Arch_interface::Arch_interface(float xc, float yc, float r, float ang1, float ang2,
 	int eno, int mat1, int mat2):

@@ -60,8 +60,6 @@ bool startsWithNumber(const std::string& line) {
     if (i < line.size() && line[i] == '-') {
         i++;  // Move to the next character
     }
-
-    // Ensure the next character is a digit
     return (i < line.size() && std::isdigit(line[i]));
 }
 
@@ -80,14 +78,14 @@ std::wstring openFileDialog() {
     ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
     if (GetOpenFileName(&ofn)) {
-        return std::wstring(fileName); // Return as wide string
+        return std::wstring(fileName); 
     }
     else {
         DWORD error = CommDlgExtendedError();
         if (error != 0) {
             std::wcerr << L"Error: Unable to open file dialog. Error Code: " << error << std::endl;
         }
-        return L""; // Return empty on failure
+        return L""; 
     }
 }
 
@@ -113,7 +111,7 @@ void  file_preprocesing(const std::wstring& filename)
         }
         else if (std::regex_match(line, empty_line_regex))
             continue;
-        buffer << line << "\n";  // Store processed line in buffer
+        buffer << line << "\n";  
     }
     file.close();
 
