@@ -107,6 +107,7 @@
       <AdditionalIncludeDirectories>C:\C++projects\SlimV-Fracod\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Custom</Optimization>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -124,6 +125,7 @@
       <AdditionalIncludeDirectories>C:\C++projects\SlimV-Fracod\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <Optimization>MaxSpeed</Optimization>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,7 +141,6 @@
     <ClCompile Include="src\Arch_interface.cpp" />
     <ClCompile Include="src\Borehole.cpp" />
     <ClCompile Include="src\BoundaryElement.cpp" />
-    <ClCompile Include="src\BoundaryStress.cpp" />
     <ClCompile Include="src\CommonPara.cpp" />
     <ClCompile Include="src\Creep.cpp" />
     <ClCompile Include="src\DispWindow.cpp" />
@@ -159,7 +160,6 @@
     <ClCompile Include="src\InputCheck.cpp" />
     <ClCompile Include="src\Internal.cpp" />
     <ClCompile Include="src\Mainb.cpp" />
-    <ClCompile Include="src\Plot.cpp" />
     <ClCompile Include="src\Rock.cpp" />
     <ClCompile Include="src\S4.cpp" />
     <ClCompile Include="src\Save_and_Restore.cpp" />
@@ -198,7 +198,6 @@
     <ClInclude Include="include\Mainb.h" />
     <ClInclude Include="include\MonitoringLine.h" />
     <ClInclude Include="include\MonitoringPoint.h" />
-    <ClInclude Include="include\Plot.h" />
     <ClInclude Include="include\Rock.h" />
     <ClInclude Include="include\S4.h" />
     <ClInclude Include="include\Save_and_Restore.h" />

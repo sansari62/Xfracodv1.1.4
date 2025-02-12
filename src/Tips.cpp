@@ -11,6 +11,8 @@
 
 using namespace CommonPara_h::comvar;
 
+
+
 Tip::Tip() : xbe(0), ybe(0), xen(0), yen(0), ityp(0), imode(0), ifail(0), mpointer(0),
 kindtip(0), f_value(0), dt(0), dl(0), nu(0), angl(0), mat_no(0),costem(0),sintem(0) {}
 
@@ -26,17 +28,6 @@ void Tip::assign_val(float x1, float y1, float x2, float y2, float dll, float co
     dl = dll;
     sintem = sin1;
     costem = cos1;
-    ityp = itp;
-    mat_no = mat;
-}
-
-
-
-void Tip::assign_val(float dll, float cos, float sin, int itp, int mat)
-{
-    dl = dll;
-    sintem = sin;
-    costem = cos;
     ityp = itp;
     mat_no = mat;
 }
@@ -71,7 +62,7 @@ void label400_new_coordin_for_tip(int n, int mm, int mergtip, float xt, float yt
         t.xbe = xt;
         t.ybe = yt;
     }
-    t.dl = sqrt(pow(t.xen - t.xbe, 2) + pow(t.yen - t.ybe, 2));//later change to multiply version
+    t.dl = sqrt(pow(t.xen - t.xbe, 2) + pow(t.yen - t.ybe, 2));
     //-------------------------Add new element--------------------------
     int m = numbe; 
     elm_list[m].kod = 5;
@@ -634,18 +625,20 @@ void newtips(float dr)
 
 
 
-    void If_No_tip()
+
+    void If_No_tip(wstring selectedFile)
     {
         if (no == 0)
         {
             work0(0);   
-            if (irock == 1)  initiation();      //if rock strength is given
-            geoplot();
-            //prenumbe = numbe;
+            if (irock == 1)
+            {
+                initiation();      //if rock strength is given
+                geoplot();
+            }
             if (no != 0)
             {
-                geoplot();
-                //prenumbe = numbe;
+               // geoplot();
                 //------ - Initialising the seed elements for growth---------
                 for (ni = 0; ni < no; ni++)
                 {
@@ -657,16 +650,14 @@ void newtips(float dr)
             }
             if (lastinput == "endf")
             {
-                MessageBox(nullptr, L"NO crack growth and crack initiation found!", L"Message!", MB_OK);
-
-                StopReturn = false;
-                // winput(1, WindowExchange, geom, stress, ng, ns, AE, joint, permeability)
-                if (StopReturn == true) return;  // !stop
-                else
-                    input(); //first time to call input()  
-                return;
-
+                
+                return;  // stop
             }
+            else
+                input(); //first time to call input()  
+            return;
+
+        }
             //------ - Initialising the seed elements for growth----
             for (ni = 0; ni < no; ni++)
             {
@@ -676,8 +667,8 @@ void newtips(float dr)
             }
 
             return;
-        }
-    }    
+    }
+      
 
 
 
@@ -699,12 +690,12 @@ void newtips(float dr)
         }
 
         arrangetip();
-        if (irock == 1)       //Sara! double check
+        if (irock == 1)       
         {                 
             initiation();
             return;
         }
-        if (creep.ID_creep == 1 && creep.time >= creep.totalT)        //!creep problem,id_creep=ID_creep
+        if (creep.ID_creep == 1 && creep.time >= creep.totalT)        //creep problem,id_creep=ID_creep
         {
             geoplot();
             MessageBox(nullptr, L"Defined creep time is completed, continue cycle without creep", L"Message!", MB_OK);
@@ -712,7 +703,7 @@ void newtips(float dr)
             return;
         }
 
-        else if (creep.ID_creep == 0 && ktipgrow == false)        //!non - creep problem
+        else if (creep.ID_creep == 0 && ktipgrow == false)        //non - creep problem
         {
             geoplot();
             if (lastinput != "endf")
@@ -722,20 +713,16 @@ void newtips(float dr)
             }
             else if (lastinput == "endf")
             {
-                geoplot();
+               //geoplot();
                 StopReturn = false;
-                             
-                MessageBox(nullptr, L"End of input file, screen input or quit", L"Message!", MB_OK);
-                return;   
-                 //Sara remove this after Api
-                  //SAra not sure just for testing 
-                // call winput(1, WindowExchange, geom, stress, ng, ns, AE, joint, permeability)    Sara! call API here 
-                if (StopReturn == true) return; //!stop
+                return;                    
+               
             }
         }   
 
         return;
     }
+
 
 
 

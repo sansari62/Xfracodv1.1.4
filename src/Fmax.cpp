@@ -14,7 +14,7 @@ using namespace CommonPara_h::comvar;
 
 void newcoord(float dr)
 {    
-    float sigxx = 0, sigyy = 0, sigxy = 0;   //user for return parameters in NewFracCentralpoint  later think about 
+    float sigxx = 0, sigyy = 0, sigxy = 0;  
     float xd = 0, yd = 0, sw = 0, cosb = 0, sinb = 0, ss = 0, sn = 0,
         pxx = 0, pyy = 0, pxy = 0, y0 = 0;
 
@@ -153,7 +153,6 @@ float ang_setting(float angi0, float& fi0, int mm, int mode, float& angi)
     float ang = 0.0;
     bool kpause = false;
     float wi = 0.0;
-    int message = 0;  //message from input Sara
     float s_index;
     float e_index;
       
@@ -175,12 +174,12 @@ float ang_setting(float angi0, float& fi0, int mm, int mode, float& angi)
     //0.000001works till test 11
     if(float(int(angi0)) != round(angi0))
     {
-        if (abs(angi0 - 8 - round(angi0 - 8)) > 0.000001)   //  //0.000001
+        if (abs(angi0 - 8 - round(angi0 - 8)) > 0.000019)   //  //0.000001
             s_index = int(angi0 - 8);
         else
             s_index = round(angi0 - 8);
 
-        if (abs(angi0 + 8 - round(angi0 + 8)) > 0.000001)
+        if (abs(angi0 + 8 - round(angi0 + 8)) > 0.000019)
             e_index = int(angi0 + 8);
         else
             e_index = round(angi0 + 8);
@@ -190,39 +189,14 @@ float ang_setting(float angi0, float& fi0, int mm, int mode, float& angi)
 
         s_index = int(angi0 - 8);
         e_index = int(angi0 + 8);
-    }
-    
+    }    
 
 
     for (int icyc = s_index; icyc <= e_index; icyc += 2)
     {
         ang = icyc * pi / 180.0;
 
-        //if (message == ID_Pause)
-        //{
-        //    kpause = true;  //Sara!
-        //    //pause();
-        //}
-        //else if (message == ID_Stop)
-        //{
-        //    StopReturn = true;
-        //    if (mode == 2)
-        //    {
-        //        numbe--;
-        //        return wi;
-        //    }
-        //}
-
-        //if (kpause == true)
-        //{
-        //    numbe--;
-        //    StopReturn = false;
-        //    if (StopReturn == true) return wi;   //Sara should be fixed later 
-        //    numbe++;
-        //}
-
-        //kpause = false;
-
+        
         if (tips[ni].ityp == 4)
         {
             dtt = dxi(ang, true); // first fracture initiation from boundary
@@ -325,36 +299,6 @@ void fmax1(float& f0, float& angle)
 
     for (int icyc = 100; icyc >= -100; icyc -= 10)
     {
-       
-        //GetWindowMessage(message);
-
-   //     if (message != ID_NoMessage)
-   //     {
-   //         if (message == winvar::ID_Pause)
-   //         {
-   //             kpause = true;    //Sara! later on use API func here
-   //             //pause();
-   //         }
-   //         else
-   //         {
-   //             if (message == ID_Stop)
-   //             {
-   //                 StopReturn = true;   
-   //                 numbe--;
-   //                 return;
-   //             }
-   //         }
-   //     }
-   //     if (kpause)
-   //     {
-			//numbe--;
-			//StopReturn = false;
-			////winput(1, WindowExchange, geom, stress, ng, ns, AE, joint, permeability);   //Sara!
-			//if (StopReturn == true) return;
-			//numbe++;
-   //     }
-
-   //     kpause = false;
         ang = icyc * pi / 180.0;
 
         if (be.xm == symm.xsym && (symm.ksym == 1 || symm.ksym == 4) ||

@@ -27,11 +27,5 @@ public:
 
 
 
-
-
-
-
-
-
 #endif // !S4_h
 

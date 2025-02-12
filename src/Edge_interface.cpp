@@ -1,6 +1,7 @@
 #include "Edge_interface.h"
 
-Edge_interface::Edge_interface(){}
+
+Edge_interface::Edge_interface():x_beg(0), y_beg(0), x_end(0), y_end(0), pos_mat_no(1), neg_mat_no(1), elem_no(1) {}
 
 Edge_interface::Edge_interface(float x1, float y1, float x2, float y2, 
 	int mat1, int mat2,int eno):
