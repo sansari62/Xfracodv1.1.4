@@ -1,6 +1,6 @@
 #include "Edge.h"
 
-Edge::Edge() {}
+Edge::Edge(): GeologicalForm(), x_beg(0), y_beg(0), x_end(0), y_end(0), bvs(0), bvn(0), ds(0), dn(0), grad_ny(0), grad_sy(0) {}
 
 Edge::Edge(int mat, int eno, int kode, float xr, float yr, float xl, float yl,float bs,float bn,
 	float ds1,float dn1, float gs,float gn):
@@ -30,15 +30,5 @@ void Edge::take_dn(float dn1) { dn = dn1; }
 void Edge::take_gsy(float gs) { grad_sy = gs; }
 void Edge::take_gny(float gn) { grad_ny = gn; }
 
-//Edge Edge::get_data() const
-//{
-//	return Edge(GeologicalForm(mat_no, elem_no, bound_type),x_beg,y_beg,x_end,y_end,bvs,bvn,ds,dn,grad_ny,grad_sy);
-//}
 
-void Edge::def_stress_along_straight_boundary(float bvs1, float bvn1, float grad_sy, float grad_ny)
-{
-}
 
-void Edge::increase_stress_along_edge(float bvs1, float bvn1, float grad_sy, float grad_ny)
-{
-}

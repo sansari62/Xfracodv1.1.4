@@ -70,7 +70,7 @@ void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, fl
 
 
 
-//xc = 0.106459185   yc = 0.05171147
+
 
     int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, int flagB)
     {
@@ -78,12 +78,12 @@ void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, fl
         //one more condition added to loop, maybe need to optimized
 
         int legal = 1;
-        float x1 = xc - ac * cosbeta;   //x1 = 0.1062517
-        float y1 = yc - ac * sinbeta;   //y1 = 0.0500896052
-        float x2 = xc + ac * cosbeta;   //x2 = 0.106666669
-        float y2 = yc + ac * sinbeta;   //y2 = 0.0533333346
+        float x1 = xc - ac * cosbeta;  
+        float y1 = yc - ac * sinbeta;   
+        float x2 = xc + ac * cosbeta;   
+        float y2 = yc + ac * sinbeta;   
         int  en;
-        float thr = 0.0003; //6e-4;
+        float thr =  0.0003; //6e-4;
         if (flagB == 0)
             en = numbe - 1;
         else 
@@ -97,25 +97,25 @@ void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, fl
                 if (be.kod != 5) continue;
             }
           
-            float dist1 = sqrtf(powf(x1 - be.xm, 2) + powf(y1 - be.ym, 2));
-            float dist2 = sqrtf(powf(x2 - be.xm, 2) + powf(y2 - be.ym, 2));
+            float dist1 = sqrt(powf(x1 - be.xm, 2) + powf(y1 - be.ym, 2));
+            float dist2 = sqrt(powf(x2 - be.xm, 2) + powf(y2 - be.ym, 2));
 
             
             if (min(dist1, dist2) - thr <= factors.tolerance * max(ac, be.a)  )
             {
-                //legal = 0;
+               
                 return(0);
             }
 
             if (symm.ksym == 1 || symm.ksym == 4) 
             {
-                dist1 = sqrtf(powf(x1 - (2.0 * symm.xsym - be.xm), 2) + 
+                dist1 = sqrt(powf(x1 - (2.0 * symm.xsym - be.xm), 2) + 
                     powf(y1 - be.ym, 2));
                 dist2 = sqrtf(powf(x2 - (2.0 * symm.xsym - be.xm), 2)+
                     powf(y2 - be.ym, 2));
                 if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a) )
                 {
-                    //legal = 0;
+                   
                     return(0);
                 }
 
@@ -123,22 +123,22 @@ void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, fl
 
             if (symm.ksym == 2 || symm.ksym == 4) 
             {
-                dist1 = sqrtf(powf(x1 - be.xm, 2) + powf(y1 - (2.0 * symm.ysym - be.ym), 2));
-                dist2 = sqrtf(pow(x2 - be.xm, 2) + powf(y2 - (2.0 * symm.ysym - be.ym), 2));
+                dist1 = sqrt(powf(x1 - be.xm, 2) + powf(y1 - (2.0 * symm.ysym - be.ym), 2));
+                dist2 = sqrt(pow(x2 - be.xm, 2) + powf(y2 - (2.0 * symm.ysym - be.ym), 2));
                 if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a))
                 {
-                    //legal = 0;
+                   
                     return(0);
                 }
             }
 
             if (symm.ksym == 3 || symm.ksym == 4) 
             {
-                dist1 = sqrtf(powf(x1 - (2.0 * symm.xsym - be.xm), 2) + powf(y1 - (2.0 * symm.ysym - be.ym), 2));
-                dist2 = sqrtf(powf(x2 - (2.0 * symm.xsym - be.xm), 2) + powf(y2 - (2.0 * symm.ysym - be.ym), 2));
+                dist1 = sqrt(powf(x1 - (2.0 * symm.xsym - be.xm), 2) + powf(y1 - (2.0 * symm.ysym - be.ym), 2));
+                dist2 = sqrt(powf(x2 - (2.0 * symm.xsym - be.xm), 2) + powf(y2 - (2.0 * symm.ysym - be.ym), 2));
                 if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a) )
                 {
-                    //legal = 0;
+                    
                     return(0);
                 }
             }
@@ -148,7 +148,7 @@ void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, fl
         {
             if ((x1 - symm.xsym) * (x2 - symm.xsym) < -s5u.dtol) 
             {
-                //legal = 0;
+               
                 return(0);
             }
         }
@@ -436,8 +436,7 @@ void  check_point_in_rock(float xp, float yp, bool flag, int& n_valid)
         }
     }
     float thr = 0;//0.0006;
-    //Sara! need to be optimized !!!
-   // float xc = 0, yc = 0, dist = 0, xb = 0, yb = 0, xe = 0, ye = 0;
+  
     for (int l = 0 + prenumbe; l < numbe ; ++l)
     {
         BoundaryElement& be = elm_list[l];
@@ -514,7 +513,7 @@ void ExcavationCracks()
 
         if (dist > exca.d_wall) continue;            
         float randn;
-        srand(time(nullptr));      // Seed for random_comvar::number
+        srand(time(nullptr));      
         randn = static_cast<float>(std::rand()) / RAND_MAX;
         if (randn > exca.rand_e) continue;
 

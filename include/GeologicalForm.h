@@ -1,7 +1,6 @@
 #ifndef GeologicalForm_h
 #define GeologicalForm_h
 #include"BoundaryElement.h"
-//#include <vector>
 
 
 class GeologicalForm

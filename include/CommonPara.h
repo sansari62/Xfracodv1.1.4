@@ -26,6 +26,10 @@
 
 #define m0 1500
 
+
+
+
+
 namespace comvar {
 
 	/* the first 7 from following shows S9: parameters to caculate the strain energy*/
@@ -54,7 +58,7 @@ namespace comvar {
 
 	extern string title;
 	extern int nc;
-
+	extern int state;
 	//others
 	extern int nelement;
 
@@ -70,6 +74,9 @@ namespace comvar {
 	extern float dist_thr;
 
 	extern int test_id;
+	extern std::wstring selectedFile;
+	extern wstring dir;
+
 
 	extern float k_num;            //stiffness for boundary element;    struct in origincode
 	extern float  d_max;		     //d_max - max joint disp in each step
@@ -107,8 +114,6 @@ namespace comvar {
 	extern std::vector <Arch> arc_list;
 	extern std::vector<Edge> bund_list;
 
-	//extern std::vector<Borehole> tunnl_list;			// list of borehole or tunnel
-	
 	extern std::vector<Fracture> frac_list;
 	extern std::vector<Edge_interface> lin_intrfce_list;
 	extern std::vector<Arch_interface> arc_intrface_list;
@@ -128,9 +133,10 @@ namespace comvar {
 	extern ofstream file7;
 	extern std::ofstream file2;
 	extern std::ofstream file50;
+	extern std::ifstream inFile;
+	extern std::ofstream file9;
 
-
-	extern string filepath;
+	extern wstring filepath;
 	extern string filepath1;
 
 
@@ -438,23 +444,6 @@ namespace comvar {
 		}
 	};
 	extern std::vector<Limited_initiation_points>  init_point;
-
-
-
-	//extern struct num_stablility
-	//{
-
-	//	int k_num;			//stiffness for boundary element
-	//	double d_max;		// max joint disp in each step
-	//} num_stabil;
-		
-	/*namespace s14 {
-		extern std::string lastinput;
-		extern int ktipgrow;
-		extern bool StopReturn;
-		extern int line;
-		extern int ID_dtip;
-	}*/
 
 	//all fields for struct num_stablility defined above
 

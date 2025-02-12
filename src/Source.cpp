@@ -102,8 +102,9 @@ int  check_material_id(float xp, float yp)
 
     int k = 0;
     float xc = 0, yc = 0, xt = 0, yt = 0, dist = 0;
+    //remove prenumbe from for loop because of the issue with multi region problem
 
-    for (int m = 0 + prenumbe; m < numbe; ++m)
+    for (int m = 0 ; m < numbe; ++m)
     {
         dist = std::sqrt(std::pow(xp - elm_list[m].xm, 2) + std::pow(yp - elm_list[m].ym, 2));
 
@@ -160,7 +161,7 @@ int  check_material_id(float xp, float yp)
 
     if (elm_list[mclosest].kod != 6)
     {
-        mm = elm_list[mclosest].mat_no;        //mat_no instead of mat
+        mm = elm_list[mclosest].mat_no;       
         return mm;
     }
     else
@@ -243,8 +244,8 @@ void Interface(int num, float xbeg, float ybeg, float xend, float yend, int mat1
     {
        
         numbe += 2;
-        m = numbe - 1;
-        n = numbe;
+        m = numbe - 2;
+        n = numbe - 1;
         BoundaryElement& be = elm_list[m];
 
         sw = st / num;
@@ -296,7 +297,7 @@ void Interface(int num, float xbeg, float ybeg, float xend, float yend, int mat1
 
         //------------------ Adjust stress boundary values to account for initial stresses-------------------------
         float y0 = g.y_surf;
-        pxx = symm.pxx1 + g.skx * (y0 - be.ym);    //sure?
+        pxx = symm.pxx1 + g.skx * (y0 - be.ym);    
         pyy = symm.pyy1 + g.sky * (y0 - be.ym);
         pxy = symm.pxy1;
 
@@ -308,7 +309,7 @@ void Interface(int num, float xbeg, float ybeg, float xend, float yend, int mat1
         // Zero at interface - it is not real boundary value; for concrete lining insitu stresses should not be included
         if (be.mat_no == mat_lining || elm_list[n].mat_no == mat_lining)
         {
-            s4.b0[ms] = -ss;                //!interface element
+            s4.b0[ms] = -ss;                //interface element
             s4.b0[mn] = -sn;
         }
         else 
@@ -487,7 +488,7 @@ void Central_control()
     auto start = std::chrono::high_resolution_clock::now();
     if (!file50 || !file2 )
     {
-        cout << "Error in opening files";
+        cout << "Error in opening output files2 or file50!";
         return;
     }    
 
@@ -497,7 +498,7 @@ void Central_control()
     n_it = 20;
     StopReturn = false;
 
-    input();  
+    input();
     CheckRange();
 
     if (StopReturn == true) return;
@@ -506,7 +507,7 @@ void Central_control()
     compute_n_vlaid_all_points();
     if(irock==1)
         finding_in_rock_iniR();
-    geoplot ();
+    geoplot();
     prenumbe = numbe;
     if (exca.ID_Exca == 1)
     {
@@ -514,7 +515,7 @@ void Central_control()
         geoplot();
         prenumbe = numbe;
     }
-    If_No_tip();    //Check possibility of fracture initiation if no tip
+    If_No_tip(selectedFile);    //Check possibility of fracture initiation if no tip
 
     //--------------------------Creep functions---------------    
     file50 << "   time     time step    Tip no.    Creep growth length    growth angle      K/Kc      Crack velocity\n";
@@ -522,7 +523,9 @@ void Central_control()
     creep.time = 0;
     while (!StopReturn)
     {
-        mcyc++;          
+        mcyc++;  
+        cout << "\n cycle " << comvar::mcyc << " is running.... ";
+
         creep.deltaT = creep.deltaT_min;         //Creep iteration
         creep.ID_creep = (creep.time < creep.totalT) ? 1 : 0;
        
@@ -557,7 +560,8 @@ void Central_control()
 
             //----------------------------------------------------------
             prenumbe = numbe;
-            add_crack_growth();  
+            add_crack_growth(); 
+            cout << " finished!!! ";
             if (creep.time == creep.totalT || creep.ID_creep == 0 || creep.ID_fast_crack == 1)                
                 break;
             //if not a creep problem or if fast crack growth, exit
@@ -569,20 +573,18 @@ void Central_control()
                     {
                         if (lastinput != "endf")
                         {
-                            MessageBox(nullptr, L"Defined cycle is completed, continue from input file.", L"Message!", MB_OK);
-                            input(); 
+                            //MessageBox(nullptr, L"Defined cycle is completed, continue from input file.", L"Message!", MB_OK);
+                            input();
                         }
                         else                                       
                             {                                
                                     auto end1 = std::chrono::high_resolution_clock::now();
                                     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end1 - start);
                                      cout<< "Run time=  "<< duration.count();
-                                    MessageBox(nullptr, L"End of cycle & input file, screen input or quit.", L"Message!", MB_OK);  
-                                    break;
-                             
+                                    MessageBox(nullptr, L"End of cycle & input file! press OK to quit.", L"Message!", MB_OK);  
+                                    return;                             
                             }
-                    }  
-                  
+                    }                    
     }     
    
 return;   

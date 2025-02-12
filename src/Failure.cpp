@@ -104,10 +104,7 @@ void NewFractureCentralPoint(float xp, float yp, float& sigxx, float& sigyy, flo
             coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm);
            
         }
-        //Sara unnecessaru ux and uy
-       // ux += s2us.uxs * s4.d0[js] + s2us.uxn * s4.d0[jn];
-       // uy += s2us.uys * s4.d0[js] + s2us.uyn * s4.d0[jn];
-
+        
         sigxx += s2us.sxxs * s4.d0[js] + s2us.sxxn * s4.d0[jn];
         sigyy += s2us.syys * s4.d0[js] + s2us.syyn * s4.d0[jn];
         sigxy += s2us.sxys * s4.d0[js] + s2us.sxyn * s4.d0[jn];
@@ -187,18 +184,11 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
     {
         fos = 1.0;
     }
-    else if (fos == 0)
-    {
-        //WRITE(1,*) 0000          write into file         
-    }
+    
     if (numbe >= 1498)
     {
         MessageBox(nullptr, L"Memory Overflow - Reduce In Situ Stresses.", L"Message!", MB_OK);
-        exit(0);
-        //call SendWindowText('Memory Overflow - Reduce In Situ Stresses'//CHAR(0))
-        //    write(7) 0
-        //    close(7)
-        //    STOP
+        exit(0);        
         return;   //instead of stop
     }
     int n = no;
@@ -213,11 +203,7 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
     no++;
     
     //-------------------------------add new element------------
-    m = numbe; 
-   /* float x = 0.5 * (xb + xn);
-    float y = 0.5 * (yb + yn);
-    float sinb = (yn - yb) / dl;
-    float cosb = (xn - xb) / dl;*/
+    m = numbe;  
     elm_list[m].xm= 0.5 * (xb + xn);
     elm_list[m].ym= 0.5 * (yb + yn);
     elm_list[m].a = dl / 2.0;
@@ -270,8 +256,8 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
             return;
         }
         //FFFF
-        if(symm.ksym == 4 && abs(xp - symm.xsym) < s5u.dtol || abs(yp - symm.ysym) <
-            s5u.dtol)           
+        if(symm.ksym == 4 && (abs(xp - symm.xsym) < s5u.dtol || abs(yp - symm.ysym) <
+            s5u.dtol))           
         {
             numbe = m;
             return;
@@ -353,11 +339,7 @@ void failureB(float xp, float yp, float r, float alpha, int im, float& fos)
     {
        MessageBox(nullptr, L"Memory Overflow - Reduce In Situ Stresses.", L"Message!", MB_OK);
 
-        exit(0);
-        //    write(7) 0
-        //    close(7)
-        //    STOP
-     
+        exit(0);          
         return;   //instead of stop
     } 
 

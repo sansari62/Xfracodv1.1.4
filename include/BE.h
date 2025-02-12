@@ -33,12 +33,35 @@ public:
 	float ss_old;
 	float sn_old;
 
-	BE() {}
-
-	BE(float ss, float sn, int ip, int js, int jslip, int jmod,float fc1, float fc2,float us, float un, float forcs, float forcn, float aks, float akn, float phi,
-		float phid, float coh, float usn, float unn, float sso, float sno):sigma_s(ss), sigma_n(sn),
-		ipair(ip), jstate(js), jslipd(jslip), us(us), un(un), forcen(forcn), forces(forcs), force1(fc1), force2(fc2), jmode(jmod), phi(phi), phid(phid),
-		aks(aks), akn(akn), us_neg(usn), un_neg(unn), ss_old(sso), sn_old(sno), coh(coh) {} 
+	BE() {
+	
+		sigma_s = 0;
+		sigma_n = 0;
+		ipair = 0; jstate = 0; jslipd = 0; us = 0;
+		un = 0; forcen = 0;  forces = 0; force1 = 0; force2 = 0; jmode = 0;
+		phi = 0;
+		phid = 0;
+		aks = 0;
+		akn = 0;
+		coh = 0;
+		us_neg = 0;
+		un_neg = 0;
+		ss_old = 0;
+		sn_old = 0;
+	
+	}
+	
+	BE( float aks, float akn, float phi,float phid, float coh): phi(phi), phid(phid),
+		aks(aks), akn(akn), coh(coh) {
+		sigma_s = 0;
+		sigma_n = 0;
+		ipair = 0; jstate = 0; jslipd = 0; us = 0;
+		un = 0; forcen = 0;  forces = 0; force1 = 0; force2 = 0; jmode = 0;
+		us_neg = 0;
+		un_neg = 0;
+		ss_old = 0;
+		sn_old = 0;
+	}
 
 	
 };

@@ -42,7 +42,8 @@ void AcousticE()
 
     int mm = 1;                
     float r, ra;             //random numbers
-    string filepath1 = filepath + "/CAE" + to_string(test_id) + ".dat";
+    wstring filepath1 = dir + L"/CAE" + to_wstring(test_id) + L".dat";
+
     ofstream file3(filepath1);
 
     // based on symm.ksymm value  write in file Sara!

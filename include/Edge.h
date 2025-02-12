@@ -45,9 +45,6 @@ public:
 	void take_gny(float gn) ;
 
 
-	void def_stress_along_straight_boundary(float bvs1,float bvn1,float grad_sy,float grad_ny);
-	void increase_stress_along_edge(float bvs1, float bvn1, float grad_sy, float grad_ny);
-
 };
 #endif
 

@@ -307,17 +307,13 @@ int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float
         newelement.kod = bound_type;     // for all elems are equal
         newelement.mat_no = mat_no; 
         elm_list[m] = newelement;
-        //elm_list.push_back(newelement);
 
         //for fractures
         if (bound_type == 5) 
         {
-
-            b_elm[m].aks = s8[jmat].aks0;   //improve! for all is equal
-            b_elm[m].akn = s8[jmat].akn0;
-            b_elm[m].phi = s8[jmat].phi0;
-            b_elm[m].phid = s8[jmat].phid0;
-            b_elm[m].coh = s8[jmat].coh0;
+            BE newelm(s8[jmat].aks0, s8[jmat].akn0, s8[jmat].phi0, s8[jmat].phid0, s8[jmat].coh0);
+            
+            b_elm[m] = newelm;            
             joint[m].aperture0 = s8[jmat].apert0;
             joint[m].aperture_r = s8[jmat].apert_r;
             watercm.pwater[m] = 0;

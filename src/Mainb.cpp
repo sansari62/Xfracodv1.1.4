@@ -638,7 +638,7 @@ void mainb(int mode)
                         break;
                     case 2:
                        s4.c[is][js] +=  ks;
-                        break;
+                        
                     }
             }
             else if (i == numbe - 1 && mode == 2)
@@ -656,8 +656,7 @@ void mainb(int mode)
                             break;
                         case 3:
                             s4.c[in][jn] += kn;
-                            s4.c[is][jn] += kn * tanf(ph) * b_elm[i].jslipd;
-                            break;
+                            s4.c[is][jn] = s4.c[is][jn]+ kn * tanf(ph) * b_elm[i].jslipd;                            
                         }                     
                 }            
             else
@@ -671,8 +670,10 @@ void mainb(int mode)
                
                 case 3:
                     s4.c[in][jn] +=  kn;
-                    s4.c[is][jn] +=  kn * tanf(ph) * b_elm[i].jslipd;
-                    s4.c[in][js] +=  kn * tanf(pd) * (- b_elm[i].jslipd);  //Sara!
+                    s4.c[is][jn] = s4.c[is][jn]+ kn * tanf(ph) * b_elm[i].jslipd;
+                    s4.c[in][js] = s4.c[in][js]+ kn * tanf(pd) * (- b_elm[i].jslipd);  
+                default:
+                    break;
                     
                 }
             } 

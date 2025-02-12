@@ -1,13 +1,14 @@
 // SlimV-Fracod.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
 
-#include <iostream>
-#include<string>
+
 #include<CommonPara.h>
 #include<Source.h>
-
-#include <windows.h>
-#include <commdlg.h>
+#include <filesystem> 
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+#include <cctype>
+#include <regex>
 
 
 
@@ -18,26 +19,73 @@ using namespace std;
 
 
 
+
+
+void removeCommas(std::string& line) {
+    line.erase(std::remove(line.begin(), line.end(), ','), line.end());
+}
+    
+
+
+
+void  fixCommas( std::string& line) {
+    std::string result;
+    bool lastWasDigit = false;  // Track if last character was a digit
+
+    for (char ch : line) {
+        if (ch == ',') {
+            if (!result.empty() && lastWasDigit) result += ' ';  // Add space if last was a digit
+        }
+        else {
+            result += ch;
+            lastWasDigit = std::isdigit(ch);
+        }
+    }
+    line.swap(result);
+    return ;
+}
+
+
+
+
+bool startsWithNumber(const std::string& line) {
+    std::size_t i = 0;
+
+    // Skip leading spaces
+    while (i < line.size() && std::isspace(line[i])) {
+        i++;
+    }
+
+    // Check if the first non-space character is a minus sign
+    if (i < line.size() && line[i] == '-') {
+        i++;  // Move to the next character
+    }
+    return (i < line.size() && std::isdigit(line[i]));
+}
+
+
+
+
 std::wstring openFileDialog() {
     OPENFILENAME ofn;
-    wchar_t fileName[MAX_PATH] = L""; // Use wide-character string
+    wchar_t fileName[MAX_PATH] = L""; 
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = sizeof(OPENFILENAME);
     ofn.hwndOwner = nullptr;
-    ofn.lpstrFilter = L"All Files\0*.*\0Text Files\0*.TXT\0"; // Wide-character filter
+    ofn.lpstrFilter = L"All Files\0*.*\0Text Files\0*.TXT\0"; 
     ofn.lpstrFile = fileName;
     ofn.nMaxFile = MAX_PATH;
     ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
     if (GetOpenFileName(&ofn)) {
-        return std::wstring(fileName); // Return as wide string
+        return std::wstring(fileName); 
     }
     else {
         DWORD error = CommDlgExtendedError();
         if (error != 0) {
             std::wcerr << L"Error: Unable to open file dialog. Error Code: " << error << std::endl;
         }
-        return L""; // Return empty on failure
+        return L""; 
     }
 }
 
@@ -45,131 +93,87 @@ std::wstring openFileDialog() {
 
 
 
-#include<Input.h>
+void  file_preprocesing(const std::wstring& filename)
+{
+
+    std::ifstream file(filename);
+    if (!file) {
+        std::cerr << "Error opening file!" << std::endl;
+        return;
+    }
+
+    std::ostringstream buffer;
+    std::string line;
+    std::regex tab_only_regex("^\\t+$");
+
+   // std::regex empty_line_regex("^\\s*$");   //("^\\s*$|^\\s*\\*")
+    while (std::getline(file, line)) {
+        if (startsWithNumber(line)) {
+            fixCommas(line);  // Remove commas only from numerical lines
+        }
+        else if (std::regex_match(line, tab_only_regex))
+            continue;
+        buffer << line << "\n";  
+    }
+    file.close();
+
+    // Overwrite the original file with cleaned data
+    std::ofstream outFile(filename);
+    if (!outFile) {
+        std::cerr << "Error writing to file!" << std::endl;
+        return;
+    }
+    outFile << buffer.str();
+    outFile.close();
+    return;
+}
+
+
+
+
 
 int main()
 {
-    std::string dummy;
-
-    /////
-   // std::cout << "Please select an input file..." << std::endl;
-    /*std::wstring selectedFile = openFileDialog();
+    std::wstring selectedFile = openFileDialog();
 
     if (!selectedFile.empty()) {
         std::wcout << "You selected: " << selectedFile << std::endl;
     }
     else {
         std::cout << "No file was selected or an error occurred." << std::endl;
-    }*/
-    ////
-    
-   
-    cout << "The program is running";   
+    }
+    filepath = std::filesystem::path{ selectedFile }.parent_path();
+    wstring filename = std::filesystem::path{ selectedFile }.filename();    
+
+
+    wcout << L"The simulation is running\n";   
 
     elm_list.reserve(500);
     b_elm.reserve(500);
-    input();   
+    wstring filename1 = std::filesystem::path{ selectedFile }.stem();     
+
+    dir = filepath + L"\\" + filename1 + L"_Results";
+    
+    if (std::filesystem::create_directory(dir) || ERROR_ALREADY_EXISTS == GetLastError()) {
+        std::cout << "Result's Directory created successfully.\n";
+    }
+    else {
+        std::cout << "Failed to create directory.\n";
+    }
+    file2.open(dir + L"/Coutput.dat");
+
+    file_preprocesing(selectedFile);
+
+    inFile.open(selectedFile.c_str(), std::ios_base::in);
+
+    if (!inFile.is_open())
+    {
+        MessageBox(nullptr, L"File path is wrong!", L"Error", MB_OK);
+        exit(EXIT_FAILURE);
+    }
 
     Central_control();
     file2.close();
-   
-
-    //int maxThreads = std::thread::hardware_concurrency();  // Get number of hardware threads
-//    omp_set_num_threads(maxThreads); // Set OpenMP to use this number of threads
-//
-//#pragma omp parallel
-//    {
-//#pragma omp single
-//        {
-//            Debug::WriteLine(omp_get_num_threads());
-//        }
-//    }
-
-    
-    std::getline(std::cin, dummy);
+          
+    return 0;
 }
-
-
-
-//
-//
-//#include <unordered_map>
-//#include <functional>
-//
-//// Sample functions to call based on keywords
-//void processKeywordA(ifstream&f) {
-//    std::cout << "Function for Keyword A called!" << std::endl;
-//}
-//
-//void processKeywordB(ifstream&f) {
-//    std::cout << "Function for Keyword B called!" << std::endl;
-//}
-//
-//void processKeywordC(ifstream& f) {
-//    std::cout << "Function for Keyword C called!" << std::endl;
-//}
-//
-//void unknownKeyword(ifstream& f) {
-//    std::cout << "Unknown keyword: " << std::endl;
-//}
-//void endoffile(ifstream& f) {}
-//
-//int input2() {
-//
-//
-//    std::ifstream inFile;      
-//   
-//    string id;
-//    string tem;
-//    string message;
-//    string lineData;
-//
-//
-//    string strPathFile = filepath + "/Example" +
-//        to_string(test_id) + ".dat";
-//    inFile.open(strPathFile.c_str(), std::ios_base::in);
-//    if (!inFile.is_open())
-//    {
-//        ////  Debug::WriteLine("Path Wrong!!!!" );
-//        exit(EXIT_FAILURE);
-//    }
-//
-//    // Map keywords to corresponding functions
-//    std::unordered_map<std::string, std::function<void(const std::ifstream&)>> funcMap =
-//    {
-//        {"titl", processKeywordA},
-//        {"symm", processKeywordB)},
-//        {"rand", processKeywordC)},
-//       {"endf",endoffile(inFile)}
-//    };
-//
-//
-//    while (std::getline(inFile, lineData)) {
-//
-//        if (lineData.empty())			// skip empty lines:
-//        {
-//            continue;
-//        }
-//        line++;
-//        if (lastinput == "endf")
-//            return 1;
-//        id = lineData.substr(0, 4);
-//       // ToLowerCase(id);
-//
-//        line++;
-//        lastinput = id;
-//        // Check if the line contains a keyword
-//        auto it = funcMap.find(id);
-//        if (it != funcMap.end()) {
-//            // Call the corresponding function
-//            it->second;
-//        }
-//        else {
-//            // Handle unknown keywords
-//           // unknownKeyword(lineData);
-//        }
-//    }
-//
-//    inFile.close();
-//    return 0;
-//}
