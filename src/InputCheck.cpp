@@ -17,7 +17,6 @@ float xcr[len][len] = {0.0}, ycr[len][len] = { 0.0 }, acr[len][len] = {0.0};
 
 void reorder_fractures(fstream& file25)
 {          
-    //------- reoder fractures -----------
 
     float xbeg = 0, ybeg = 0, xend = 0, yend = 0, xtem = 0, ytem = 0;
     float d1, d2;
@@ -60,15 +59,19 @@ void reorder_fractures(fstream& file25)
         {
             itl = 0;
             itr = 0;
-            xbeg = xcr[i][n];    // change index y of xcr and ycr from n-1 to n because of warnings
-            ybeg = ycr[i][n];
 
-            if (n == 0) 
+            if (n == 0)
             {
                 xbeg = f.get_xbeg();
-                ybeg = f.get_ybeg();              
+                ybeg = f.get_ybeg();
                 itl = 1;
             }
+            else
+            {
+                xbeg = xcr[i][n-1];    // change index y of xcr and ycr from n-1 to n because of warnings
+                ybeg = ycr[i][n-1];
+            }
+                                 
 
             float xend = xcr[i][n];
             float yend = ycr[i][n];

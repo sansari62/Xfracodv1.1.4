@@ -72,8 +72,8 @@ namespace comvar {
 	std::vector<std::pair<float, float>> valid;
 	std::vector<std::pair<float, float>> valid1;	
 
-	std::vector<BoundaryElement> elm_list(m0/2);	
-	std::vector<BE> b_elm(m0/2);
+	std::vector<BoundaryElement> elm_list(m0);	
+	std::vector<BE> b_elm(m0);
 	std::vector<MonitoringPoint> mpoint_list(20);
 	std::vector<MonitoringLine> mline_list(10);
 
