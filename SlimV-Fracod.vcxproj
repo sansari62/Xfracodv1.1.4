@@ -126,6 +126,8 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <Optimization>MaxSpeed</Optimization>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

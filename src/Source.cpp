@@ -371,7 +371,7 @@ int cross(float xb1, float yb1, float xe1, float ye1, float xb2, float yb2,
     }
     else
     {
-        tan1 = (ye1 - yb1) / (xe1 - xb1);
+        tan1 = float(ye1 - yb1) / float(xe1 - xb1);
     }
 
     if ((xb1 == xb2 && yb1 == yb2) || (xb1 == xe2 && yb1 == ye2) ||
@@ -385,7 +385,7 @@ int cross(float xb1, float yb1, float xe1, float ye1, float xb2, float yb2,
     }
     else
     {
-        tan2 = (ye2 - yb2) / (xe2 - xb2);
+        tan2 = float(ye2 - yb2) / float(xe2 - xb2);
     }
 
     if (tan1 == tan2) 
@@ -393,13 +393,14 @@ int cross(float xb1, float yb1, float xe1, float ye1, float xb2, float yb2,
         return id;
     }
 
-    xcross = (yb2 - yb1 + tan1 * xb1 - tan2 * xb2) / (tan1 - tan2);
-    ycross = (tan1 * tan2 * (xb1 - xb2) + tan1 * yb2 - tan2 * yb1) / (tan1 - tan2);
+    xcross = float (float(yb2 - yb1) + float(tan1 * xb1) - float(tan2 * xb2)) / float(tan1 - tan2);
+    ycross = (float(tan1 * tan2 * float(xb1 - xb2)) + float(tan1 * yb2 - tan2 * yb1)) /float (tan1 - tan2);
+    const float epsilon = 1e-6;
 
-    if (xcross <= min(xb1, xe1) - 0 * s5u.dtol || ycross <= min(yb1, ye1) - 0 * s5u.dtol ||
-        xcross >= max(xb1, xe1) + 0 * s5u.dtol || ycross >= max(yb1, ye1) + 0 * s5u.dtol ||
-        xcross <= min(xb2, xe2) - 0 * s5u.dtol || ycross <= min(yb2, ye2) - 0 * s5u.dtol ||
-        xcross >= max(xb2, xe2) + 0 * s5u.dtol || ycross >= max(yb2, ye2) + 0 * s5u.dtol) 
+    if (xcross <= min(xb1, xe1) - epsilon || ycross <= min(yb1, ye1) - epsilon ||
+        xcross >= max(xb1, xe1) + epsilon || ycross >= max(yb1, ye1) + epsilon ||
+        xcross <= min(xb2, xe2) - epsilon || ycross <= min(yb2, ye2) - epsilon ||
+        xcross >= max(xb2, xe2) + epsilon || ycross >= max(yb2, ye2) + epsilon)
     {
         return id;
     }
@@ -580,7 +581,7 @@ void Central_control()
                             {                                
                                     auto end1 = std::chrono::high_resolution_clock::now();
                                     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end1 - start);
-                                     cout<< "Run time=  "<< duration.count();
+                                     cout<< "Run time=  "<< duration.count()<<" ms";
                                     MessageBox(nullptr, L"End of cycle & input file! press OK to quit.", L"Message!", MB_OK);  
                                     return;                             
                             }

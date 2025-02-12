@@ -148,8 +148,8 @@ int main()
 
     wcout << L"The simulation is running\n";   
 
-    elm_list.reserve(500);
-    b_elm.reserve(500);
+   // elm_list.reserve(500);
+   // b_elm.reserve(500);
     wstring filename1 = std::filesystem::path{ selectedFile }.stem();     
 
     dir = filepath + L"\\" + filename1 + L"_Results";

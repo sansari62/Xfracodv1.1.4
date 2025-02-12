@@ -258,8 +258,8 @@ void newtips(float dr)
             tol = factors.tolerance;
             tol1 = factors.tolerance;
 
-            float dc = min(sqrt(pow(xt - xc, 2) + pow(yt - yc, 2)),
-                sqrt(pow(xt0 - xc, 2) + pow(yt0 - yc, 2)));
+            float dc = min(sqrtf(powf(xt - xc, 2) + powf(yt - yc, 2)),
+                sqrtf(powf(xt0 - xc, 2) + powf(yt0 - yc, 2)));
 
             if (dc <= tol1 * max(be.a, z))
             {
@@ -682,7 +682,7 @@ void newtips(float dr)
         {
             if (tips[ni].ityp == 0) continue;
             if (tips[ni].ifail != 1) continue;            
-            nelement = tips[ni].mpointer;           
+            nelement = tips[ni].mpointer;              
             newtips(tips[ni].angl);
             creep.creep_x[ni] = 0;         //reset the creep growth to zero
             creep.creep_y[ni] = 0;          //reset the creep growth to zero
@@ -754,10 +754,16 @@ void input_tip_check()
                 x2 = b.xm + b.a * b.cosbet;
                 y2 = b.ym + b.a * b.sinbet;
 
-                if (std::abs(xt - x1) <= 1e-5 && std::abs(yt - y1) <= 1e-5) {
+                //if (std::fabs(xt - x1) <= 1e-5 && std::fabs(yt - y1) <= 1e-5)
+                
+                
+                if (std::fabsf(static_cast<float>(xt - x2)) <= static_cast<float>(1e-5) &&
+                    std::fabsf(static_cast<float>(yt - y2)) <= static_cast<float>(1e-5)) {
                     t.ityp = 0;
                 }
-                if (std::abs(xt - x2) <= 1e-5 && std::abs(yt - y2) <= 1e-5) {
+                //if (std::fabs(xt - x2) <= 1e-5 && std::fabs(yt - y2) <= 1e-5) 
+                
+                if (std::fabsf(xt - x2) <= 1e-5f && std::fabsf(yt - y2) <= 1e-5f) {
                     t.ityp = 0;
                 }
             }
