@@ -6,6 +6,93 @@ using namespace CommonPara_h::comvar;
 
 
 
+//If  matrix is mostly nonzero, use the Dense Solver (QR method).
+//If  matrix has many zeros, use the Sparse Solver(SparseLU or BiCGSTAB) for better performance.
+
+/*the following method produces the same result like our solve function one more tips generated at the end but the runtime is larger than ours*/
+
+#include <Eigen/Sparse>
+//
+//void solve2(int n, int mode)
+//{
+//    //dense solver 
+//    Eigen::MatrixXf A(n, n);
+//    Eigen::VectorXf b(n);
+//
+//    // Copy data into Eigen matrices
+//    for (int i = 0; i < n; ++i)
+//    {
+//        b(i) = s4.b[i];
+//        for (int j = 0; j < n; ++j)
+//        {
+//            A(i, j) = s4.c[i][j];
+//        }
+//    }
+//
+//    // Solve using Eigen's QR decomposition (stable for general matrices)
+//    Eigen::VectorXf x = A.colPivHouseholderQr().solve(b);
+//
+//    // Store results back in s4.d
+//    for (int i = 0; i < n; ++i)
+//    {
+//        s4.d[i] = x(i);
+//    }
+//
+//    // Apply d_max constraint
+//    for (int j = 0; j < n; ++j)
+//    {
+//        if (elm_list[j / 2].kod == 5 && mode == 0)
+//        {
+//            if (std::abs(s4.d[j]) > d_max)
+//                s4.d[j] = (s4.d[j] / std::abs(s4.d[j])) * d_max;
+//        }
+//    }
+//}
+
+//void solve1(int n, int mode)
+//{
+//    Eigen::SparseMatrix<float> A(n, n);
+//    Eigen::VectorXf b(n);
+//
+//    // Convert s4.c into Eigen sparse matrix format
+//    std::vector<Eigen::Triplet<float>> triplets;
+//    for (int i = 0; i < n; ++i)
+//    {
+//        b(i) = s4.b[i];
+//        for (int j = 0; j < n; ++j)
+//        {
+//            if (s4.c[i][j] != 0) // Only store nonzero values
+//                triplets.push_back(Eigen::Triplet<float>(i, j, s4.c[i][j]));
+//        }
+//    }
+//    A.setFromTriplets(triplets.begin(), triplets.end());
+//
+//    // Solve using SparseLU (good for direct factorization)
+//    Eigen::SparseLU<Eigen::SparseMatrix<float>> solver;
+//    solver.compute(A);
+//    Eigen::VectorXf x = solver.solve(b);
+//
+//    // Store results back in s4.d
+//    for (int i = 0; i < n; ++i)
+//    {
+//        s4.d[i] = x(i);
+//    }
+//
+//    // Apply d_max constraint
+//    for (int j = 0; j < n; ++j)
+//    {
+//        if (elm_list[j / 2].kod == 5 && mode == 0)
+//        {
+//            if (std::abs(s4.d[j]) > d_max)
+//                s4.d[j] = (s4.d[j] / std::abs(s4.d[j])) * d_max;
+//        }
+//    }
+//}
+//
+//
+
+
+
 
 
 void solve(int n, int mode)

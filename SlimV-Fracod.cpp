@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <cctype>
 #include <regex>
+#include<version>
 
 
 
@@ -174,6 +175,8 @@ int main()
 
     Central_control();
     file2.close();
+    std::cout << "Version: " << PROJECT_VERSION << std::endl;
+
           
     return 0;
 }
