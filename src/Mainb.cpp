@@ -49,47 +49,47 @@ using namespace CommonPara_h::comvar;
 //    }
 //}
 
-//void solve1(int n, int mode)
-//{
-//    Eigen::SparseMatrix<float> A(n, n);
-//    Eigen::VectorXf b(n);
-//
-//    // Convert s4.c into Eigen sparse matrix format
-//    std::vector<Eigen::Triplet<float>> triplets;
-//    for (int i = 0; i < n; ++i)
-//    {
-//        b(i) = s4.b[i];
-//        for (int j = 0; j < n; ++j)
-//        {
-//            if (s4.c[i][j] != 0) // Only store nonzero values
-//                triplets.push_back(Eigen::Triplet<float>(i, j, s4.c[i][j]));
-//        }
-//    }
-//    A.setFromTriplets(triplets.begin(), triplets.end());
-//
-//    // Solve using SparseLU (good for direct factorization)
-//    Eigen::SparseLU<Eigen::SparseMatrix<float>> solver;
-//    solver.compute(A);
-//    Eigen::VectorXf x = solver.solve(b);
-//
-//    // Store results back in s4.d
-//    for (int i = 0; i < n; ++i)
-//    {
-//        s4.d[i] = x(i);
-//    }
-//
-//    // Apply d_max constraint
-//    for (int j = 0; j < n; ++j)
-//    {
-//        if (elm_list[j / 2].kod == 5 && mode == 0)
-//        {
-//            if (std::abs(s4.d[j]) > d_max)
-//                s4.d[j] = (s4.d[j] / std::abs(s4.d[j])) * d_max;
-//        }
-//    }
-//}
-//
-//
+void solve1(int n, int mode)
+{
+    Eigen::SparseMatrix<float> A(n, n);
+    Eigen::VectorXf b(n);
+
+    // Convert s4.c into Eigen sparse matrix format
+    std::vector<Eigen::Triplet<float>> triplets;
+    for (int i = 0; i < n; ++i)
+    {
+        b(i) = s4.b[i];
+        for (int j = 0; j < n; ++j)
+        {
+            if (s4.c[i][j] != 0) // Only store nonzero values
+                triplets.push_back(Eigen::Triplet<float>(i, j, s4.c[i][j]));
+        }
+    }
+    A.setFromTriplets(triplets.begin(), triplets.end());
+
+    // Solve using SparseLU (good for direct factorization)
+    Eigen::SparseLU<Eigen::SparseMatrix<float>> solver;
+    solver.compute(A);
+    Eigen::VectorXf x = solver.solve(b);
+
+    // Store results back in s4.d
+    for (int i = 0; i < n; ++i)
+    {
+        s4.d[i] = x(i);
+    }
+
+    // Apply d_max constraint
+    for (int j = 0; j < n; ++j)
+    {
+        if (elm_list[j / 2].kod == 5 && mode == 0)
+        {
+            if (std::abs(s4.d[j]) > d_max)
+                s4.d[j] = (s4.d[j] / std::abs(s4.d[j])) * d_max;
+        }
+    }
+}
+
+
 
 
 
@@ -773,7 +773,7 @@ void mainb(int mode)
 
     //  solve system of algebric equations.
     n = 2 * numbe;
-    solve(n, mode);
+    solve1(n, mode);
 
 }
 
