@@ -9,7 +9,6 @@
 #include <algorithm>
 #include <cctype>
 #include <regex>
-#include<version>
 
 
 
@@ -133,19 +132,41 @@ void  file_preprocesing(const std::wstring& filename)
 
 
 
+
+//void SetConsoleFontSize(int size) {
+//    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+//    CONSOLE_FONT_INFOEX fontInfo = { sizeof(CONSOLE_FONT_INFOEX) };
+//    GetCurrentConsoleFontEx(hConsole, FALSE, &fontInfo);
+//
+//    // Force only allowed font sizes
+//    if (size < 10) size = 10;
+//    else if (size > 36) size = 36;  // Windows console limits
+//
+//    fontInfo.dwFontSize.Y = size;
+//    SetCurrentConsoleFontEx(hConsole, FALSE, &fontInfo);
+//}
+
+
+
+
+
 int main()
 {
+    // std::cout << " //////////////////////////////////////////////////////////\n" <<
+    cout <<
+        " XFracod2D v1.1.1 - Fracture Creation and Propagation Code\n" << " Copyright(c) DynaFrax UG LTD.All rights reserved.\n";// <<
+       // " //////////////////////////////////////////////////////////" << endl;
     std::wstring selectedFile = openFileDialog();
 
-    if (!selectedFile.empty()) {
-        std::wcout << "You selected: " << selectedFile << std::endl;
+    if (!selectedFile.empty()) {        
+
+        std::wcout << "\n You selected: " << selectedFile << std::endl;
     }
     else {
         std::cout << "No file was selected or an error occurred." << std::endl;
     }
     filepath = std::filesystem::path{ selectedFile }.parent_path();
     wstring filename = std::filesystem::path{ selectedFile }.filename();    
-
 
     wcout << L"The simulation is running\n";   
 
@@ -175,7 +196,6 @@ int main()
 
     Central_control();
     file2.close();
-    std::cout << "Version: " << PROJECT_VERSION << std::endl;
 
           
     return 0;

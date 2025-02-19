@@ -131,7 +131,7 @@ void reorder_fractures(fstream& file25)
     file25.seekg(0, std::ios::beg);
     nf = k;
 
-    int  mat_no = 0, joint_mat = 0, elem_no = 0, bound_type = 0;
+    int  mat_no = 0, joint_mat = 0, elem_no = 0, bound_type = 5;
     if (!file25)
     {
         std::cerr << "Failed to open file for reading." << std::endl;

@@ -1,4 +1,5 @@
-#include <Mainb.h>
+﻿#include <Mainb.h>
+#include <mkl.h>   
 #include "CommonPara.h"
 
 using namespace CommonPara_h::comvar;
@@ -6,88 +7,69 @@ using namespace CommonPara_h::comvar;
 
 
 
-//If  matrix is mostly nonzero, use the Dense Solver (QR method).
-//If  matrix has many zeros, use the Sparse Solver(SparseLU or BiCGSTAB) for better performance.
 
-/*the following method produces the same result like our solve function one more tips generated at the end but the runtime is larger than ours*/
+void solve_mkl(MKL_INT  n, int mode) {
+  
+        // Use MKL_INT instead of int
+        std::vector<MKL_INT> ia(n + 1, 0);  // Row pointers
+        std::vector<MKL_INT> ja;            // Column indices
+        std::vector<double> a;              // Nonzero values
+        std::vector<double> b(n);           // Right-hand side
+        std::vector<double> d(n, 0.0);      // Solution vector
 
-#include <Eigen/Sparse>
-//
-//void solve2(int n, int mode)
-//{
-//    //dense solver 
-//    Eigen::MatrixXf A(n, n);
-//    Eigen::VectorXf b(n);
-//
-//    // Copy data into Eigen matrices
-//    for (int i = 0; i < n; ++i)
-//    {
-//        b(i) = s4.b[i];
-//        for (int j = 0; j < n; ++j)
-//        {
-//            A(i, j) = s4.c[i][j];
-//        }
-//    }
-//
-//    // Solve using Eigen's QR decomposition (stable for general matrices)
-//    Eigen::VectorXf x = A.colPivHouseholderQr().solve(b);
-//
-//    // Store results back in s4.d
-//    for (int i = 0; i < n; ++i)
-//    {
-//        s4.d[i] = x(i);
-//    }
-//
-//    // Apply d_max constraint
-//    for (int j = 0; j < n; ++j)
-//    {
-//        if (elm_list[j / 2].kod == 5 && mode == 0)
-//        {
-//            if (std::abs(s4.d[j]) > d_max)
-//                s4.d[j] = (s4.d[j] / std::abs(s4.d[j])) * d_max;
-//        }
-//    }
-//}
-
-void solve1(int n, int mode)
-{
-    Eigen::SparseMatrix<float> A(n, n);
-    Eigen::VectorXf b(n);
-
-    // Convert s4.c into Eigen sparse matrix format
-    std::vector<Eigen::Triplet<float>> triplets;
-    for (int i = 0; i < n; ++i)
-    {
-        b(i) = s4.b[i];
-        for (int j = 0; j < n; ++j)
-        {
-            if (s4.c[i][j] != 0) // Only store nonzero values
-                triplets.push_back(Eigen::Triplet<float>(i, j, s4.c[i][j]));
+        // Convert dense `s4.c` to sparse CSR
+        MKL_INT nnz = 0;
+        for (MKL_INT i = 0; i < n; ++i) {
+            ia[i] = nnz + 1;  // 1-based indexing for MKL
+            for (MKL_INT j = 0; j < n; ++j) {
+                if (s4.c[i][j] != 0.0) {
+                    ja.push_back(j + 1);  // 1-based indexing
+                    a.push_back(s4.c[i][j]);
+                    nnz++;
+                }
+            }
+            b[i] = s4.b[i];  // Copy RHS
         }
-    }
-    A.setFromTriplets(triplets.begin(), triplets.end());
+        ia[n] = nnz + 1;
 
-    // Solve using SparseLU (good for direct factorization)
-    Eigen::SparseLU<Eigen::SparseMatrix<float>> solver;
-    solver.compute(A);
-    Eigen::VectorXf x = solver.solve(b);
+        // Initialize PARDISO
+        void* pt[64] = { 0 };  // Internal solver memory pointer
+        MKL_INT iparm[64] = { 0 }; // Solver parameters
+        MKL_INT mtype = 11;      // Real, nonsymmetric matrix
+        MKL_INT nrhs = 1;        // Single right-hand side
+        MKL_INT maxfct = 1, mnum = 1;
+        MKL_INT phase, error = 0;
+        MKL_INT msglvl = 0;      // Suppress output
+        iparm[0] = 1;        // Use default values
+        iparm[1] = 2;        // Use parallel factorization
+        iparm[7] = 2;        // Pivoting
+        iparm[9] = 13;       // Perturb for stability
+        iparm[10] = 1;       // Enable scaling
 
-    // Store results back in s4.d
-    for (int i = 0; i < n; ++i)
-    {
-        s4.d[i] = x(i);
-    }
-
-    // Apply d_max constraint
-    for (int j = 0; j < n; ++j)
-    {
-        if (elm_list[j / 2].kod == 5 && mode == 0)
-        {
-            if (std::abs(s4.d[j]) > d_max)
-                s4.d[j] = (s4.d[j] / std::abs(s4.d[j])) * d_max;
+        // Factorize and solve
+        phase = 13;  // Analyze, Factorize, and Solve
+        PARDISO(pt, &maxfct, &mnum, &mtype, &phase, &n, a.data(), ia.data(), ja.data(), nullptr, &nrhs, iparm, &msglvl, b.data(), d.data(), &error);
+        if (error != 0) {
+            std::cerr << "PARDISO solver failed with error code: " << error << std::endl;
+            return;
         }
-    }
+
+        // Store solution in `s4.d`
+        for (MKL_INT i = 0; i < n; ++i) {
+            s4.d[i] = d[i];
+
+            // Apply constraints if required
+            if (elm_list[int(i / 2)].kod == 5 && mode == 0) {
+                if (std::abs(s4.d[i]) > d_max)
+                    s4.d[i] = int(s4.d[i] / abs(s4.d[i])) * d_max;
+            }
+        }
+
+        // Release memory
+        phase = -1;
+        PARDISO(pt, &maxfct, &mnum, &mtype, &phase, &n, a.data(), ia.data(), ja.data(), nullptr, &nrhs, iparm, &msglvl, b.data(), d.data(), &error);
 }
+
 
 
 
@@ -98,6 +80,7 @@ void solve1(int n, int mode)
 void solve(int n, int mode)
 {
     
+    int nonzeroCount = 0;
 
     int nb = n - 1;
     for (int j = 0; j < nb; ++j) 
@@ -106,7 +89,7 @@ void solve(int n, int mode)
         {
             if (s4.c[jj][j] == 0)            
                 continue;
-
+            nonzeroCount++;
             float xx = s4.c[jj][j] / s4.c[j][j];
             for (int i = j; i < n; ++i)
             {
@@ -115,6 +98,9 @@ void solve(int n, int mode)
             s4.b[jj] -= s4.b[j] * xx;
         }
     }
+
+    //double density = static_cast<double>(nonzeroCount) /( nb*nb);
+   // std::cout << "\n Matrix density: " << density << std::endl;
 
     s4.d[n-1] = s4.b[n-1] / s4.c[n-1][n-1];
     if (elm_list[int(n / 2) - 1].kod == 5 && mode == 0)    
@@ -773,7 +759,8 @@ void mainb(int mode)
 
     //  solve system of algebric equations.
     n = 2 * numbe;
-    solve1(n, mode);
+    //solve(n, mode);
+    solve_mkl(n, mode);
 
 }
 

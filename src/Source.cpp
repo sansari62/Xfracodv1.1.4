@@ -525,7 +525,7 @@ void Central_control()
     while (!StopReturn)
     {
         mcyc++;  
-        cout << "\n cycle " << comvar::mcyc << " is running.... ";
+        cout << "\n cycle " << comvar::mcyc << " of " <<mcyc0<<"  is running.... ";
 
         creep.deltaT = creep.deltaT_min;         //Creep iteration
         creep.ID_creep = (creep.time < creep.totalT) ? 1 : 0;
