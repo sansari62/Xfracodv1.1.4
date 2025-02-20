@@ -3,6 +3,7 @@
 #define Initiation_h
 #include<utility>
 
+
 std::pair<bool, bool> for_j_loop(int k, int m, float xt, float yt, float& x, float& y,
     int& ID, float& beta, int &jj, int numbe0,bool intern_call);
 

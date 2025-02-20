@@ -11,6 +11,8 @@
 #include <regex>
 
 
+#define VERSION "v1.2.1"
+
 
 using namespace CommonPara_h::comvar;
 using namespace std;
@@ -133,34 +135,15 @@ void  file_preprocesing(const std::wstring& filename)
 
 
 
-//void SetConsoleFontSize(int size) {
-//    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-//    CONSOLE_FONT_INFOEX fontInfo = { sizeof(CONSOLE_FONT_INFOEX) };
-//    GetCurrentConsoleFontEx(hConsole, FALSE, &fontInfo);
-//
-//    // Force only allowed font sizes
-//    if (size < 10) size = 10;
-//    else if (size > 36) size = 36;  // Windows console limits
-//
-//    fontInfo.dwFontSize.Y = size;
-//    SetCurrentConsoleFontEx(hConsole, FALSE, &fontInfo);
-//}
-
-
-
-
-
 int main()
 {
-    // std::cout << " //////////////////////////////////////////////////////////\n" <<
     cout <<
         " XFracod2D v1.1.1 - Fracture Creation and Propagation Code\n" << " Copyright(c) DynaFrax UG LTD.All rights reserved.\n";// <<
-       // " //////////////////////////////////////////////////////////" << endl;
     std::wstring selectedFile = openFileDialog();
 
     if (!selectedFile.empty()) {        
 
-        std::wcout << "\n You selected: " << selectedFile << std::endl;
+        std::wcout << "\nThe input model: " << selectedFile << std::endl;
     }
     else {
         std::cout << "No file was selected or an error occurred." << std::endl;
@@ -168,21 +151,25 @@ int main()
     filepath = std::filesystem::path{ selectedFile }.parent_path();
     wstring filename = std::filesystem::path{ selectedFile }.filename();    
 
-    wcout << L"The simulation is running\n";   
-
-   // elm_list.reserve(500);
-   // b_elm.reserve(500);
+    wcout << L"The simulation is running...\n";  
+   
     wstring filename1 = std::filesystem::path{ selectedFile }.stem();     
 
     dir = filepath + L"\\" + filename1 + L"_Results";
     
     if (std::filesystem::create_directory(dir) || ERROR_ALREADY_EXISTS == GetLastError()) {
-        std::cout << "Result's Directory created successfully.\n";
+        std::cout << "Result's Directory created successfully...\n";
     }
     else {
         std::cout << "Failed to create directory.\n";
     }
     file2.open(dir + L"/Coutput.dat");
+    logfile.open(dir + L"/Clog.txt");
+    if (!logfile.is_open())
+    {
+        cout << "log file is not opend.\n";       
+    }
+    logfile<< " The release version: " << VERSION << "\n";
 
     file_preprocesing(selectedFile);
 
@@ -195,8 +182,7 @@ int main()
     }
 
     Central_control();
-    file2.close();
-
+    file2.close();   
           
     return 0;
 }

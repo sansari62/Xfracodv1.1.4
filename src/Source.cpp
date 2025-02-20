@@ -497,10 +497,11 @@ void Central_control()
     creep.ID_creep = 0;
 
     n_it = 20;
-    StopReturn = false;
+    StopReturn = false;    
 
     input();
     CheckRange();
+    logfile << "The initial number of boundary elements, fractures, Archs: " << numbe << ", " << nf << "," << na << endl;
 
     if (StopReturn == true) return;
 
@@ -525,7 +526,7 @@ void Central_control()
     while (!StopReturn)
     {
         mcyc++;  
-        cout << "\n cycle " << comvar::mcyc << " of " <<mcyc0<<"  is running.... ";
+        cout << " cycle " << comvar::mcyc << " of " <<mcyc0<<"  is running.... ";
 
         creep.deltaT = creep.deltaT_min;         //Creep iteration
         creep.ID_creep = (creep.time < creep.totalT) ? 1 : 0;
@@ -562,7 +563,7 @@ void Central_control()
             //----------------------------------------------------------
             prenumbe = numbe;
             add_crack_growth(); 
-            cout << " finished!!! ";
+            cout << " finished!!!\n ";
             if (creep.time == creep.totalT || creep.ID_creep == 0 || creep.ID_fast_crack == 1)                
                 break;
             //if not a creep problem or if fast crack growth, exit
@@ -582,6 +583,7 @@ void Central_control()
                                     auto end1 = std::chrono::high_resolution_clock::now();
                                     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end1 - start);
                                      cout<< "Run time=  "<< duration.count()<<" ms";
+                                     logfile << "Run time=  " << duration.count() << " ms\n";
                                     MessageBox(nullptr, L"End of cycle & input file! press OK to quit.", L"Message!", MB_OK);  
                                     return;                             
                             }

@@ -7,87 +7,17 @@ using namespace CommonPara_h::comvar;
 
 
 
-
-void solve_mkl(MKL_INT  n, int mode) {
-  
-        // Use MKL_INT instead of int
-        std::vector<MKL_INT> ia(n + 1, 0);  // Row pointers
-        std::vector<MKL_INT> ja;            // Column indices
-        std::vector<double> a;              // Nonzero values
-        std::vector<double> b(n);           // Right-hand side
-        std::vector<double> d(n, 0.0);      // Solution vector
-
-        // Convert dense `s4.c` to sparse CSR
-        MKL_INT nnz = 0;
-        for (MKL_INT i = 0; i < n; ++i) {
-            ia[i] = nnz + 1;  // 1-based indexing for MKL
-            for (MKL_INT j = 0; j < n; ++j) {
-                if (s4.c[i][j] != 0.0) {
-                    ja.push_back(j + 1);  // 1-based indexing
-                    a.push_back(s4.c[i][j]);
-                    nnz++;
-                }
-            }
-            b[i] = s4.b[i];  // Copy RHS
-        }
-        ia[n] = nnz + 1;
-
-        // Initialize PARDISO
-        void* pt[64] = { 0 };  // Internal solver memory pointer
-        MKL_INT iparm[64] = { 0 }; // Solver parameters
-        MKL_INT mtype = 11;      // Real, nonsymmetric matrix
-        MKL_INT nrhs = 1;        // Single right-hand side
-        MKL_INT maxfct = 1, mnum = 1;
-        MKL_INT phase, error = 0;
-        MKL_INT msglvl = 0;      // Suppress output
-        iparm[0] = 1;        // Use default values
-        iparm[1] = 2;        // Use parallel factorization
-        iparm[7] = 2;        // Pivoting
-        iparm[9] = 13;       // Perturb for stability
-        iparm[10] = 1;       // Enable scaling
-
-        // Factorize and solve
-        phase = 13;  // Analyze, Factorize, and Solve
-        PARDISO(pt, &maxfct, &mnum, &mtype, &phase, &n, a.data(), ia.data(), ja.data(), nullptr, &nrhs, iparm, &msglvl, b.data(), d.data(), &error);
-        if (error != 0) {
-            std::cerr << "PARDISO solver failed with error code: " << error << std::endl;
-            return;
-        }
-
-        // Store solution in `s4.d`
-        for (MKL_INT i = 0; i < n; ++i) {
-            s4.d[i] = d[i];
-
-            // Apply constraints if required
-            if (elm_list[int(i / 2)].kod == 5 && mode == 0) {
-                if (std::abs(s4.d[i]) > d_max)
-                    s4.d[i] = int(s4.d[i] / abs(s4.d[i])) * d_max;
-            }
-        }
-
-        // Release memory
-        phase = -1;
-        PARDISO(pt, &maxfct, &mnum, &mtype, &phase, &n, a.data(), ia.data(), ja.data(), nullptr, &nrhs, iparm, &msglvl, b.data(), d.data(), &error);
-}
-
-
-
-
-
-
-
-
 void solve(int n, int mode)
 {
-    
+
     int nonzeroCount = 0;
 
     int nb = n - 1;
-    for (int j = 0; j < nb; ++j) 
-    {        
+    for (int j = 0; j < nb; ++j)
+    {
         for (int jj = j + 1; jj < n; ++jj)
         {
-            if (s4.c[jj][j] == 0)            
+            if (s4.c[jj][j] == 0)
                 continue;
             nonzeroCount++;
             float xx = s4.c[jj][j] / s4.c[j][j];
@@ -99,19 +29,17 @@ void solve(int n, int mode)
         }
     }
 
-    //double density = static_cast<double>(nonzeroCount) /( nb*nb);
-   // std::cout << "\n Matrix density: " << density << std::endl;
-
-    s4.d[n-1] = s4.b[n-1] / s4.c[n-1][n-1];
-    if (elm_list[int(n / 2) - 1].kod == 5 && mode == 0)    
+    
+    s4.d[n - 1] = s4.b[n - 1] / s4.c[n - 1][n - 1];
+    if (elm_list[int(n / 2) - 1].kod == 5 && mode == 0)
     {
-        if (std::abs((s4.d[n-1]) > d_max))
-            s4.d[n-1] = int(s4.d[n-1] / abs(s4.d[n-1])) * d_max;
+        if (std::abs((s4.d[n - 1]) > d_max))
+            s4.d[n - 1] = int(s4.d[n - 1] / abs(s4.d[n - 1])) * d_max;
     }
 
-    for (int j = 1; j <= nb; ++j) 
+    for (int j = 1; j <= nb; ++j)
     {
-        int jj = n - 1 - j ;
+        int jj = n - 1 - j;
         float sum = 0.0;
         for (int i = jj + 1; i < n; ++i)
         {
@@ -128,6 +56,8 @@ void solve(int n, int mode)
 
     return;
 }
+
+
 
 
 
@@ -435,6 +365,8 @@ void label_500(int i, int j,int mm, int mmj,int is, int in, int js, int jn,int m
 
     return;
 }
+
+
 
 
 
@@ -759,8 +691,7 @@ void mainb(int mode)
 
     //  solve system of algebric equations.
     n = 2 * numbe;
-    //solve(n, mode);
-    solve_mkl(n, mode);
+    solve(n, mode);
 
 }
 

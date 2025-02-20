@@ -121,7 +121,7 @@ namespace comvar {
 
 	//ofstream file7(filename1, std::ios::binary);
 	
-	std::ofstream file50("creep_results.dat");
+	std::ofstream file50("Ccreep_results.dat");
 	wstring filepath = L"";
 
 	wstring dir = L"";
@@ -132,6 +132,7 @@ namespace comvar {
 	std::ifstream inFile;
 
 	std::ofstream file9("Cbound.dat");
+	std::ofstream logfile;
 
 	
 	
