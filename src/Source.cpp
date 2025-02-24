@@ -563,7 +563,7 @@ void Central_control()
             //----------------------------------------------------------
             prenumbe = numbe;
             add_crack_growth(); 
-            cout << " finished!!!\n ";
+            cout << " finished!!!\n";
             if (creep.time == creep.totalT || creep.ID_creep == 0 || creep.ID_fast_crack == 1)                
                 break;
             //if not a creep problem or if fast crack growth, exit

@@ -626,6 +626,8 @@ void newtips(float dr)
 
 
 
+
+
     void If_No_tip(wstring selectedFile)
     {
         if (no == 0)
@@ -651,7 +653,7 @@ void newtips(float dr)
             if (lastinput == "endf")
             {
                 
-                return;  // stop
+                return;  
             }
             else
                 input(); //first time to call input()  

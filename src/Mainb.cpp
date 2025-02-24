@@ -395,6 +395,7 @@ void mainb(int mode)
         {
             MessageBox(nullptr, L"material not defined_i mainb.", L"Error", MB_OK);
             file2 <<"program stopped due to undefined material number for element = " << i << endl;
+            logfile << "program stopped due to undefined material number for element = " << i << endl;
             exit(EXIT_FAILURE);
         }
 
