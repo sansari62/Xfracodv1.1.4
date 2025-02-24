@@ -351,7 +351,7 @@ void populate_boudary_i(fstream& file25)
         }            
                               
     }
-
+    file25.seekg(0, std::ios::beg);
     return;
 }
 
@@ -542,9 +542,10 @@ void check_cross_boundaries()
                 xcross > max(xb2, xe2) + dtol || ycross > max(yb2, ye2) + dtol)
                 continue;
 
-            ncr[i]++;
+            
             xcr[i][ncr[i]] = xcross;
             ycr[i][ncr[i]] = ycross;
+            ncr[i]++;
 
              //since fj changed we reassign all vars and used in computing ang.   
             // boundary i is not changed so xb1,yb1,xe1,ye1 no need to reassign again     //test Sara!
@@ -553,9 +554,9 @@ void check_cross_boundaries()
             xe2 = f.get_xend();
             ye2 = f.get_yend();
 
-            float ang0 = static_cast<float>(atan2((ye1 - yb1), (xe1 - xb1)));
-            float ange = static_cast<float>(atan2((ye2 - yb1), (xe2 - xb1)));
-            float angb = static_cast<float>(atan2((yb2 - yb1), (xb2 - xb1)));        //diff bet frac j and bound i  coordinates
+            float ang0 = atan2f((ye1 - yb1), (xe1 - xb1));
+            float ange = atan2f((ye2 - yb1), (xe2 - xb1));
+            float angb = atan2f((yb2 - yb1), (xb2 - xb1));        //diff bet frac j and bound i  coordinates
 
             if (angb > ang0 && ange < ang0) 
             {

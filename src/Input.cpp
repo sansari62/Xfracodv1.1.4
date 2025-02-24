@@ -394,7 +394,7 @@ void processFracture()
         {
             if (!isValidNumber(tem)) {
                 MessageBox(nullptr, L"Expected a number after 'cycle'.Please add the number of cycles on the next line in the input file!", L"Error", MB_OK | MB_ICONERROR);
-                return ; 
+                exit(EXIT_FAILURE);
             }
             
             file2 << tem << endl;              
@@ -875,6 +875,7 @@ void processFracture()
 
 
 
+
    void processInsituStress()
    {
        float pxx0, pyy0, pxy0;  
@@ -901,6 +902,8 @@ void processFracture()
        }
        return;
    }
+
+
 
 
 

@@ -11,7 +11,7 @@
 #include <regex>
 
 
-#define VERSION "v1.2.1"
+#define VERSION "v1.0.1"
 
 
 using namespace CommonPara_h::comvar;
@@ -138,7 +138,7 @@ void  file_preprocesing(const std::wstring& filename)
 int main()
 {
     cout <<
-        " XFracod2D v1.1.1 - Fracture Creation and Propagation Code\n" << " Copyright(c) DynaFrax UG LTD.All rights reserved.\n";// <<
+        " XFracod2D v1.0.1 - Fracture Creation and Propagation Code\n" << " Copyright(c) DynaFrax UG LTD.All rights reserved.\n";// <<
     std::wstring selectedFile = openFileDialog();
 
     if (!selectedFile.empty()) {        

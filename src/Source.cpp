@@ -501,7 +501,7 @@ void Central_control()
 
     input();
     CheckRange();
-    logfile << "The initial number of boundary elements, fractures, Archs: " << numbe << ", " << nf << "," << na << endl;
+    logfile << "The initial number of boundary elements:"<< numbe <<", fractures:" << nf << ", Archs: " <<  na << "edges: "<<nb<<endl;
 
     if (StopReturn == true) return;
 
