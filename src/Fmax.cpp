@@ -174,12 +174,12 @@ float ang_setting(float angi0, float& fi0, int mm, int mode, float& angi)
     //0.000001works till test 11
     if(float(int(angi0)) != round(angi0))
     {
-        if (abs(angi0 - 8 - round(angi0 - 8)) > 0.000001)   //  //0.000001
+        if (abs(angi0 - 8 - round(angi0 - 8)) > 0.0000019)   //  //0.000001
             s_index = int(angi0 - 8);
         else
             s_index = round(angi0 - 8);
 
-        if (abs(angi0 + 8 - round(angi0 + 8)) > 0.000001)
+        if (abs(angi0 + 8 - round(angi0 + 8)) > 0.0000019)
             e_index = int(angi0 + 8);
         else
             e_index = round(angi0 + 8);
