@@ -72,8 +72,8 @@ namespace comvar {
 	std::vector<std::pair<float, float>> valid;
 	std::vector<std::pair<float, float>> valid1;	
 
-	std::vector<BoundaryElement> elm_list(m0/2);	
-	std::vector<BE> b_elm(m0/2);
+	std::vector<BoundaryElement> elm_list(m0);	
+	std::vector<BE> b_elm(m0);
 	std::vector<MonitoringPoint> mpoint_list(20);
 	std::vector<MonitoringLine> mline_list(10);
 
@@ -121,7 +121,7 @@ namespace comvar {
 
 	//ofstream file7(filename1, std::ios::binary);
 	
-	std::ofstream file50("creep_results.dat");
+	std::ofstream file50("Ccreep_results.dat");
 	wstring filepath = L"";
 
 	wstring dir = L"";
@@ -132,6 +132,7 @@ namespace comvar {
 	std::ifstream inFile;
 
 	std::ofstream file9("Cbound.dat");
+	std::ofstream logfile;
 
 	
 	

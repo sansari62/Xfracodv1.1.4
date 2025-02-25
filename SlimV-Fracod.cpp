@@ -11,6 +11,8 @@
 #include <regex>
 
 
+#define VERSION "v1.0.1"
+
 
 using namespace CommonPara_h::comvar;
 using namespace std;
@@ -132,12 +134,16 @@ void  file_preprocesing(const std::wstring& filename)
 
 
 
+
 int main()
 {
+    cout <<
+        " XFracod2D v1.0.1 - Fracture Creation and Propagation Code\n" << " Copyright(c) DynaFrax UG LTD.All rights reserved.\n";// <<
     std::wstring selectedFile = openFileDialog();
 
-    if (!selectedFile.empty()) {
-        std::wcout << "You selected: " << selectedFile << std::endl;
+    if (!selectedFile.empty()) {        
+
+        std::wcout << "\nThe input model: " << selectedFile << std::endl;
     }
     else {
         std::cout << "No file was selected or an error occurred." << std::endl;
@@ -145,22 +151,25 @@ int main()
     filepath = std::filesystem::path{ selectedFile }.parent_path();
     wstring filename = std::filesystem::path{ selectedFile }.filename();    
 
-
-    wcout << L"The simulation is running\n";   
-
-    elm_list.reserve(500);
-    b_elm.reserve(500);
+    wcout << L"The simulation is running...\n";  
+   
     wstring filename1 = std::filesystem::path{ selectedFile }.stem();     
 
     dir = filepath + L"\\" + filename1 + L"_Results";
     
     if (std::filesystem::create_directory(dir) || ERROR_ALREADY_EXISTS == GetLastError()) {
-        std::cout << "Result's Directory created successfully.\n";
+        std::cout << "Result's Directory created successfully...\n";
     }
     else {
         std::cout << "Failed to create directory.\n";
     }
     file2.open(dir + L"/Coutput.dat");
+    logfile.open(dir + L"/Clog.txt");
+    if (!logfile.is_open())
+    {
+        cout << "log file is not opend.\n";       
+    }
+    logfile<< " The release version: " << VERSION << "\n";
 
     file_preprocesing(selectedFile);
 
@@ -173,7 +182,7 @@ int main()
     }
 
     Central_control();
-    file2.close();
+    file2.close();   
           
     return 0;
 }

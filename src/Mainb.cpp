@@ -1,4 +1,5 @@
-#include <Mainb.h>
+﻿#include <Mainb.h>
+#include <mkl.h>   
 #include "CommonPara.h"
 
 using namespace CommonPara_h::comvar;
@@ -6,20 +7,19 @@ using namespace CommonPara_h::comvar;
 
 
 
-
-
 void solve(int n, int mode)
 {
-    
+
+    int nonzeroCount = 0;
 
     int nb = n - 1;
-    for (int j = 0; j < nb; ++j) 
-    {        
+    for (int j = 0; j < nb; ++j)
+    {
         for (int jj = j + 1; jj < n; ++jj)
         {
-            if (s4.c[jj][j] == 0)            
+            if (s4.c[jj][j] == 0)
                 continue;
-
+            nonzeroCount++;
             float xx = s4.c[jj][j] / s4.c[j][j];
             for (int i = j; i < n; ++i)
             {
@@ -29,16 +29,17 @@ void solve(int n, int mode)
         }
     }
 
-    s4.d[n-1] = s4.b[n-1] / s4.c[n-1][n-1];
-    if (elm_list[int(n / 2) - 1].kod == 5 && mode == 0)    
+    
+    s4.d[n - 1] = s4.b[n - 1] / s4.c[n - 1][n - 1];
+    if (elm_list[int(n / 2) - 1].kod == 5 && mode == 0)
     {
-        if (std::abs((s4.d[n-1]) > d_max))
-            s4.d[n-1] = int(s4.d[n-1] / abs(s4.d[n-1])) * d_max;
+        if (std::abs((s4.d[n - 1]) > d_max))
+            s4.d[n - 1] = int(s4.d[n - 1] / abs(s4.d[n - 1])) * d_max;
     }
 
-    for (int j = 1; j <= nb; ++j) 
+    for (int j = 1; j <= nb; ++j)
     {
-        int jj = n - 1 - j ;
+        int jj = n - 1 - j;
         float sum = 0.0;
         for (int i = jj + 1; i < n; ++i)
         {
@@ -55,6 +56,8 @@ void solve(int n, int mode)
 
     return;
 }
+
+
 
 
 
@@ -367,6 +370,8 @@ void label_500(int i, int j,int mm, int mmj,int is, int in, int js, int jn,int m
 
 
 
+
+
 void mainb(int mode)
 {
     int in = 0, is = 0, mm = 0, mmj = 0, jn = 0, js = 0, n =0 ;
@@ -390,6 +395,7 @@ void mainb(int mode)
         {
             MessageBox(nullptr, L"material not defined_i mainb.", L"Error", MB_OK);
             file2 <<"program stopped due to undefined material number for element = " << i << endl;
+            logfile << "program stopped due to undefined material number for element = " << i << endl;
             exit(EXIT_FAILURE);
         }
 

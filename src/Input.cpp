@@ -9,6 +9,8 @@
 #include<chrono>
 #include <unordered_map>
 #include<Save_and_Restore.h>
+#include <charconv>
+
 
 
 using namespace CommonPara_h::comvar;
@@ -365,6 +367,13 @@ void processFracture()
 
 
 
+    bool isValidNumber(const std::string& str) {
+        int value;
+        auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), value);
+        return ec == std::errc() && ptr == str.data() + str.size();
+    }
+
+
     void start_calculation()
     {   
         string lineData;        
@@ -378,14 +387,19 @@ void processFracture()
         }
         catch (std::ifstream::failure e)
         {
-            MessageBox(nullptr, L"Error in input File,touc definition!", L"Error", MB_OK);
+            MessageBox(nullptr, L"Error in input File,touc definition!", L"Error", MB_OK | MB_ICONERROR);
         }
         
         if (tem != " ") 
-            {
-                  file2 << tem << endl;              
-                    mcyc0 += stoi(tem);               
+        {
+            if (!isValidNumber(tem)) {
+                MessageBox(nullptr, L"Expected a number after 'cycle'.Please add the number of cycles on the next line in the input file!", L"Error", MB_OK | MB_ICONERROR);
+                exit(EXIT_FAILURE);
             }
+            
+            file2 << tem << endl;              
+            mcyc0 += stoi(tem);               
+        }
         //----------------------------
         if (mcyc != 0) return;            
         s5u.dtol = 0.0001;            
@@ -393,11 +407,7 @@ void processFracture()
         if (nc == 1)
         {
             inputcheck();
-            input_tip_check();
-          //  file7 << dispwin.xll << " " << dispwin.xur << " " << dispwin.yll << " " <<
-             //   dispwin.yur << endl;           
-
-             //!-------------------------
+            input_tip_check();         
             file2 << endl;
             file2 << " " << endl
                 << " boundary element data." << endl
@@ -865,6 +875,7 @@ void processFracture()
 
 
 
+
    void processInsituStress()
    {
        float pxx0, pyy0, pxy0;  
@@ -891,6 +902,8 @@ void processFracture()
        }
        return;
    }
+
+
 
 
 
@@ -1393,6 +1406,7 @@ void processFracture()
    }
 
 
+
    inline void  mlinProcess()
    {
        try
@@ -1407,6 +1421,7 @@ void processFracture()
 
        }
    }
+
 
 
    inline void  dstrProcess()
@@ -1487,7 +1502,7 @@ void processFracture()
         {"tunn",processTunnel},
         {"lint",processLinearInterface},{ "aint",processArcInterface},{"wate",processWaterPressure},
         {"perm",processPermeability},
-       {"rect",processRect},
+        {"rect",processRect},
         {"hole",processHole}
        };  
 
@@ -1529,6 +1544,7 @@ void processFracture()
                        continue;
                    }
                    else if (response == IDCANCEL) {
+                       logfile << "exits with: " << IDCANCEL << endl;
                        exit(EXIT_FAILURE);
                    }
 
