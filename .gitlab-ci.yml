@@ -38,5 +38,5 @@ release:
     - echo "Release files ready."
   artifacts:
     paths:
-      - release/
-    expire_in: 7 days
+      - artifacts/
+
