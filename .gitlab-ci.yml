@@ -1,80 +1,42 @@
-# You can override the included template(s) by including variable overrides
-# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization
-# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
-# Note that environment variables can be set in several places
-# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
-# stages:
-# - test
-# sast:
-#   stage: test
-# include:
-# - template: Security/SAST.gitlab-ci.yml
-
 stages:
   - build
   - test
-  - security
   - release
 
 variables:
-  BUILD_DIR: "x64"
-  OUTPUT_EXE: "x64\\Release\\SlimV-Fracod.exe"
-  SOLUTION_FILE: "C:\\C++projects\\SlimV-Fracod\\SlimV-Fracod.sln"  
-  MSBUILD_PATH: "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe"
+  BUILD_DIR: "build"
+  VS_DEV_CMD: "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat"
 
-before_script:
-  - mkdir -p $BUILD_DIR
-
-# Build Stage
 build:
   stage: build
+  tags:
+    - windows
   script:
-    - echo "Setting up Visual Studio environment..."
-    - '"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat"'
-    - echo "Building project..."
-    - $MSBUILD_PATH $SOLUTION_FILE /t:Build /p:Configuration=Release
-  artifacts:
-    paths:
-      - $OUTPUT_EXE
-    expire_in: 1 week
+    - call "%VS_DEV_CMD%"
+    - mkdir %BUILD_DIR%
+    - cd %BUILD_DIR%
+    - cmake .. -G "Visual Studio 17 2022" -A x64
+    - cmake --build . --config Release
 
-# Test Stage
 test:
   stage: test
+  tags:
+    - windows
   script:
-    - echo "Running unit tests..."
-    - if exist "build\\Debug\\test.exe" ("build\\Debug\\test.exe") else (echo "No tests found")
-  artifacts:
-    when: always
-    paths:
-      - "test_results.xml"
+    - call "%VS_DEV_CMD%"
+    - cd %BUILD_DIR%
+    - ctest -C Release --output-on-failure
 
-# Security Scanning (SAST)
-sast:
-  stage: security
-include:
-  - template: Security/SAST.gitlab-ci.yml
-
-# Release Stage (Runs when a Git tag is pushed)
 release:
   stage: release
+  tags:
+    - windows
   script:
     - echo "Creating release..."
-    - mkdir -p artifacts
-    - cp $OUTPUT_EXE artifacts/
-    - echo "Release version: ${CI_COMMIT_TAG}"
-    - |
-      curl --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" --data "{
-        \"name\": \"Release ${CI_COMMIT_TAG}\",
-        \"tag_name\": \"${CI_COMMIT_TAG}\",
-        \"description\": \"Release ${CI_COMMIT_TAG}\",
-        \"assets\": {\"links\": [{\"name\": \"Executable\", \"url\": \"${CI_PROJECT_URL}/-/jobs/${CI_JOB_ID}/artifacts/download\"}]}
-      }" https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases
-  only:
-    - tags
+    - mkdir release
+    - copy %BUILD_DIR%\Release\your_executable.exe release\
+    - echo "Release files ready."
   artifacts:
     paths:
-      - artifacts/
-
+      - release/
+    expire_in: 7 days
