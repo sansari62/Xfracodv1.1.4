@@ -9,7 +9,7 @@ variables:
   PROJECT_DIR: "C:\\C++projects\\SlimV-Fracod"  # Your project directory
   SOLUTION_FILE: "SlimV-Fracod.sln"
   RELEASE_DIR: "x64\\Release"
-  EXE_NAME: "your_executable.exe"  # Replace with the name of your executable
+  EXE_NAME: "SlimV-Fracod.exe"  # Replace with the name of your executable
 
 build:
   stage: build
@@ -20,14 +20,10 @@ build:
     - cd %PROJECT_DIR%      # Change to the project directory
     - MSBuild "%SOLUTION_FILE%" /p:Configuration=Release /p:Platform=x64  # Build the solution using MSBuild
 
-test:
+sast:
   stage: test
-  tags:
-    - windows
-  script:
-    - call "%VS_DEV_CMD%"  # Set up the Visual Studio environment
-    - cd %PROJECT_DIR%\%BUILD_DIR%\%RELEASE_DIR%  # Change to the build directory
-    - echo "Running tests..."  # Insert your test commands here (e.g., using a test framework like Google Test or MSTest)
+include:
+- template: Security/SAST.gitlab-ci.yml
 
 release:
   stage: release
