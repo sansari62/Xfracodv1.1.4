@@ -371,7 +371,7 @@ int cross(float xb1, float yb1, float xe1, float ye1, float xb2, float yb2,
     }
     else
     {
-        tan1 = (ye1 - yb1) / (xe1 - xb1);
+        tan1 = float(ye1 - yb1) / float(xe1 - xb1);
     }
 
     if ((xb1 == xb2 && yb1 == yb2) || (xb1 == xe2 && yb1 == ye2) ||
@@ -385,7 +385,7 @@ int cross(float xb1, float yb1, float xe1, float ye1, float xb2, float yb2,
     }
     else
     {
-        tan2 = (ye2 - yb2) / (xe2 - xb2);
+        tan2 = float(ye2 - yb2) / float(xe2 - xb2);
     }
 
     if (tan1 == tan2) 
@@ -393,13 +393,14 @@ int cross(float xb1, float yb1, float xe1, float ye1, float xb2, float yb2,
         return id;
     }
 
-    xcross = (yb2 - yb1 + tan1 * xb1 - tan2 * xb2) / (tan1 - tan2);
-    ycross = (tan1 * tan2 * (xb1 - xb2) + tan1 * yb2 - tan2 * yb1) / (tan1 - tan2);
+    xcross = float (float(yb2 - yb1) + float(tan1 * xb1) - float(tan2 * xb2)) / float(tan1 - tan2);
+    ycross = (float(tan1 * tan2 * float(xb1 - xb2)) + float(tan1 * yb2 - tan2 * yb1)) /float (tan1 - tan2);
+    const float epsilon = 1e-6;
 
-    if (xcross <= min(xb1, xe1) - 0 * s5u.dtol || ycross <= min(yb1, ye1) - 0 * s5u.dtol ||
-        xcross >= max(xb1, xe1) + 0 * s5u.dtol || ycross >= max(yb1, ye1) + 0 * s5u.dtol ||
-        xcross <= min(xb2, xe2) - 0 * s5u.dtol || ycross <= min(yb2, ye2) - 0 * s5u.dtol ||
-        xcross >= max(xb2, xe2) + 0 * s5u.dtol || ycross >= max(yb2, ye2) + 0 * s5u.dtol) 
+    if (xcross <= min(xb1, xe1) - epsilon || ycross <= min(yb1, ye1) - epsilon ||
+        xcross >= max(xb1, xe1) + epsilon || ycross >= max(yb1, ye1) + epsilon ||
+        xcross <= min(xb2, xe2) - epsilon || ycross <= min(yb2, ye2) - epsilon ||
+        xcross >= max(xb2, xe2) + epsilon || ycross >= max(yb2, ye2) + epsilon)
     {
         return id;
     }
@@ -496,10 +497,11 @@ void Central_control()
     creep.ID_creep = 0;
 
     n_it = 20;
-    StopReturn = false;
+    StopReturn = false;    
 
     input();
     CheckRange();
+    logfile << "The initial number of boundary elements:"<< numbe <<", fractures:" << nf << ", Archs: " <<  na << "edges: "<<nb<<endl;
 
     if (StopReturn == true) return;
 
@@ -524,7 +526,7 @@ void Central_control()
     while (!StopReturn)
     {
         mcyc++;  
-        cout << "\n cycle " << comvar::mcyc << " is running.... ";
+        cout << " cycle " << comvar::mcyc << " of " <<mcyc0<<"  is running.... ";
 
         creep.deltaT = creep.deltaT_min;         //Creep iteration
         creep.ID_creep = (creep.time < creep.totalT) ? 1 : 0;
@@ -561,7 +563,7 @@ void Central_control()
             //----------------------------------------------------------
             prenumbe = numbe;
             add_crack_growth(); 
-            cout << " finished!!! ";
+            cout << " finished!!!\n";
             if (creep.time == creep.totalT || creep.ID_creep == 0 || creep.ID_fast_crack == 1)                
                 break;
             //if not a creep problem or if fast crack growth, exit
@@ -580,7 +582,8 @@ void Central_control()
                             {                                
                                     auto end1 = std::chrono::high_resolution_clock::now();
                                     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end1 - start);
-                                     cout<< "Run time=  "<< duration.count();
+                                     cout<< "Run time=  "<< duration.count()<<" ms";
+                                     logfile << "Run time=  " << duration.count() << " ms\n";
                                     MessageBox(nullptr, L"End of cycle & input file! press OK to quit.", L"Message!", MB_OK);  
                                     return;                             
                             }

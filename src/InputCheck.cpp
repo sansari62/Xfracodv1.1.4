@@ -8,7 +8,7 @@ using namespace CommonPara_h::comvar;
 
 
 
-const int len = 50;
+const int len = 100;
 int ncr[len] = {0}, itip[len] = {0};
 float xcr[len][len] = {0.0}, ycr[len][len] = { 0.0 }, acr[len][len] = {0.0};
 
@@ -17,7 +17,6 @@ float xcr[len][len] = {0.0}, ycr[len][len] = { 0.0 }, acr[len][len] = {0.0};
 
 void reorder_fractures(fstream& file25)
 {          
-    //------- reoder fractures -----------
 
     float xbeg = 0, ybeg = 0, xend = 0, yend = 0, xtem = 0, ytem = 0;
     float d1, d2;
@@ -60,15 +59,19 @@ void reorder_fractures(fstream& file25)
         {
             itl = 0;
             itr = 0;
-            xbeg = xcr[i][n];    // change index y of xcr and ycr from n-1 to n because of warnings
-            ybeg = ycr[i][n];
 
-            if (n == 0) 
+            if (n == 0)
             {
                 xbeg = f.get_xbeg();
-                ybeg = f.get_ybeg();              
+                ybeg = f.get_ybeg();
                 itl = 1;
             }
+            else
+            {
+                xbeg = xcr[i][n-1];    // change index y of xcr and ycr from n-1 to n because of warnings
+                ybeg = ycr[i][n-1];
+            }
+                                 
 
             float xend = xcr[i][n];
             float yend = ycr[i][n];
@@ -128,7 +131,7 @@ void reorder_fractures(fstream& file25)
     file25.seekg(0, std::ios::beg);
     nf = k;
 
-    int  mat_no = 0, joint_mat = 0, elem_no = 0, bound_type = 0;
+    int  mat_no = 0, joint_mat = 0, elem_no = 0, bound_type = 5;
     if (!file25)
     {
         std::cerr << "Failed to open file for reading." << std::endl;
@@ -348,7 +351,7 @@ void populate_boudary_i(fstream& file25)
         }            
                               
     }
-
+    file25.seekg(0, std::ios::beg);
     return;
 }
 
@@ -539,9 +542,10 @@ void check_cross_boundaries()
                 xcross > max(xb2, xe2) + dtol || ycross > max(yb2, ye2) + dtol)
                 continue;
 
-            ncr[i]++;
+            
             xcr[i][ncr[i]] = xcross;
             ycr[i][ncr[i]] = ycross;
+            ncr[i]++;
 
              //since fj changed we reassign all vars and used in computing ang.   
             // boundary i is not changed so xb1,yb1,xe1,ye1 no need to reassign again     //test Sara!
@@ -550,9 +554,9 @@ void check_cross_boundaries()
             xe2 = f.get_xend();
             ye2 = f.get_yend();
 
-            float ang0 = static_cast<float>(atan2((ye1 - yb1), (xe1 - xb1)));
-            float ange = static_cast<float>(atan2((ye2 - yb1), (xe2 - xb1)));
-            float angb = static_cast<float>(atan2((yb2 - yb1), (xb2 - xb1)));        //diff bet frac j and bound i  coordinates
+            float ang0 = atan2f((ye1 - yb1), (xe1 - xb1));
+            float ange = atan2f((ye2 - yb1), (xe2 - xb1));
+            float angb = atan2f((yb2 - yb1), (xb2 - xb1));        //diff bet frac j and bound i  coordinates
 
             if (angb > ang0 && ange < ang0) 
             {
