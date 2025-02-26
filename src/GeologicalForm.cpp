@@ -250,11 +250,10 @@ int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float
 
     int ieven = 0;
     int mm = mat_no;
-    float st = sqrtf(powf((xend - xbeg), 2) + powf((yend - ybeg), 2));// an estimation of length of fracture 
+    float st = sqrtf(pow((xend - xbeg), 2) + pow((yend - ybeg), 2));// an estimation of length of fracture 
     
     float angd = comvar::pi / num;  // here elementno insead of num  //new change elem_no to num because of archs
     float ang0 = 0.5 * angd;
-    float a0 = st * 0.5;
 
     float xs = xbeg;
     float ys = ybeg;
@@ -265,17 +264,14 @@ int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float
 
     int k = 0;  
     int numbe0 = numbe;   // numbe0 is the current number of elements or the old no.
-    float segment =0; 
     int m = 0;
 
-    float sw = st / num;
-    xd = (xend - xbeg) * sw / st;
-    yd = (yend - ybeg) * sw / st;
+    float sw = st / num;    
     float sinb = yd / sw;
     float cosb = xd / sw;
     float tmp_a = 0.5 * sw;    // half of element length
     bool unique = true;
-    BoundaryElement newelement;      //first initialize a new element and then check for dupllication of this element 
+    BoundaryElement newelement;      
 
   
     /* we add element_no or num elements to the current list of elements
@@ -285,8 +281,8 @@ int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float
 
    for (int ne = 0; ne < num; ne++) 
     {   
-        xs = xs + xd;
-        ys = ys + yd;
+        xs += xd;
+        ys += yd;
        
         newelement.xm = xs - 0.5 * xd;  // the x and y is  coordinates of the middle of element
         newelement.ym = ys - 0.5 * yd;  //optimize it later
@@ -299,9 +295,9 @@ int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float
             unique = isNewElementUnique(newelement);
             if (!unique)   continue;
         }
-        //if the new element is unique?if not then add it  
+        //new element is unique?if not then add it  
         
-        numbe ++;
+        numbe++;
         m = numbe - 1;   //the position of new element to add 
 
         newelement.kod = bound_type;     // for all elems are equal

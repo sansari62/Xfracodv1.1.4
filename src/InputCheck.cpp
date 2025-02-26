@@ -536,10 +536,13 @@ void check_cross_boundaries()
                     itip[j] = 0;
             }
 
-            if (xcross < min(xb1, xe1) - dtol || ycross < min(yb1, ye1) - dtol ||
-                xcross > max(xb1, xe1) + dtol || ycross > max(yb1, ye1) + dtol ||
-                xcross < min(xb2, xe2) - dtol || ycross < min(yb2, ye2) - dtol ||
-                xcross > max(xb2, xe2) + dtol || ycross > max(yb2, ye2) + dtol)
+            const float epsilon = 1e-6;
+
+
+            if (xcross < min(xb1, xe1) - dtol - epsilon || ycross < min(yb1, ye1) - dtol - epsilon ||
+                xcross > max(xb1, xe1) + dtol + epsilon || ycross > max(yb1, ye1) + dtol + epsilon ||
+                xcross < min(xb2, xe2) - dtol - epsilon || ycross < min(yb2, ye2) - dtol - epsilon ||
+                xcross > max(xb2, xe2) + dtol + epsilon || ycross > max(yb2, ye2) + dtol + epsilon)
                 continue;
 
             
@@ -961,6 +964,8 @@ void final_wrap_up()
 
         return;        
 }
+
+
 
 
 

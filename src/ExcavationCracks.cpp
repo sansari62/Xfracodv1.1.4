@@ -84,6 +84,8 @@ void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, fl
         float y2 = yc + ac * sinbeta;   
         int  en;
         float thr =  0.0003; //6e-4;
+        //const float epsilon = 1e-6;
+
         if (flagB == 0)
             en = numbe - 1;
         else 
@@ -297,6 +299,8 @@ void  check_point_in_rock(float xp, float yp, bool flag, int& n_valid)
     int k = 0;
     float x0, y0, dd0, dd1, dd2, xc = 0, yc = 0, dist = 0,
         xb, yb, xe, ye, sinb, cosb;
+    const float epsilon = 1e-6;
+
     
     for (int l = 0; l < ntunnel; ++l)         
     {
@@ -451,7 +455,7 @@ void  check_point_in_rock(float xp, float yp, bool flag, int& n_valid)
         dist = min(dist, sqrt(pow(xp - xe, 2) + pow(yp - ye, 2)));
         if (flag == 0)
         {
-            if ((dist <= 1.1 * be.a))
+            if ((dist  <= 1.1 * be.a))
             {
                 n_valid = 0;
                 return;
@@ -460,7 +464,7 @@ void  check_point_in_rock(float xp, float yp, bool flag, int& n_valid)
         }
         else
         {
-            if (dist <= s15.aaa) {
+            if (dist  <= s15.aaa) {
                 n_valid = 0;
                 return;
             }
