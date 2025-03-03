@@ -106,8 +106,8 @@ void label400_new_coordin_for_tip(int n, int mm, int mergtip, float xt, float yt
     float pyy = symm.pyy1 + g.sky * (y0 - be.ym);
     float pxy = symm.pxy1;
 
-    b_elm[m].force1 = 2.0 * be.a * (-((pyy - pxx) * sinb * cosb + pxy * (cosb * cosb - sinb * sinb)));// !old b0()
-    b_elm[m].force2 = 2.0 * be.a * (-(pxx * sinb * sinb - 2.0 * pxy * sinb * cosb + pyy * cosb * cosb));// !old b0()
+    b_elm[m].force1 = 2.0 * be.a * (-((pyy - pxx) * sinb * cosb + pxy * (cosb * cosb - sinb * sinb)));// old b0()
+    b_elm[m].force2 = 2.0 * be.a * (-(pxx * sinb * sinb - 2.0 * pxy * sinb * cosb + pyy * cosb * cosb));// old b0()
     b_elm[m].jmode = t.imode;
     b_elm[m].jstate = t.imode;
     float ss = (sigyy - sigxx) * sinb * cosb + sigxy * (cosb * cosb - sinb * sinb);

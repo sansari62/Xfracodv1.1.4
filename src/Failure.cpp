@@ -353,7 +353,8 @@ void failureB(float xp, float yp, float r, float alpha, int im, float& fos)
     ye = yp + 1.0 * r * sinb;
    
     int material = check_material_id(0.5 * (xb + xe), 0.5 * (yb + ye)); 
-    float dl = sqrt((xe - xb) * (xe - xb) + (ye - yb) * (ye - yb));     
+    float dl = sqrt(pow(xe - xb,2) + pow(ye - yb,2));
+    //float dl = sqrt((xe - xb) * (xe - xb) + (ye - yb) * (ye - yb));     
     tips[n].assign_val(xb, yb, xe, ye, dl, cosb, sinb, 4, material);
     no++; 
 

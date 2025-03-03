@@ -1,13 +1,39 @@
-# You can override the included template(s) by including variable overrides
-# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization
-# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
-# Note that environment variables can be set in several places
-# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 stages:
-- test
+  - build
+  - test
+  - release
+
+variables:
+  BUILD_DIR: "build"
+  VS_DEV_CMD: "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat"
+  PROJECT_DIR: "C:\\C++projects\\SlimV-Fracod"  # Your project directory
+  SOLUTION_FILE: "SlimV-Fracod.sln"
+  RELEASE_DIR: "x64\\Release"
+  EXE_NAME: "SlimV-Fracod.exe"  # Replace with the name of your executable
+
+build:
+  stage: build
+  tags:
+    - windows
+  script:
+    - call "%VS_DEV_CMD%"  # Set up the Visual Studio environment
+    - cd %PROJECT_DIR%      # Change to the project directory
+    - MSBuild "%SOLUTION_FILE%" /p:Configuration=Release /p:Platform=x64  # Build the solution using MSBuild
+
 sast:
   stage: test
 include:
 - template: Security/SAST.gitlab-ci.yml
+
+release:
+  stage: release
+  tags:
+    - windows
+  script:
+    - echo "Creating release..."
+    - mkdir release  # Create release directory
+    - copy %PROJECT_DIR%\%BUILD_DIR%\%RELEASE_DIR%\%EXE_NAME% release\  # Copy the executable to release folder
+    - echo "Release files ready."
+  artifacts:
+    paths:
+      - release/  # Store release directory as artifact

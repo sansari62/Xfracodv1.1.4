@@ -24,7 +24,7 @@
 #include<map>
 #include<BE.h>
 
-#define m0 1500
+#define m0 2000
 
 
 
@@ -65,7 +65,8 @@ namespace comvar {
 	//const para
 	extern const int m1;
 	extern const int m2;
-	extern const int MAX_SIZE;
+	extern const int MAX_SIZE_frac;
+	extern const int MAX_SIZE_arc;
 	extern const float ge;
 
 	extern float pi;

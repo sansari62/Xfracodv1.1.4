@@ -39,7 +39,8 @@ namespace comvar {
 
 	const int m1 = 1500;
 	const int m2 = 3000;
-	const int MAX_SIZE = 50;
+	const int MAX_SIZE_frac = 400;
+	const int MAX_SIZE_arc = 50;
 	float pi = 3.1415926; 
 	const int mem_size = 2*m0;
 	const float ge = 9.81;
@@ -81,13 +82,13 @@ namespace comvar {
 	//std::vector<Borehole> tunnl_list = {};
 
 
-	std::vector <Arch> arc_list(MAX_SIZE);
-	std::vector<Edge> bund_list(MAX_SIZE);
+	std::vector <Arch> arc_list(MAX_SIZE_arc);
+	std::vector<Edge> bund_list(MAX_SIZE_arc);
 
-	std::vector<Edge_interface> lin_intrfce_list(MAX_SIZE);
-	std::vector<Arch_interface> arc_intrface_list(MAX_SIZE);
+	std::vector<Edge_interface> lin_intrfce_list(MAX_SIZE_arc);
+	std::vector<Arch_interface> arc_intrface_list(MAX_SIZE_arc);
 
-	std::vector<Fracture> frac_list(MAX_SIZE);
+	std::vector<Fracture> frac_list(MAX_SIZE_frac);
 
 	Borehole tunnl;
 	//std::vector<Creep> creep(500);
