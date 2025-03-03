@@ -36,14 +36,25 @@ void processEdge()
 
            
            ss >> num >> xbeg >> ybeg >> xend >> yend >> kode >> bvs >> bvn >> material >> gradsy >> gradny;
-           file2 << "Straigt boundary-- from: x,y = " << xbeg << "," << ybeg << std::endl;
-           file2 << "                    to        = " << xend << "," << yend << std::endl;
-           file2 << "      shear stress or disp    = " << bvs << std::endl;
-           file2 << "       normal stress or disp  = " << bvn << std::endl;
-           file2 << "      shear value gradient in y direction = " << gradsy << std::endl;
-           file2 << "      normal value gradient in y direction = " << gradny << std::endl;
-           file2 << "         number of elements   = " << num << std::endl;
-           file2 << "         material              = " << material << std::endl;
+         
+           file2 << "\n Straight boundary -- from: x,y = "
+               << std::fixed << std::setprecision(4) << std::setw(10) << xbeg << ", "
+               << std::fixed << std::setprecision(4) << std::setw(10) << ybeg << std::endl
+               << "                    to        = "
+               << std::fixed << std::setprecision(4) << std::setw(10) << xend << ", "
+               << std::fixed << std::setprecision(4) << std::setw(10) << yend << std::endl
+               << "      shear stress or disp    = "
+               << std::scientific << std::setprecision(4) << std::setw(10) << bvs << std::endl
+               << "       normal stress or disp  = "
+               << std::scientific << std::setprecision(4) << std::setw(10) << bvn << std::endl
+               << "      shear value gradient in y direction = "
+               << std::scientific << std::setprecision(4) << std::setw(10) << gradsy << std::endl
+               << "      normal value gradient in y direction = "
+               << std::scientific << std::setprecision(4) << std::setw(10) << gradny << std::endl
+               << "         number of elements   = " << std::setw(4) << num << std::endl
+               << "         material              = " << std::setw(4) << material << std::endl;
+
+
        }
        catch (std::ifstream::failure e)
        {
@@ -89,14 +100,23 @@ void processGost()
     {
 
         inFile >> num >> xbeg >> ybeg >> xend >> yend >> kode >> bvs >> bvn >> material >> gradsy >> gradny;  
-        file2 << "Gost element        -- from: x,y = " << xbeg << "," << ybeg << std::endl;
-        file2 << "                    to        = " << xend << "," << yend << std::endl;
-        file2 << "      shear stress or disp    = " << bvs << std::endl;
-        file2 << "       normal stress or disp  = " << bvn << std::endl;
-        file2 << "      shear value gradient in y direction = " << gradsy << std::endl;
-        file2 << "      normal value gradient in y direction = " << gradny << std::endl;
-        file2 << "         number of elements   = " << num << std::endl;
-        file2 << "         material              = " << material << std::endl;
+        file2 << "Gost element     -- from: x,y = "
+            << std::fixed << std::setprecision(4) << std::setw(10) << xbeg << ", "
+            << std::fixed << std::setprecision(4) << std::setw(10) << ybeg << std::endl
+            << "                    to        = "
+            << std::fixed << std::setprecision(4) << std::setw(10) << xend << ", "
+            << std::fixed << std::setprecision(4) << std::setw(10) << yend << std::endl
+            << "      shear stress or disp    = "
+            << std::scientific << std::setprecision(4) << std::setw(10) << bvs << std::endl
+            << "       normal stress or disp  = "
+            << std::scientific << std::setprecision(4) << std::setw(10) << bvn << std::endl
+            << " shear value gradient in y direction = "
+            << std::scientific << std::setprecision(4) << std::setw(10) << gradsy << std::endl
+            << " normal value gradient in y direction = "
+            << std::scientific << std::setprecision(4) << std::setw(10) << gradny << std::endl
+            << "         number of elements   = " << std::setw(4) << num << std::endl
+            << "         material              = " << std::setw(4) << material << std::endl;
+
     }
     catch (std::ifstream::failure e)
     {
@@ -135,11 +155,16 @@ void processFracture()
     {
        getline(inFile, lineData);
        std::stringstream ss(lineData);
-        ss >> num >> xbeg >> ybeg >> xend >> yend >> itype >> jmat >> material;       
-        file2 << "Fracture ------ from: x, y =  " << xbeg << "," << ybeg << "," <<
-            "     to     =  " << xend << "," << yend << "\n" <<
-            "      number of elements   = " << num << "\n" << "        material     =   " << material << "\n";
-        
+       ss >> num >> xbeg >> ybeg >> xend >> yend >> itype >> jmat >> material;
+       file2 << "Fracture ---------- from: x,y = "
+            << std::fixed << std::setprecision(4) << std::setw(10) << xbeg << ", "
+            << std::fixed << std::setprecision(4) << std::setw(10) << ybeg << std::endl
+            << "                    to        = "
+            << std::fixed << std::setprecision(4) << std::setw(10) << xend << ", "
+            << std::fixed << std::setprecision(4) << std::setw(10) << yend << std::endl
+            << "         number of elements   = " << std::setw(4) << num << std::endl
+            << "         material              = " << std::setw(4) << material << std::endl;
+            
         Fracture frac(xbeg, ybeg, xend, yend, material, num, jmat);         //dfine new fracture
         frac_list[nf] = frac;
         frac_list[nf].bound_type = 5;
@@ -165,7 +190,7 @@ void processFracture()
             getline(inFile, lineData);
             std::stringstream ss(lineData);
             ss >> num >> xbeg >> ybeg >> xend >> yend >> mat1 >> mat2;            
-            file2 << "Interface -------- from: x, y =  " << xbeg << "," << ybeg << "\n" <<
+            file2 << "\n Interface -------- from: x, y =  " << xbeg << "," << ybeg << "\n" <<
                 "                    to      =  " << xend << "," << yend << "\n" <<
                 "         number of elements   = " << num << "\n";
             
@@ -191,16 +216,24 @@ void processFracture()
         {            
             getline(inFile, lineData);
             std::stringstream ss(lineData);
-            ss >> num >> xcen >> ycen >> diam >> ang1 >> ang2 >> mat1 >> mat2;           
-            file2 << "ARC Int- centre position: x,y  = " << xcen << "," << ycen << "\n" <<
-                "         diameter              = " << diam << "\n" <<
-                "         start angle           = " << ang1 << "\n" <<
-                "         end angle             = " << ang2 << "\n" <<
-                "         shear stress or disp  = " << bvs << "\n" <<
-                "         normal stress or disp = " << bvn << "\n" <<
-                "         number of elements     = " << num << "\n" <<
-                "         material one side     = " << mat1 << "\n" <<
-                "         material other side   = " << mat2 << "\n";
+            ss >> num >> xcen >> ycen >> diam >> ang1 >> ang2 >> mat1 >> mat2; 
+
+            file2 << "\n ARC Int- centre position: x,y  = "
+                << std::fixed << std::setprecision(4) << std::setw(10) << xcen << ", "
+                << std::fixed << std::setprecision(4) << std::setw(10) << ycen << std::endl
+                << "         diameter              = "
+                << std::fixed << std::setprecision(4) << std::setw(10) << diam << std::endl
+                << "         start angle           = "
+                << std::fixed << std::setprecision(4) << std::setw(10) << ang1 << std::endl
+                << "         end angle             = "
+                << std::fixed << std::setprecision(4) << std::setw(10) << ang2 << std::endl
+                << "         shear stress or disp  = "
+                << std::scientific << std::setprecision(4) << std::setw(10) << bvs << std::endl
+                << "         normal stress or disp = "
+                << std::scientific << std::setprecision(4) << std::setw(10) << bvn << std::endl
+                << "         material one side     = " << std::setw(4) << mat1 << std::endl
+                << "         material one side     = " << std::setw(4) << mat2 << std::endl
+                << "         material other side   = " << std::setw(4) << num << std::endl;
 
             
             Arch_interface newArcIntrfce(xcen, ycen, diam / 2., ang1 * pi / 180.,
@@ -457,7 +490,7 @@ void processFracture()
 
             // Call stiffness_bb for Shear fractures
             stiffness_bb(aks_bb, akn_bb, phi_bb, coh_bb, phid_bb, ap_bb, apr_bb, 2, 1);
-            file2 << "New fresh fracture properties --- Shear fractures" << std::endl
+            file2 << "\n New fresh fracture properties --- Shear fractures" << std::endl
                 << "               ks = " << std::scientific << std::setprecision(4) << aks_bb << std::endl
                 << "               kn = " << std::scientific << std::setprecision(4) << akn_bb << std::endl
                 << "              phi = " << std::fixed << std::setprecision(1) << (phi_bb * 180 / pi) << std::endl
@@ -1372,7 +1405,7 @@ void processFracture()
    {
        inFile >> s15.a_ini;
        file2 << "Fracture initiation element size is set to be " <<
-           scientific << std::setprecision(3) << s15.a_ini << std::endl;
+           std::setprecision(3) << s15.a_ini << std::endl;
    }
 
 
