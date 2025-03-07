@@ -5,6 +5,7 @@
 #include <WinInterface.h>
 #include <DX.h>
 
+#include<Mainb.h>
 
 using namespace WinInterface_h::winvar;
 using namespace CommonPara_h::comvar;
@@ -101,9 +102,11 @@ float call_work1_setting_fi0(float dtt, float& fi0, int mm, int mode, float& ang
 {
     float  gi0 = 0.0, fi = 0.0;
     float wi = 0.0;
+    //float w1 = 0;
     if (mode == 1)
     {
         work1(1); // 0 = not first time; 1 = mode I    2 = mode II
+        //cout << "tip: "<<ni<<"  mode1:" << ang << "  w1:" << w1<<endl;
 
         wi = (b_elm[numbe-1].jstate != 1) ? w0 : w1;       // if tip element not openp, ignore it
          if (dtt == 0)
@@ -119,6 +122,7 @@ float call_work1_setting_fi0(float dtt, float& fi0, int mm, int mode, float& ang
     else
     {
         work1(2); // 0 = not first time; 1 = mode I    2 = mode II
+        //cout << "tip: " << ni << "mode2: " << ang << "  w1:" << w1 << endl;
 
         wi = (b_elm[numbe - 1].jstate != 2) ? w0 : w1;    // if tip element not openp, ignore it
         if (dtt == 0)
@@ -295,7 +299,8 @@ void fmax1(float& f0, float& angle)
     }
 
     numbe++;
-    newcoord(0);                //REAL(ni))  !another 0 ? ? ? I do not think I need this command!!!
+    newcoord(0);    
+    //mainb_work1_ini();
 
     for (int icyc = 100; icyc >= -100; icyc -= 10)
     {
@@ -310,10 +315,13 @@ void fmax1(float& f0, float& angle)
         if (tips[ni].ityp == 4)
         {
             dtt = dxi(ang,true);  // first fracture initiation from boundary,dxiB flagB = true
+            //cout <<" icyc: "<<icyc<< " ang: " << ang << "  dtt: " << dtt << endl;
         }
         else
         {
             dtt = dxi(ang,false);      //call dxi flagB = false
+           // cout << " icyc: " << icyc << " ang: " << ang << "  dtt: " << dtt << endl;
+
         }
 
         if (!((b_elm[m].jstate == 2 && b_elm[m].jslipd == 1 && icyc < -20)||(b_elm[m].jstate == 2 && b_elm[m].jslipd == -1 && icyc > 20)))

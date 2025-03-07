@@ -8,6 +8,7 @@
 #include<ExcavationCracks.h>
 #include<Fmax.h>
 #include<Initiation.h>
+#include<Mainb.h>
 
 using namespace CommonPara_h::comvar;
 
@@ -512,15 +513,17 @@ void newtips(float dr)
         creep.vel_creep_max = 0;
         creep.ID_fast_crack = 0;
         file2 << "Cycle#" << mcyc << endl;
+        //#pragma omp parallel for
+//#pragma omp parallel for  private(fm,angle,vel_creep,creep_growth_max,vel)
+               
         for ( ni = 0; ni < no; ni++) 
         {
+           // cout << "//////////////////////////////////////////////////////////////////\n";
             tips[ni].ifail = 0;
             if (tips[ni].ityp == 0) continue; //ityp() = -1, 0, 1, (-3; +3 ? )
-            StopReturn = false;
             fmax1(fm,angle);  
-
             if (fm < 0) fm = 0;
-            if (StopReturn == true) return; //stop
+            
             if (abs(angle) >= 100 * pi / 180)
             {
                 //if code did not find proper max, then ignore this tip

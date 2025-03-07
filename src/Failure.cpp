@@ -54,6 +54,7 @@ void NewFractureCentralPoint(float xp, float yp, float& sigxx, float& sigyy, flo
         sigyy = 0;
         sigxy = 0;
     }
+   // #pragma omp parallel for
 
     for (int j = 0; j < numbe_old; ++j)
     {
@@ -71,7 +72,7 @@ void NewFractureCentralPoint(float xp, float yp, float& sigxx, float& sigyy, flo
         float cosbj = be.cosbet;
         float sinbj = be.sinbet;
 
-        coeff(xp, yp, xj, yj, aj, cosbj, sinbj, +1, mm);
+        coeff(xp, yp, xj, yj, aj, cosbj, sinbj, +1, mm, s2us);
 
         switch (symm.ksym + 1) {
         case 1:
@@ -79,29 +80,29 @@ void NewFractureCentralPoint(float xp, float yp, float& sigxx, float& sigyy, flo
 
         case 2:
             xj = 2.0 * symm.xsym - be.xm;
-            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm);
+            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm, s2us);
             break;
 
         case 3:
             yj = 2.0 * symm.ysym - be.ym;
-            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm);
+            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm, s2us);
             break;
 
         case 4:
             xj = 2.0 * symm.xsym - be.xm;
             yj = 2.0 * symm.ysym - be.ym;
-            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm);
+            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm, s2us);
             break;
 
         case 5:
             xj = 2.0 * symm.xsym - be.xm;
-            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm);
+            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm, s2us);
             xj = be.xm;
             yj = 2.0 * symm.ysym - be.ym;
 
-            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm);
+            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm, s2us);
             xj = 2.0 * symm.xsym - be.xm;
-            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm);
+            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm, s2us);
            
         }
         
@@ -185,11 +186,11 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
         fos = 1.0;
     }
     
-    if (numbe >= 1498)
+    if (numbe >= 2000)
     {
         MessageBox(nullptr, L"Memory Overflow - Reduce In Situ Stresses.", L"Message!", MB_OK);
         exit(0);        
-        return;   //instead of stop
+        return;   
     }
     int n = no;
     xb = xp - 1 / 2.0 * r * cosf(alpha);     // xbe(?) etc are potential (additional) element, not actual  instead of 1/2r, dl used here
@@ -329,18 +330,18 @@ void failureB(float xp, float yp, float r, float alpha, int im, float& fos)
     {
         fos = 1.0;
     }
-    else
-        if (fos == 0)
-        {
-            //WRITE(1,*) 0000          write into file 
-        }
+    //else
+    //    if (fos == 0)
+    //    {
+    //        //WRITE(1,*) 0000          write into file 
+    //    }
 
-    if (numbe >= 1498)
+    if (numbe >= 2000)
     {
        MessageBox(nullptr, L"Memory Overflow - Reduce In Situ Stresses.", L"Message!", MB_OK);
 
         exit(0);          
-        return;   //instead of stop
+        return;  
     } 
 
     int n = no;
@@ -354,7 +355,6 @@ void failureB(float xp, float yp, float r, float alpha, int im, float& fos)
    
     int material = check_material_id(0.5 * (xb + xe), 0.5 * (yb + ye)); 
     float dl = sqrt(pow(xe - xb,2) + pow(ye - yb,2));
-    //float dl = sqrt((xe - xb) * (xe - xb) + (ye - yb) * (ye - yb));     
     tips[n].assign_val(xb, yb, xe, ye, dl, cosb, sinb, 4, material);
     no++; 
 

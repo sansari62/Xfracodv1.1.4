@@ -135,6 +135,50 @@ void  file_preprocesing(const std::wstring& filename)
 
 
 
+
+
+//
+//#include <iostream>
+//#include <omp.h>
+//#include <chrono>
+//
+//int main() {
+//    const int N = 100000000;  // Large number for testing
+//    double* arr = new double[N];
+//
+//    // Serial version
+//    auto start = std::chrono::high_resolution_clock::now();
+//    for (int i = 0; i < N; ++i) {
+//        arr[i] = i * 2.0;
+//    }
+//    auto end = std::chrono::high_resolution_clock::now();
+//    std::cout << "Serial time: " << std::chrono::duration<double>(end - start).count() << " seconds\n";
+//
+//    // Parallel version
+//    start = std::chrono::high_resolution_clock::now();
+//#pragma omp parallel for
+//    for (int i = 0; i < N; ++i) {
+//        arr[i] = i * 2.0;
+//    }
+//    end = std::chrono::high_resolution_clock::now();
+//    std::cout << "Parallel time: " << std::chrono::duration<double>(end - start).count() << " seconds\n";
+//
+//    delete[] arr;
+//
+//    std::cout << "Max Threads: " << omp_get_max_threads() << "\n";
+//
+//    omp_set_num_threads(8);  // Set to the number of physical cores
+//#pragma omp parallel
+//    {
+//        int id = omp_get_thread_num();
+//        std::cout << "Thread " << id << " is running\n";
+//    }
+//    std::cin.get();
+//    return 0;
+//}
+
+
+
 int main()
 {
     cout <<

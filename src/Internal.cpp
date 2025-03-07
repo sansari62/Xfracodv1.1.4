@@ -221,7 +221,7 @@ void  for_j_loop(int mm, float& sigxx, float& sigyy, float& sigxy, float& ux, fl
 
         float cosbj = be.cosbet;
         float sinbj = be.sinbet;
-        coeff(xp, yp, xj, yj, aj, cosbj, sinbj, +1, mm);
+        coeff(xp, yp, xj, yj, aj, cosbj, sinbj, +1, mm, s2us);
 
         switch (symm.ksym)
         {
@@ -229,25 +229,25 @@ void  for_j_loop(int mm, float& sigxx, float& sigyy, float& sigxy, float& ux, fl
             break;
         case 1:
             xj = 2.0 * symm.xsym - be.xm;
-            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm);
+            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm, s2us);
             break;
         case 2:
             yj = 2.0 * symm.ysym - be.ym;
-            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm);
+            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm, s2us);
             break;
         case 3:
             xj = 2.0 * symm.xsym - be.xm;
             yj = 2.0 * symm.ysym - be.ym;
-            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm);
+            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm, s2us);
             break;
         case 4:
             xj = 2.0 * symm.xsym - be.xm;
-            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm);
+            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm, s2us);
             xj = be.xm;
             yj = 2.0 * symm.ysym - be.ym;
-            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm);
+            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm, s2us);
             xj = 2.0 * symm.xsym - be.xm;
-            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm);            
+            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm, s2us);
         }
 
         ux += s2us.uxs * s4.d0[js] + s2us.uxn * s4.d0[jn];

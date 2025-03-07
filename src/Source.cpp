@@ -581,9 +581,11 @@ void Central_control()
                         else                                       
                             {                                
                                     auto end1 = std::chrono::high_resolution_clock::now();
-                                    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end1 - start);
-                                     cout<< "Run time=  "<< duration.count()<<" ms";
-                                     logfile << "Run time=  " << duration.count() << " ms\n";
+                                   // auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end1 - start);
+                                    // cout<< "Run time=  "<< duration.count()<<" ms";
+                                     std::cout << "Run time: " << std::chrono::duration<double>(end1 - start).count() << " seconds\n";
+                                     logfile << "Run time=  " << std::chrono::duration<double>(end1 - start).count() << " seconds\n";
+
                                     MessageBox(nullptr, L"End of cycle & input file! press OK to quit.", L"Message!", MB_OK);  
                                     return;                             
                             }

@@ -320,7 +320,7 @@ void point(float xp, float yp, float& sig1, float& sig2, float& bet, float& sig1
         float cosbj = elm_list[j].cosbet;
         float sinbj = elm_list[j].sinbet;
        
-        coeff(xp, yp, xj, yj, aj, cosbj, sinbj, +1, mm);
+        coeff(xp, yp, xj, yj, aj, cosbj, sinbj, +1, mm, s2us);
 
         switch (symm.ksym + 1)
         {
@@ -328,25 +328,25 @@ void point(float xp, float yp, float& sig1, float& sig2, float& bet, float& sig1
             break;
         case 2:
             xj = 2.0 * symm.xsym - elm_list[j].xm;
-            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm);
+            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm, s2us);
             break;
         case 3:
             yj = 2.0 * symm.ysym - elm_list[j].ym;
-            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm);
+            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm, s2us);
             break;
         case 4:
             xj = 2.0 * symm.xsym - elm_list[j].xm;
             yj = 2.0 * symm.ysym - elm_list[j].ym;
-            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm);
+            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm, s2us);
             break;
         case 5:
             xj = 2.0 * symm.xsym - elm_list[j].xm;
-            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm);
+            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm, s2us);
             xj = elm_list[j].xm;
             yj = 2.0 * symm.ysym - elm_list[j].ym;
-            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm);
+            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm, s2us);
             xj = 2.0 * symm.xsym - elm_list[j].xm;
-            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm);          
+            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm, s2us);
        
         }
         ux += s2us.uxs * s4.d0[js] + s2us.uxn * s4.d0[jn];
@@ -442,7 +442,8 @@ void third_correction_run()
 
 void run_check(int mode)
 {
-     mainb(mode);  
+    // mainb(mode); 
+     mainb_work0( mode);
      s4.limit_d();   
      /*redo the d0() accumulation with correct fracture state*/
     for (int k = 0; k < numbe; k++)
@@ -761,7 +762,8 @@ void work1(int mode)
     for (int k = 2 * numbe - 2; k < 2 * numbe; ++k)
             s4.b[k] = s4.b0[k];      //s4.b0(k) has been defined in sub newcoordinate as the stresses in intact rock
 
-    mainb(mode);
+    mainb_work1(mode);
+    //mainb(mode);
     //total stress/displacement using d0(m) total, not increment d(m)   
     elm_list[numbe-1].bound(numbe-1, ss, sn, ustem, untem, usneg, unneg);
 
@@ -785,8 +787,9 @@ void work1(int mode)
     }
 
     //label30
-    if (b_elm[numbe-1].jstate != 0) 
-        mainb(mode);
+    if (b_elm[numbe - 1].jstate != 0)
+        mainb_work1(mode);
+        //mainb(mode);
 
     //temperatory accumulation of element displacement, undo it later
     for (int k = 0; k < 2 * numbe ; ++k)
@@ -884,36 +887,36 @@ void monitoring_point(float xp, float yp, float& sigxx, float& sigyy, float& sig
             float cosbj = elm_list[j].cosbet;
             float sinbj = elm_list[j].sinbet;
 
-            coeff(xp, yp, xj, yj, aj, cosbj, sinbj, +1, mm);
+            coeff(xp, yp, xj, yj, aj, cosbj, sinbj, +1, mm, s2us);
             switch (symm.ksym + 1) 
             {
                 case 1: break;
                 case 2: 
                     xj = 2.0 * symm.xsym - elm_list[j].xm;
-                    coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm);
+                    coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm, s2us);
                     break;
 
                 case 3: 
                     yj = 2.0 * symm.ysym - elm_list[j].ym;
-                    coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm);
+                    coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm, s2us);
                     break;
 
                 case 4: 
                     xj = 2.0 * symm.xsym - elm_list[j].xm;
                     yj = 2.0 * symm.ysym - elm_list[j].ym;
-                    coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm);
+                    coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm, s2us);
                     break;
 
                 case 5: 
                     xj = 2.0 * symm.xsym - elm_list[j].xm;
-                    coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm);
+                    coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm, s2us);
 
                     xj = elm_list[j].xm;
                     yj = 2.0 * symm.ysym - elm_list[j].ym;
 
-                    coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm);
+                    coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm, s2us);
                     xj = 2.0 * symm.xsym - elm_list[j].xm;
-                    coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm);
+                    coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm, s2us);
                   
             }
 
