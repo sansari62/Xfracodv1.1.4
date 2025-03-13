@@ -1,3 +1,5 @@
+#include<stdafx.h>
+
 #include <GeologicalForm.h>
 #include "CommonPara.h"
 

@@ -1,7 +1,7 @@
 #pragma once
 #ifndef BoundaryElement_h
 #define BoundaryElement_h
-#include <common.h>
+#include <fstream>
 
 /* Element coordinates, length, orientation, joint status, joint properties,
 and joint surface stresses and displacement*/
@@ -22,7 +22,7 @@ public:
 	BoundaryElement(float x, float y, float am, float cos, float sin,
 		int kd ,int mat);
 	
-	void save_to_file(ofstream& f, int m);
+	void save_to_file(std::ofstream& f, int m);
 	
 	void bound(int i, float& ss, float& sn, float& ustem, float& untem, float& usneg, 
 		float& unneg);

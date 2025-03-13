@@ -1,5 +1,6 @@
-﻿#include <Mainb.h>
-#include <omp.h>
+﻿#include<stdafx.h>
+
+#include <Mainb.h>
 #include "CommonPara.h"
 
 using namespace CommonPara_h::comvar;
@@ -56,8 +57,6 @@ void solve(int n, int mode)
 
     return;
 }
-
-
 
 
 
@@ -402,7 +401,7 @@ void mainb_ini(int mode, int i_st, int i_en, int j_st, int j_en)
 
     bool exit_early = false;
     // omp_set_num_threads(8);
- //#pragma omp parallel for collapse(2) private(elm_i,is, in, mm, mmj, js, jn, xi, yi, xj, yj, cosbj, sinbj,aj,cosbi, sinbi, sinbi2, cosbi2, sincosbi, local_s2us, elm_j, ks, kn, ph, pd, S_is_js, S_is_jn, S_in_js, S_in_jn, d_is_js, d_is_jn, d_in_js, d_in_jn)  
+    //#pragma omp parallel for collapse(2) private(elm_i,is, in, mm, mmj, js, jn, xi, yi, xj, yj, cosbj, sinbj,aj,cosbi, sinbi, sinbi2, cosbi2, sincosbi, local_s2us, elm_j, ks, kn, ph, pd, S_is_js, S_is_jn, S_in_js, S_in_jn, d_is_js, d_is_jn, d_in_js, d_in_jn)  
 
     for (int i = i_st; i < i_en; ++i)
     {
@@ -479,16 +478,9 @@ void mainb_ini(int mode, int i_st, int i_en, int j_st, int j_en)
                 xj = 2.0 * symm.xsym - elm_j->xm;
                 coeff(xi, yi, xj, yj, aj, -cosbj, -sinbj, +1, mm, local_s2us);
 
-                //label 240
+                //label 240     
             }
-            /* S_is_js = (s2us.syys - s2us.sxxs) * sincosbi + s2us.sxys * (cosbi2 - sinbi2);
-            S_is_jn = (s2us.syyn - s2us.sxxn) * sincosbi + s2us.sxyn * (cosbi2 - sinbi2);
-            S_in_js = s2us.sxxs * sinbi2 - 2.0 * s2us.sxys * sincosbi + s2us.syys * cosbi2;
-            S_in_jn = s2us.sxxn * sinbi2 - 2.0 * s2us.sxyn * sincosbi + s2us.syyn * cosbi2;
-            d_is_js = s2us.uxs * cosbi + s2us.uys * sinbi;
-            d_is_jn = s2us.uxn * cosbi + s2us.uyn * sinbi;
-            d_in_js = -s2us.uxs * sinbi + s2us.uys * cosbi;
-            d_in_jn = -s2us.uxn * sinbi + s2us.uyn * cosbi;*/
+
 
             S_is_js = (local_s2us.syys - local_s2us.sxxs) * sincosbi + local_s2us.sxys * (cosbi2 - sinbi2);
             S_is_jn = (local_s2us.syyn - local_s2us.sxxn) * sincosbi + local_s2us.sxyn * (cosbi2 - sinbi2);
@@ -561,119 +553,120 @@ void mainb_ini(int mode, int i_st, int i_en, int j_st, int j_en)
 
             //--------end of coeff.saving------------------------------------------
 
-                //---- - gravity and infinity problem-----------------------------
-            //label2020
-            if (elm_i->kod > 10 && i == j)
-            {
-
-                ks = rock1[1].e / 1e4;
-                kn = rock1[1].e / 1e4;
-                switch (elm_i->kod)
+                    //---- - gravity and infinity problem-----------------------------
+                //label2020
+                if (elm_i->kod > 10 && i == j)
                 {
 
-                case 11:
-                    s4.c[is][js] = S_is_js + ks;
-                    s4.c[is][jn] = S_is_jn;
-                    s4.c[in][js] = S_in_js;
-                    s4.c[in][jn] = S_in_jn + kn;
-                    break;
-                case 12:
-                    s4.c[is][js] = d_is_js;
-                    s4.c[is][jn] = d_is_jn;
-                    s4.c[in][js] = d_in_js;
-                    s4.c[in][jn] = d_in_jn;
-                    break;
-                case 13:
-                    s4.c[is][js] = d_is_js;
-                    s4.c[is][jn] = d_is_jn;
-                    s4.c[in][js] = S_in_js;
-                    s4.c[in][jn] = S_in_jn + kn;
-                    break;
-                case 14:
-                    s4.c[is][js] = S_is_js + ks;
-                    s4.c[is][jn] = S_is_jn;
-                    s4.c[in][js] = d_in_js;
-                    s4.c[in][jn] = d_in_jn;
+                    ks = rock1[1].e / 1e4;
+                    kn = rock1[1].e / 1e4;
+                    switch (elm_i->kod)
+                    {
+
+                    case 11:
+                        s4.c[is][js] = S_is_js + ks;
+                        s4.c[is][jn] = S_is_jn;
+                        s4.c[in][js] = S_in_js;
+                        s4.c[in][jn] = S_in_jn + kn;
+                        break;
+                    case 12:
+                        s4.c[is][js] = d_is_js;
+                        s4.c[is][jn] = d_is_jn;
+                        s4.c[in][js] = d_in_js;
+                        s4.c[in][jn] = d_in_jn;
+                        break;
+                    case 13:
+                        s4.c[is][js] = d_is_js;
+                        s4.c[is][jn] = d_is_jn;
+                        s4.c[in][js] = S_in_js;
+                        s4.c[in][jn] = S_in_jn + kn;
+                        break;
+                    case 14:
+                        s4.c[is][js] = S_is_js + ks;
+                        s4.c[is][jn] = S_is_jn;
+                        s4.c[in][js] = d_in_js;
+                        s4.c[in][jn] = d_in_jn;
+                    }
                 }
-            }
 
 
-            //label 2025
-            if (elm_i->kod != 5 || i != j) continue;  //2080 is goto 300 continue loop j
+                //label 2025
+                if (elm_i->kod != 5 || i != j) continue;  //2080 is goto 300 continue loop j
 
 
-            if (i == numbe - 1 && mode > 0)
-            {
-                ks = 10e22;
-                kn = 10e22;
-                ph = 30.0 * 3.1416 / 180.0;
-                pd = 0;
-            }
-            else
-            {
-                ks = b_elm[i].aks;
-                kn = b_elm[i].akn;
-                ph = b_elm[i].phi;
-                pd = b_elm[i].phid;
-            }
-
-            if (i == numbe - 1 && mode == 1)
-            {
-                //second round
-                switch (b_elm[i].jstate + 1)
+                if (i == numbe - 1 && mode > 0)
                 {
-                case 1:
-                case 3:
-                    s4.c[is][js] += ks;
-                    s4.c[in][jn] += kn;
-                    break;
-                case 2:
-                    s4.c[is][js] += ks;
-
+                    ks = 10e22;
+                    kn = 10e22;
+                    ph = 30.0 * 3.1416 / 180.0;
+                    pd = 0;
                 }
-            }
-            else if (i == numbe - 1 && mode == 2)
-            {
-                //third run
-                switch (b_elm[i].jstate + 1)
+                else
                 {
-                case 1:
-                    s4.c[is][js] += ks;
-                    s4.c[in][jn] += kn;
-                    break;
-                case 2:
-                    s4.c[in][jn] += kn;
-                    s4.c[is][jn] = s4.c[is][jn];
-                    break;
-                case 3:
-                    s4.c[in][jn] += kn;
-                    s4.c[is][jn] = s4.c[is][jn] + kn * tanf(ph) * b_elm[i].jslipd;
+                    ks = b_elm[i].aks;
+                    kn = b_elm[i].akn;
+                    ph = b_elm[i].phi;
+                    pd = b_elm[i].phid;
                 }
-            }
-            else
-            {
-                switch (b_elm[i].jstate + 1)
+
+                if (i == numbe - 1 && mode == 1)
                 {
-                case 1:
-                    s4.c[is][js] += ks;
-                    s4.c[in][jn] += kn;
-                    break;
+                    //second round
+                    switch (b_elm[i].jstate + 1)
+                    {
+                    case 1:
+                    case 3:
+                        s4.c[is][js] += ks;
+                        s4.c[in][jn] += kn;
+                        break;
+                    case 2:
+                        s4.c[is][js] += ks;
 
-                case 3:
-                    s4.c[in][jn] += kn;
-                    s4.c[is][jn] = s4.c[is][jn] + kn * tanf(ph) * b_elm[i].jslipd;
-                    s4.c[in][js] = s4.c[in][js] + kn * tanf(pd) * (-b_elm[i].jslipd);
-
+                    }
                 }
+                else if (i == numbe - 1 && mode == 2)
+                {
+                    //third run
+                    switch (b_elm[i].jstate + 1)
+                    {
+                    case 1:
+                        s4.c[is][js] += ks;
+                        s4.c[in][jn] += kn;
+                        break;
+                    case 2:
+                        s4.c[in][jn] += kn;
+                        s4.c[is][jn] = s4.c[is][jn];
+                        break;
+                    case 3:
+                        s4.c[in][jn] += kn;
+                        s4.c[is][jn] = s4.c[is][jn] + kn * tanf(ph) * b_elm[i].jslipd;
+                    }
+                }
+                else
+                {
+                    switch (b_elm[i].jstate + 1)
+                    {
+                    case 1:
+                        s4.c[is][js] += ks;
+                        s4.c[in][jn] += kn;
+                        break;
+
+                    case 3:
+                        s4.c[in][jn] += kn;
+                        s4.c[is][jn] = s4.c[is][jn] + kn * tanf(ph) * b_elm[i].jslipd;
+                        s4.c[in][js] = s4.c[in][js] + kn * tanf(pd) * (-b_elm[i].jslipd);
+
+                    }
+                }
+
+                //label2080 goto 300
+                    //next iteration of j loop
+                //label 500 written as a function   
             }
 
-            //label2080 goto 300
-               //next iteration of j loop
-            //label 500 written as a function   
         }
-
     }
-}
+
 
 
 

@@ -1,6 +1,8 @@
+#include<stdafx.h>
+
 #include <DX.h>
 #include <CommonPara.h>
-#include <Source.h>
+#include <Mainb.h>
 #include <Failure.h>
 
 using namespace comvar;
@@ -9,9 +11,172 @@ using namespace comvar;
 
 
 
+void NewFractureCentralPoint(float xp, float yp, float& sigxx, float& sigyy, float& sigxy)
+{
+    /* obtain the centre point of a new fracture and add it into the matrix */
+
+    float  y0 = 0.0;
+    int mm = j_material;
+    if (multi_region)
+         mm = check_material_id(xp, yp);
+
+    s2us.reset();
+    y0 = g.y_surf;
+
+    float pxx = symm.pxx1 + g.skx * (y0 - yp);
+    float pyy = symm.pyy1 + g.sky * (y0 - yp);
+    float pxy = symm.pxy1;
+
+    sigxx = pxx;
+    sigyy = pyy;
+    sigxy = pxy;
+
+    if (mm == mat_lining)
+    {
+        sigxx = 0;
+        sigyy = 0;
+        sigxy = 0;
+    }
+    // #pragma omp parallel for
+
+    for (int j = 0; j < numbe_old; ++j)
+    {
+        BoundaryElement& be = elm_list[j];
+        if (mm != be.mat_no)
+            continue;
+
+        int js = 2 * j;
+        int jn = js + 1;
+        s2us.reset();
+        float xj = be.xm;
+        float yj = be.ym;
+        float aj = be.a;
+
+        float cosbj = be.cosbet;
+        float sinbj = be.sinbet;
+
+        coeff(xp, yp, xj, yj, aj, cosbj, sinbj, +1, mm, s2us);
+
+        switch (symm.ksym + 1) {
+        case 1:
+            break;
+
+        case 2:
+            xj = 2.0 * symm.xsym - be.xm;
+            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm, s2us);
+            break;
+
+        case 3:
+            yj = 2.0 * symm.ysym - be.ym;
+            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm, s2us);
+            break;
+
+        case 4:
+            xj = 2.0 * symm.xsym - be.xm;
+            yj = 2.0 * symm.ysym - be.ym;
+            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm, s2us);
+            break;
+
+        case 5:
+            xj = 2.0 * symm.xsym - be.xm;
+            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm, s2us);
+            xj = be.xm;
+            yj = 2.0 * symm.ysym - be.ym;
+
+            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm, s2us);
+            xj = 2.0 * symm.xsym - be.xm;
+            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm, s2us);
+
+        }
+
+        sigxx += s2us.sxxs * s4.d0[js] + s2us.sxxn * s4.d0[jn];
+        sigyy += s2us.syys * s4.d0[js] + s2us.syyn * s4.d0[jn];
+        sigxy += s2us.sxys * s4.d0[js] + s2us.sxyn * s4.d0[jn];
+    }
+    return;
+}
+
+
+
+
+
+
+int cross(float xb1, float yb1, float xe1, float ye1, float xb2, float yb2,
+    float& xe2, float& ye2)
+{
+    /* Check if the tip element crosses any existing elements,
+    if yes, merge tip element to existing elements
+    */
+
+    int id = 0;
+    float tan1, tan2, xcross, ycross, db, de;
+
+    if (xe1 == xb1)
+    {
+        tan1 = 10e20 * (ye1 - yb1);
+    }
+    else
+    {
+        tan1 = float(ye1 - yb1) / float(xe1 - xb1);
+    }
+
+    if ((xb1 == xb2 && yb1 == yb2) || (xb1 == xe2 && yb1 == ye2) ||
+        (xe1 == xb2 && ye1 == yb2) || (xe1 == xe2 && ye1 == ye2))
+        return id;
+
+
+    if (xe2 == xb2)
+    {
+        tan2 = 10e20 * (ye2 - yb2);
+    }
+    else
+    {
+        tan2 = float(ye2 - yb2) / float(xe2 - xb2);
+    }
+
+    if (tan1 == tan2)
+    {
+        return id;
+    }
+
+    xcross = float(float(yb2 - yb1) + float(tan1 * xb1) - float(tan2 * xb2)) / float(tan1 - tan2);
+    ycross = (float(tan1 * tan2 * float(xb1 - xb2)) + float(tan1 * yb2 - tan2 * yb1)) / float(tan1 - tan2);
+    const float epsilon = 1e-6;
+
+    if (xcross <= min(xb1, xe1) - epsilon || ycross <= min(yb1, ye1) - epsilon ||
+        xcross >= max(xb1, xe1) + epsilon || ycross >= max(yb1, ye1) + epsilon ||
+        xcross <= min(xb2, xe2) - epsilon || ycross <= min(yb2, ye2) - epsilon ||
+        xcross >= max(xb2, xe2) + epsilon || ycross >= max(yb2, ye2) + epsilon)
+    {
+        return id;
+    }
+
+    db = sqrt(pow(xcross - xb1, 2) + pow(ycross - yb1, 2));
+    de = sqrt(pow(xcross - xe1, 2) + pow(ycross - ye1, 2));
+
+    if (db < de)
+    {
+        xe2 = xb1;
+        ye2 = yb1;
+    }
+    else
+    {
+        xe2 = xe1;
+        ye2 = ye1;
+    }
+
+    id = 1;
+    return id;
+}
+
+
+
+
+
+
+
 void check_all_tips(float& xt, float& yt, float xt0, float yt0,bool flagB)
 {
-    int n = ni;  //not sure Sara!
     int id = 0;
     float z = 0;
 
@@ -137,7 +302,7 @@ void check_all_tips(float& xt, float& yt, float xt0, float yt0,bool flagB)
                 dc = min(sqrt((xt - xc) * (xt - xc) + (yt - (2. * symm.ysym - yc)) * (yt - (2. * symm.ysym - yc))),
                     sqrt((xt0 - xc) * (xt0 - xc) + (yt0 - (2. * symm.ysym - yc)) * (yt0 - (2. * symm.ysym - yc))));
 
-                if (dc <= tol1 * max(elm_list[i].a, 0 * tips[n].dl))
+                if (dc <= tol1 * max(elm_list[i].a, 0 * tips[ni].dl))
                 {
                     dbeg = sqrt((xt - xbeg) * (xt - xbeg) + (yt - (2. * symm.ysym - ybeg)) * (yt - (2. * symm.ysym - ybeg)));
                     dend = sqrt((xt - xend) * (xt - xend) + (yt - (2. * symm.ysym - yend)) * (yt - (2. * symm.ysym - yend)));
@@ -255,29 +420,32 @@ float label_200(float xt, float yt, float xt0, float yt0, float& angle,bool flag
 {
 
     float dtt = sqrt((xt - xt0) * (xt - xt0) + (yt - yt0) * (yt - yt0));
-    if (dtt == 0) dtt = tips[ni].dl;
+    Tip* __restrict ctip = &tips[ni];
+
+    if (dtt == 0) dtt = ctip->dl;
     if (!flagB)
     {
-        if (tips[ni].ityp == 1 || tips[ni].ityp == 3)
+        if (ctip->ityp == 1 || ctip->ityp == 3)
         {
             angle = atan2f((yt - yt0), (xt - xt0))- 
-                atan2f(tips[ni].sintem, tips[ni].costem);
+                atan2f(ctip->sintem, ctip->costem);
         }
-        else if (tips[ni].ityp == -1 || tips[ni].ityp == -3)
+        else if (ctip->ityp == -1 || ctip->ityp == -3)
         {
             angle = atan2f((yt0 - yt), (xt0 - xt)) - 
-                atan2f(tips[ni].sintem, tips[ni].costem);
+                atan2f(ctip->sintem, ctip->costem);
         }
     }
     else
     {
         angle = atan2f((yt - yt0), (xt - xt0)) - 
-            atan2f(tips[ni].sintem, tips[ni].costem);
+            atan2f(ctip->sintem, ctip->costem);
     }  
 
    
     return dtt;
 }
+
 
 
 
@@ -334,21 +502,21 @@ void recalculate_boundary_element_m(float xt, float yt, float xt0, float yt0,int
 
 float dxi(float& angle, bool flagB)
 {
-    /* -- add one element at the tip ---- 
-    flagB is used to differentiate between dxi and dxiB 
-    flagB =1 then it performs like dxiB in the original code*/  
-   
-   
+    /* -- add one element at the tip ----
+    flagB is used to differentiate between dxi and dxiB
+    flagB =1 then it performs like dxiB in the original code */
+
+
     float xb = 0.0, yb = 0.0, xe = 0.0, ye = 0.0;
     float xt = 0.0, yt = 0.0, xt0 = 0.0, yt0 = 0.0, dtt = 0.0;
-   
+
     xb = tips[ni].xbe;
     yb = tips[ni].ybe;
     xe = tips[ni].xen;
     ye = tips[ni].yen;
 
     int mm = tips[ni].mat_no;
-    float ang = angle;         
+    float ang = angle;
 
     tips[ni].costem = (xe - xb) / tips[ni].dl;
     tips[ni].sintem = (ye - yb) / tips[ni].dl;
@@ -396,7 +564,7 @@ float dxi(float& angle, bool flagB)
         {
             if ((xt - symm.xsym) * (xt0 - symm.xsym) <= 0)
             {
-                //element cross the symmetry line
+                //!element cross the symmetry line
                 yt = yt - (xt - symm.xsym) / (xt - xt0) * (yt - yt0);
                 xt = symm.xsym;
                 dtt = label_200(xt, yt, xt0, yt0, angle, flagB);
@@ -406,7 +574,7 @@ float dxi(float& angle, bool flagB)
         }
         if (symm.ksym == 2 || symm.ksym == 4)
         {
-            //element cross the symmetry line
+            //!element cross the symmetry line
             if ((yt - symm.ysym) * (yt0 - symm.ysym) <= 0)
             {
                 xt = xt - (yt - symm.ysym) / (yt - yt0) * (xt - xt0);
@@ -431,8 +599,10 @@ float dxi(float& angle, bool flagB)
     }
     check_all_tips(xt, yt, xt0, yt0, flagB);    //label55 in the oc      
 
-    dtt = label_200(xt, yt, xt0, yt0,angle, flagB);
-    recalculate_boundary_element_m(xt, yt, xt0, yt0,mm, dtt);   //label 500
+    dtt = label_200(xt, yt, xt0, yt0, angle, flagB);
+    recalculate_boundary_element_m(xt, yt, xt0, yt0, mm, dtt);   //label 500
 
     return dtt;
 }
+
+

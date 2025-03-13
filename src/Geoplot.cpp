@@ -1,4 +1,6 @@
-﻿#include "Geoplot.h"
+﻿#include<stdafx.h>
+
+#include "Geoplot.h"
 #include "CommonPara.h" 
 #include <WinInterface.h>
 #include <chrono> 

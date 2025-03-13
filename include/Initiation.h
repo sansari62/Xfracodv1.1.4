@@ -16,7 +16,8 @@ void InitiationB();
 
 void InitiationR();
 void initiation();
-
+void point(float xp, float yp, float& sig1, float& sig2, float& bet, float& sig12,
+    float& set, float& disp, float& zet);
 
 
 

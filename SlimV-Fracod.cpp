@@ -1,14 +1,12 @@
 // SlimV-Fracod.cpp : This file contains the 'main' function. Program execution begins and ends there.
-
-
+#include<stdafx.h>
 #include<CommonPara.h>
 #include<Source.h>
 #include <filesystem> 
-#include <fstream>
-#include <sstream>
 #include <algorithm>
 #include <cctype>
 #include <regex>
+
 
 
 #define VERSION "v1.0.1"
@@ -209,6 +207,8 @@ int main()
     }
     file2.open(dir + L"/Coutput.dat");
     logfile.open(dir + L"/Clog.txt");
+    //file57.open(dir + L"Cpermeability.dat");
+    file9.open(dir+L"Cbound.dat");
     if (!logfile.is_open())
     {
         cout << "log file is not opend.\n";       

@@ -1,13 +1,12 @@
+#include<stdafx.h>
+
 #include <Internal.h>
 #include <CommonPara.h>
 #include<ExcavationCracks.h>
-#include<Source.h>
 #include<WinInterface.h>
-#include <iomanip>
 #include<Initiation.h>
-#include <omp.h>
-#include<chrono>
 #include<Mainb.h>
+#include<Failure.h>
 
 
 
@@ -294,9 +293,13 @@ void compute_stress_displ_at_specified_points(int& npoint, stringstream& buffer)
         pxx = symm.pxx1 + g.skx * (y0 - yp);
         pyy = symm.pyy1 + g.sky * (y0 - yp);
         pxy = symm.pxy1;
-        material = check_material_id(xp, yp);
-        mm = material;
-           
+       /* material = check_material_id(xp, yp);
+        mm = material;*/
+
+        mm = j_material;
+        if(multi_region)
+           mm = check_material_id(xp, yp);
+
         ux = 0.0, uy = 0.0, sigxx = pxx, sigyy = pyy, sigxy = pxy;
 
         if (mm == mat_lining)
@@ -306,7 +309,7 @@ void compute_stress_displ_at_specified_points(int& npoint, stringstream& buffer)
             sigxy = 0;
         }
 
-        for_j_loop(mm, sigxx, sigyy, sigxy, ux, uy, xp, yp);   //#check ok
+        for_j_loop(mm, sigxx, sigyy, sigxy, ux, uy, xp, yp);  
 
         bet = (sigxx == sigyy) ? pi / 2.0 : 0.5 * atan(2.0 * sigxy / (sigxx - sigyy));
 

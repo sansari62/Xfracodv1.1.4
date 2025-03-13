@@ -1,7 +1,10 @@
 
+#include<stdafx.h>
+
 #include "CommonPara.h"
 #include<Mainb.h>
-#include<Source.h>
+#include<Failure.h>
+
 using namespace CommonPara_h::comvar;
 
 
@@ -277,110 +280,6 @@ void water()
 
 
 
-void point(float xp, float yp, float& sig1, float& sig2, float& bet, float& sig12,
-    float& set, float& disp, float& zet) 
-{
-    int material = check_material_id(xp, yp);
-    int mm = material;
-
-    s2us.reset();
-    float ux = 0.0;
-    float uy = 0.0;
-
-    float y0;
-    y0 = g.y_surf;
-
-    float pxx = symm.pxx1 + g.skx * (y0 - yp);
-    float pyy = symm.pyy1 + g.sky * (y0 - yp);
-    float pxy = symm.pxy1;
-
-    float sigxx = pxx;
-    float sigyy = pyy;
-    float sigxy = pxy;
-
-    if (mm == mat_lining) 
-    {
-        sigxx = 0;
-        sigyy = 0;
-        sigxy = 0;
-    }
-
-    for (int j = 0; j < numbe; ++j) 
-    {
-        if (mm != elm_list[j].mat_no) continue;
-
-        int js = 2 * j;
-        int jn = js + 1;
-        
-        s2us.reset();       
-
-        float xj = elm_list[j].xm;
-        float yj = elm_list[j].ym;
-        float aj = elm_list[j].a;
-        float cosbj = elm_list[j].cosbet;
-        float sinbj = elm_list[j].sinbet;
-       
-        coeff(xp, yp, xj, yj, aj, cosbj, sinbj, +1, mm, s2us);
-
-        switch (symm.ksym + 1)
-        {
-        case 1:
-            break;
-        case 2:
-            xj = 2.0 * symm.xsym - elm_list[j].xm;
-            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm, s2us);
-            break;
-        case 3:
-            yj = 2.0 * symm.ysym - elm_list[j].ym;
-            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm, s2us);
-            break;
-        case 4:
-            xj = 2.0 * symm.xsym - elm_list[j].xm;
-            yj = 2.0 * symm.ysym - elm_list[j].ym;
-            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm, s2us);
-            break;
-        case 5:
-            xj = 2.0 * symm.xsym - elm_list[j].xm;
-            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm, s2us);
-            xj = elm_list[j].xm;
-            yj = 2.0 * symm.ysym - elm_list[j].ym;
-            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm, s2us);
-            xj = 2.0 * symm.xsym - elm_list[j].xm;
-            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm, s2us);
-       
-        }
-        ux += s2us.uxs * s4.d0[js] + s2us.uxn * s4.d0[jn];
-        uy += s2us.uys * s4.d0[js] + s2us.uyn * s4.d0[jn];
-        sigxx += s2us.sxxs * s4.d0[js] + s2us.sxxn * s4.d0[jn];
-        sigyy += s2us.syys * s4.d0[js] + s2us.syyn * s4.d0[jn];
-        sigxy += s2us.sxys * s4.d0[js] + s2us.sxyn * s4.d0[jn];
-    }
-    
-    bet = (sigxx == sigyy) ? pi / 2.0 : 0.5 * atan2f(2.0 * sigxy, (sigxx - sigyy));
-
-    //if (mcyc == 5 && bet == 0) exit;
-    sig1 = sigxx * cosf(bet) * cosf(bet) + 2 * sigxy * sinf(bet) * cosf(bet) + sigyy * sinf(bet) * sinf(bet);
-    sig2 = sigxx * sinf(bet) * sinf(bet) - 2 * sigxy * sinf(bet) * cosf(bet) + sigyy * cosf(bet) * cosf(bet);
-    sig12 = (sig1 - sig2) / 2.0;
-
-    set = (sig12 > 0) ? bet + pi / 4.0 : bet - pi / 4.0;   
-
-    if (sig2 < sig1) 
-    {
-        float tem = sig1;
-        sig1 = sig2;
-        sig2 = tem;
-        bet += pi / 2;
-    }
-    disp = sqrt(ux * ux + uy * uy);
-    zet = ux > 0.0 ? atanf(uy / ux) :
-        ux < 0.0 ? pi + atanf(uy / ux) :
-            1.57 * int(copysign(1, uy));
-    
-    return;
-}
-
-
 
 void third_correction_run()
 {
@@ -433,6 +332,8 @@ void third_correction_run()
         }
 
     //call monitoring_point with the sigxx,xy,yy parameters  need to add this method
+    // monitoring_point(xp, yp, sigxx, sigyy, sigxy, ux, uy);  //Sara uncommet this
+
     }
     return;
  }
@@ -454,6 +355,7 @@ void run_check(int mode)
     }
     return;
 }
+
 
 
 
@@ -503,8 +405,8 @@ void calc_bound_stress(int it)
 void work0(int mode)
 {
     /*-calculate the total strain enegery before fracture growth-*/
-
-    water();
+    if (water_mod)
+        water();
     safety_check();   
 
     //first time consider it as elastic fracture
@@ -584,7 +486,6 @@ void work0(int mode)
                     streng = max(-(be.sigma_n + watercm.pwater[m] * watercm.jwater[m]) *
                         tanf(beta), 0.0) + be.coh;
 
-                    //during propogation checking ssd should be 0. Numberical error make ssd small value
                     if (abs(ssd) <= 1e4)   
                         ssd = 0;                        
                     //if ssd is 0, the shear direction follows the overall shear.
@@ -674,6 +575,7 @@ void work0(int mode)
         third_correction_run();
         //for monitoring lines
         float xp, yp;
+        float sigxx, sigyy, sigxy, ux, uy;
          
         for (int i = 0; i < lhist; i++)
         {
@@ -681,7 +583,7 @@ void work0(int mode)
             {
                 xp = mline_list[i].x1l + j * (mline_list[i].x2l - mline_list[i].x1l) /mline_list[i].npl;
                 yp =mline_list[i].y1l + j * (mline_list[i].y2l -mline_list[i].y1l) /mline_list[i].npl;
-                //monitoring_point(xp, yp, sigxx, sigyy, sigxy, ux, uy);  Sara uncommet this
+                //monitoring_point(xp, yp, sigxx, sigyy, sigxy, ux, uy);  //Sara uncommet this
                 // again write data in files
             }
         }
@@ -696,6 +598,8 @@ void work0(int mode)
         {
         case 1:
         case 11:
+        case 5:
+        case 6:
             w0 += 0.5 * be.forces * be.us + 0.5 * be.forcen * be.un;
             break;
         case 2:
@@ -709,10 +613,7 @@ void work0(int mode)
         case 4:
         case 14:
             w0 += 0.5 * be.forces * be.us - 0.5 * be.forcen * be.un;
-            break;
-        case 5:
-        case 6:
-            w0 += 0.5 * be.forces * be.us + 0.5 * be.forcen * be.un;   //similar to 1 check it in test later
+            break;        
        
         }
     }
@@ -751,8 +652,9 @@ void work1(int mode)
     float streng = 0.0;
     float ss = 0.0, ustem = 0.0,usneg = 0.0,unneg = 0.0,untem = 0.0;
     float sn = 0.0;
+    auto& belm = b_elm[numbe - 1];
 
-    b_elm[numbe-1].jstate = 0;       
+    belm.jstate = 0;
     float ph = 30.0 * 3.1416 / 180.0;
 
     for (int k = 0; k < 2 * (numbe - 1); ++k)
@@ -763,7 +665,6 @@ void work1(int mode)
             s4.b[k] = s4.b0[k];      //s4.b0(k) has been defined in sub newcoordinate as the stresses in intact rock
 
     mainb_work1(mode);
-    //mainb(mode);
     //total stress/displacement using d0(m) total, not increment d(m)   
     elm_list[numbe-1].bound(numbe-1, ss, sn, ustem, untem, usneg, unneg);
 
@@ -771,70 +672,76 @@ void work1(int mode)
 
     if (sn + watercm.pwater[numbe - 1] * watercm.jwater[numbe - 1] > 1e4)
     {
-        b_elm[numbe-1].jstate = 1;
-        b_elm[numbe-1].jslipd = 0;      
+        belm.jstate = 1;
+        belm.jslipd = 0;      
     }
     else
     {
         if (abs(ss) > streng)    
         {
-            b_elm[numbe - 1].jstate = 2;
-            b_elm[numbe - 1].jslipd = -copysign(1.0, ss);
+           belm.jstate = 2;
+           belm.jslipd = -copysign(1.0, ss);
         }
         //Sara set m to 0   change m to numbe-1 Sara! 9.9.2024
         if (sn + watercm.pwater[numbe - 1] * watercm.jwater[numbe - 1] < 0 && abs(ss) < streng)    //m instead of numbe check later in test
-            b_elm[numbe - 1].jstate = 0;
+           belm.jstate = 0;
     }
 
     //label30
-    if (b_elm[numbe - 1].jstate != 0)
+    if (belm.jstate != 0)
         mainb_work1(mode);
-        //mainb(mode);
 
-    //temperatory accumulation of element displacement, undo it later
-    for (int k = 0; k < 2 * numbe ; ++k)
+    //temperatory accumulation of element displacement, undo it later  
+
+    for (int k = 0; k < 2 * numbe; k += 2)
+    {
         s4.d0[k] += s4.d[k];
-
+        s4.d0[k + 1] += s4.d[k + 1];
+    }
     for (int m = 0; m < numbe; ++m)
     {
-        elm_list[m].bound(m, ss, sn, ustem, untem, usneg, unneg);  // all of these parameter should be checked!!!
-        b_elm[m].us = ustem;
-        b_elm[m].un = untem;
-        b_elm[m].forces = b_elm[m].force1 + ss * 2.0 * elm_list[m].a;
-        b_elm[m].forcen = b_elm[m].force2 + sn * 2.0 * elm_list[m].a;
+        auto& elm = elm_list[m];
+        auto& belm = b_elm[m];
 
+        elm.bound(m, ss, sn, ustem, untem, usneg, unneg);
+
+        belm.us = ustem;
+        belm.un = untem;
+        belm.forces = belm.force1 + ss * 2.0 * elm.a;
+        belm.forcen = belm.force2 + sn * 2.0 * elm.a;
     }
+
+
     //undo accumulation because the fictitious element is not real element yet
     for (int k = 0; k < 2 * numbe; ++k)
-        s4.d0[k] = s4.d0[k]- s4.d[k];
-       
-    w1 = 0.0;
+        s4.d0[k] -= s4.d[k];        
+
+
+    float sum = 0.0;
     for (int m = 0; m < numbe; ++m)
     {
-        switch(elm_list[m].kod)
+        auto& belm = b_elm[m];
+        float term1 = 0.5 * belm.forces * belm.us;
+        float term2 = 0.5 * belm.forcen * belm.un;
+
+        switch (elm_list[m].kod)
         {
-            case 1:
-            case 11:
-                w1 += 0.5 * b_elm[m].forces * b_elm[m].us + 0.5 * b_elm[m].forcen * b_elm[m].un;
-                break;
-                
-            case 2:
-            case 12:
-                w1 -= 0.5 * b_elm[m].forces * b_elm[m].us - 0.5 * b_elm[m].forcen * b_elm[m].un;
-                break;
-            case 3:
-            case 13:
-                w1 -= 0.5 * b_elm[m].forces * b_elm[m].us + 0.5 * b_elm[m].forcen * b_elm[m].un;
-                break;
-            case 4:
-            case 14:
-                w1 += 0.5 * b_elm[m].forces * b_elm[m].us - 0.5 * b_elm[m].forcen * b_elm[m].un;
-                break;
-            case 5:
-            case 6:
-                w1 += 0.5 * b_elm[m].forces * b_elm[m].us + 0.5 * b_elm[m].forcen * b_elm[m].un;                           
+        case 1: case 11:
+        case 5: case 6:
+            sum += term1 + term2; break;
+
+        case 2: case 12:
+            sum -= term1 - term2; break;
+
+        case 3: case 13:
+            sum -= term1 + term2; break;
+
+        case 4: case 14:
+            sum += term1 - term2; break;
         }
     }
+    w1 = sum;
+
     //reset the fictitous element to no water pressure   
      watercm.jwater[numbe - 1]= 0;
 
@@ -846,89 +753,90 @@ void work1(int mode)
 
 
 void monitoring_point(float xp, float yp, float& sigxx, float& sigyy, float& sigxy, float& ux, float& uy)
-{
-        int mm = 0;
-        int material = check_material_id(xp, yp);
-        mm = material;
+{ 
 
-        s2us.reset();                        
-        ux = 0.0;
-        uy = 0.0;
+    int mm = j_material;
+    if (multi_region)
+        mm = check_material_id(xp, yp);
+
+    s2us.reset();                        
+    ux = 0.0;
+    uy = 0.0;
       
 
-        float y0 = g.y_surf;
-        float pxx = symm.pxx1 + g.skx * (y0 - yp);
-        float pyy = symm.pyy1 + g.sky * (y0 - yp);
-        float pxy = symm.pxy1;
+    float y0 = g.y_surf;
+    float pxx = symm.pxx1 + g.skx * (y0 - yp);
+    float pyy = symm.pyy1 + g.sky * (y0 - yp);
+    float pxy = symm.pxy1;
 
-        sigxx = pxx;
-        sigyy = pyy;
-        sigxy = pxy;
+    sigxx = pxx;
+    sigyy = pyy;
+    sigxy = pxy;
 
-        if (mm == mat_lining)
-        {
-            sigxx = 0.0;
-            sigyy = 0.0;
-            sigxy = 0.0;
-        }
+    if (mm == mat_lining)
+    {
+        sigxx = 0.0;
+        sigyy = 0.0;
+        sigxy = 0.0;
+    }
 
-        for (int j = 0; j < numbe; ++j)
-        {
-            if (mm != elm_list[j].mat_no) continue;
+    for (int j = 0; j < numbe; ++j)
+    {
+        if (mm != elm_list[j].mat_no) continue;
            
-            int jn = 2 * j;
-            int js = jn - 1;
+        int jn = 2 * j;
+        int js = jn - 1;
 
-            s2us.reset();                                   // Call initl();
-            float xj = elm_list[j].xm;
-            float yj = elm_list[j].ym;
-            float aj = elm_list[j].a;
+        s2us.reset();                                   // Call initl();
+        float xj = elm_list[j].xm;
+        float yj = elm_list[j].ym;
+        float aj = elm_list[j].a;
 
-            float cosbj = elm_list[j].cosbet;
-            float sinbj = elm_list[j].sinbet;
+        float cosbj = elm_list[j].cosbet;
+        float sinbj = elm_list[j].sinbet;
 
-            coeff(xp, yp, xj, yj, aj, cosbj, sinbj, +1, mm, s2us);
-            switch (symm.ksym + 1) 
-            {
-                case 1: break;
-                case 2: 
-                    xj = 2.0 * symm.xsym - elm_list[j].xm;
-                    coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm, s2us);
-                    break;
+        coeff(xp, yp, xj, yj, aj, cosbj, sinbj, +1, mm, s2us);
+        switch (symm.ksym + 1) 
+        {
+            case 1: break;
+            case 2: 
+                xj = 2.0 * symm.xsym - elm_list[j].xm;
+                coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm, s2us);
+                break;
 
-                case 3: 
-                    yj = 2.0 * symm.ysym - elm_list[j].ym;
-                    coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm, s2us);
-                    break;
+            case 3: 
+                yj = 2.0 * symm.ysym - elm_list[j].ym;
+                coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm, s2us);
+                break;
 
-                case 4: 
-                    xj = 2.0 * symm.xsym - elm_list[j].xm;
-                    yj = 2.0 * symm.ysym - elm_list[j].ym;
-                    coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm, s2us);
-                    break;
+            case 4: 
+                xj = 2.0 * symm.xsym - elm_list[j].xm;
+                yj = 2.0 * symm.ysym - elm_list[j].ym;
+                coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm, s2us);
+                break;
 
-                case 5: 
-                    xj = 2.0 * symm.xsym - elm_list[j].xm;
-                    coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm, s2us);
+            case 5: 
+                xj = 2.0 * symm.xsym - elm_list[j].xm;
+                coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm, s2us);
 
-                    xj = elm_list[j].xm;
-                    yj = 2.0 * symm.ysym - elm_list[j].ym;
+                xj = elm_list[j].xm;
+                yj = 2.0 * symm.ysym - elm_list[j].ym;
 
-                    coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm, s2us);
-                    xj = 2.0 * symm.xsym - elm_list[j].xm;
-                    coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm, s2us);
+                coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm, s2us);
+                xj = 2.0 * symm.xsym - elm_list[j].xm;
+                coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm, s2us);
                   
-            }
-
-            ux += s2us.uxs * s4.d0[js] + s2us.uxn * s4.d0[jn];
-            uy += s2us.uys * s4.d0[js] + s2us.uyn * s4.d0[jn];
-            sigxx +=  s2us.sxxs * s4.d0[js] + s2us.sxxn * s4.d0[jn];
-            sigyy += s2us.syys * s4.d0[js] + s2us.syyn * s4.d0[jn];
-            sigxy += s2us.sxys * s4.d0[js] + s2us.sxyn * s4.d0[jn];
-
         }
 
-    return;
+        ux += s2us.uxs * s4.d0[js] + s2us.uxn * s4.d0[jn];
+        uy += s2us.uys * s4.d0[js] + s2us.uyn * s4.d0[jn];
+        sigxx +=  s2us.sxxs * s4.d0[js] + s2us.sxxn * s4.d0[jn];
+        sigyy += s2us.syys * s4.d0[js] + s2us.syyn * s4.d0[jn];
+        sigxy += s2us.sxys * s4.d0[js] + s2us.sxyn * s4.d0[jn];
+
+    }
+
+return;
 }
 
 

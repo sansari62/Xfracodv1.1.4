@@ -15,7 +15,6 @@
 #include "S4.h"
 
 #include<Creep.h>
-#include <common.h>
 #include<Arc.h>
 #include <Edge.h>
 #include <Fracture.h>
@@ -68,13 +67,14 @@ namespace comvar {
 	extern const int MAX_SIZE_frac;
 	extern const int MAX_SIZE_arc;
 	extern const float ge;
-
+	extern bool multi_region;
+	extern bool water_mod;
+	extern int j_material;
 	extern float pi;
 
 	extern const float zerof;
 	extern float dist_thr;
 
-	extern int test_id;
 	extern std::wstring selectedFile;
 	extern wstring dir;
 

@@ -1,4 +1,4 @@
-#include <common.h>
+#include <stdafx.h>
 #include <CommonPara.h>
 #include <WinInterface.h>
 
@@ -42,7 +42,7 @@ void AcousticE()
 
     int mm = 1;                
     float r, ra;             //random numbers
-    wstring filepath1 = dir + L"/CAE" + to_wstring(test_id) + L".dat";
+    wstring filepath1 = dir + L"/CAE.dat";
 
     ofstream file3(filepath1);
 

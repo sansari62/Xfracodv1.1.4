@@ -1,3 +1,5 @@
+#include<stdafx.h>
+
 #include "Source.h"
 #include<ExcavationCracks.h>
 #include "CommonPara.h"
@@ -5,6 +7,7 @@
 #include<Input.h>
 #include<Geoplot.h>
 #include<chrono>
+#include<iostream>
 
 
 using namespace CommonPara_h::comvar;
@@ -90,127 +93,6 @@ void finding_in_rock_iniR()
     }  
 }
 
-
-
-
-
-int  check_material_id(float xp, float yp)
-{
-
-    float dist0 = 10e8;
-    int mm = 0, mclosest = 0;
-
-    int k = 0;
-    float xc = 0, yc = 0, xt = 0, yt = 0, dist = 0;
-    //remove prenumbe from for loop because of the issue with multi region problem
-
-    for (int m = 0 ; m < numbe; ++m)
-    {
-        dist = std::sqrt(std::pow(xp - elm_list[m].xm, 2) + std::pow(yp - elm_list[m].ym, 2));
-
-        if (dist <= dist0)
-        {
-            mclosest = m;
-            dist0 = dist;
-            k = 0;
-        }
-
-        if (symm.ksym != 0)
-        {
-            if (symm.ksym == 1 || symm.ksym == 4)
-            {
-                xc = 2.0 * symm.xsym - elm_list[m].xm;
-                yc = elm_list[m].ym;
-                dist = std::sqrt(std::pow(xp - xc, 2) + std::pow(yp - yc, 2));
-
-                if (dist < dist0)
-                {
-                    mclosest = m;
-                    k = 1;
-                    dist0 = dist;
-                }
-            }
-            if (symm.ksym == 2 || symm.ksym == 4)
-            {
-                xc = elm_list[m].xm;
-                yc = 2.0 * symm.ysym - elm_list[m].ym;
-                dist = std::sqrt(std::pow(xp - xc, 2) + std::pow(yp - yc, 2));
-                if (dist < dist0)
-                {
-                    mclosest = m;
-                    k = 2;
-                    dist0 = dist;
-                }
-            }
-            if (symm.ksym == 3 || symm.ksym == 4)
-            {
-                xc = 2.0 * symm.xsym - elm_list[m].xm;
-                yc = 2.0 * symm.ysym - elm_list[m].ym;
-                dist = std::sqrt(std::pow(xp - xc, 2) + std::pow(yp - yc, 2));
-
-                if (dist < dist0)
-                {
-                    mclosest = m;
-                    k = 3;
-                    dist0 = dist;
-                }
-            }
-        }
-        // label_51: continue;
-    }
-
-    if (elm_list[mclosest].kod != 6)
-    {
-        mm = elm_list[mclosest].mat_no;       
-        return mm;
-    }
-    else
-    {
-        xt = xp;
-        yt = yp;
-
-        switch (k)
-        {
-        case 1:
-            xt = 2.0 * symm.xsym - xp;
-            break;
-        case 2:
-            yt = 2.0 * symm.ysym - yp;
-            break;
-        case 3:
-            xt = 2.0 * symm.xsym - xp;
-            yt = 2.0 * symm.ysym - yp;
-
-        }
-
-        float xpprime = (xt - elm_list[mclosest].xm) * elm_list[mclosest].cosbet +
-            (yt - elm_list[mclosest].ym) * elm_list[mclosest].sinbet;
-        float ypprime = -(xt - elm_list[mclosest].xm) * elm_list[mclosest].sinbet +
-            (yt - elm_list[mclosest].ym) * elm_list[mclosest].cosbet;
-
-        if (ypprime <= 0)
-        {
-            mm = elm_list[mclosest].mat_no;
-        }
-        else
-        {
-           
-            if (elm_list[mclosest - 1].xm == elm_list[mclosest].xm &&
-                elm_list[mclosest - 1].ym == elm_list[mclosest].ym)
-            {
-                mm = elm_list[mclosest - 1].mat_no;
-            }
-            if (elm_list[mclosest + 1].xm == elm_list[mclosest].xm &&
-                elm_list[mclosest + 1].ym == elm_list[mclosest].ym)
-            {
-                mm = elm_list[mclosest + 1].mat_no;
-            }
-           
-        }
-    }
-
-    return mm;
-}
 
 
 
@@ -355,75 +237,6 @@ void Interface(int num, float xbeg, float ybeg, float xend, float yend, int mat1
 
 
 
-int cross(float xb1, float yb1, float xe1, float ye1, float xb2, float yb2, 
-    float& xe2, float& ye2)
-{ 
-    /* Check if the tip element crosses any existing elements,
-    if yes, merge tip element to existing elements
-    */
-
-    int id = 0;
-    float tan1, tan2, xcross, ycross, db, de;
-
-    if (xe1 == xb1) 
-    {
-        tan1 = 10e20 * (ye1 - yb1);
-    }
-    else
-    {
-        tan1 = float(ye1 - yb1) / float(xe1 - xb1);
-    }
-
-    if ((xb1 == xb2 && yb1 == yb2) || (xb1 == xe2 && yb1 == ye2) ||
-     (xe1 == xb2 && ye1 == yb2) || (xe1 == xe2 && ye1 == ye2) ) 
-        return id;
-   
-
-    if (xe2 == xb2)
-    {
-        tan2 = 10e20 * (ye2 - yb2);
-    }
-    else
-    {
-        tan2 = float(ye2 - yb2) / float(xe2 - xb2);
-    }
-
-    if (tan1 == tan2) 
-    {
-        return id;
-    }
-
-    xcross = float (float(yb2 - yb1) + float(tan1 * xb1) - float(tan2 * xb2)) / float(tan1 - tan2);
-    ycross = (float(tan1 * tan2 * float(xb1 - xb2)) + float(tan1 * yb2 - tan2 * yb1)) /float (tan1 - tan2);
-    const float epsilon = 1e-6;
-
-    if (xcross <= min(xb1, xe1) - epsilon || ycross <= min(yb1, ye1) - epsilon ||
-        xcross >= max(xb1, xe1) + epsilon || ycross >= max(yb1, ye1) + epsilon ||
-        xcross <= min(xb2, xe2) - epsilon || ycross <= min(yb2, ye2) - epsilon ||
-        xcross >= max(xb2, xe2) + epsilon || ycross >= max(yb2, ye2) + epsilon)
-    {
-        return id;
-    }
-
-    db = sqrt(pow(xcross - xb1, 2) + pow(ycross - yb1, 2));
-    de = sqrt(pow(xcross - xe1, 2) + pow(ycross - ye1, 2));
-
-    if (db < de) 
-    {
-        xe2 = xb1;
-        ye2 = yb1;
-    }
-    else
-    {
-        xe2 = xe1;
-        ye2 = ye1;
-    }
-
-    id = 1;
-    return id; 
-}
-
-
 
 
 
@@ -517,7 +330,7 @@ void Central_control()
         geoplot();
         prenumbe = numbe;
     }
-    If_No_tip(selectedFile);    //Check possibility of fracture initiation if no tip
+    If_No_tip();    //Check possibility of fracture initiation if no tip
 
     //--------------------------Creep functions---------------    
     file50 << "   time     time step    Tip no.    Creep growth length    growth angle      K/Kc      Crack velocity\n";

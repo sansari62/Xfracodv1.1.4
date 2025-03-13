@@ -134,7 +134,7 @@
     <ClInclude Include="include\BoundaryStress.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\common.h">
+    <ClInclude Include="include\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\CommonPara.h">

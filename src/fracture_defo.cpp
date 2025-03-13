@@ -1,7 +1,9 @@
 
+#include<stdafx.h>
+
 #include <CommonPara.h>
 #include <fracture_defo.h>
-#include <Source.h>
+#include <Failure.h>
 
 using namespace CommonPara_h::comvar;
 
@@ -86,9 +88,10 @@ void frac_defo_Circ_win(int& jpoint) {
             pow(elm_list[m].ym - dispwin.yc0, 2)) > dispwin.radium)
             continue;
 
-
-        int material = check_material_id(elm_list[m].xm, elm_list[m].ym);
-        int mm = material;
+        int mm = elm_list[m].mat_no;
+        if(multi_region)
+            mm = check_material_id(elm_list[m].xm, elm_list[m].ym);
+        
         joint1 = compute_join_attr_and_add_them(m, jpoint, 1);    //return value for the first joint element
 
         joint2 = compute_join_attr_and_add_them(m, jpoint, 2);    //return value for the second joint element
@@ -163,8 +166,12 @@ void frac_defo_Rec_win(int& jpoint) {
             elm_list[m].ym > dispwin.yur || elm_list[m].ym < dispwin.yll) continue;     
         
 
-        int material = check_material_id(elm_list[m].xm, elm_list[m].ym);
-        int mm = material;
+        /*int material = check_material_id(elm_list[m].xm, elm_list[m].ym);
+        int mm = material;*/
+
+        int mm = elm_list[m].mat_no;
+        if (multi_region)
+            mm = check_material_id(elm_list[m].xm, elm_list[m].ym);
         joint1 = compute_join_attr_and_add_them(m, jpoint, 1);    //return value for the first joint element
 
         joint2 = compute_join_attr_and_add_them(m, jpoint, 2);    //return value for the second joint element

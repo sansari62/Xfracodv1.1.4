@@ -1,6 +1,5 @@
 #ifndef WinInterface_h
 #define WinInterface_h
-#include<common.h>
 
 
 

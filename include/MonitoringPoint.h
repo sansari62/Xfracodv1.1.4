@@ -2,6 +2,9 @@
 #define MonitoringPoint_h
 
 
+#include <fstream>
+
+
 class MonitoringPoint
 {
 public:
@@ -11,7 +14,7 @@ public:
 	
 	MonitoringPoint() : xmon(0.0), ymon(0.0) {}	
 
-	void save_to_file(ofstream& f)
+	void save_to_file(std::ofstream& f)
 	{
 		f << xmon << " " << ymon << std::endl;
 	}

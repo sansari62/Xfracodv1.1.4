@@ -1,7 +1,6 @@
 #ifndef Creep_h
 #define Creep_h
-#include <common.h>
-
+#include<fstream>
 
 class Creep
 {
@@ -29,7 +28,7 @@ public:
 
 	Creep();
 
-	void save_to_file(ofstream& f);
+	void save_to_file(std::ofstream& f);
 
 };
 #endif

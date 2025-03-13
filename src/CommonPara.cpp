@@ -1,3 +1,4 @@
+#include<stdafx.h>
 #include "CommonPara.h"
 #include<map>
 
@@ -45,7 +46,9 @@ namespace comvar {
 	const int mem_size = 2*m0;
 	const float ge = 9.81;
 
-	int test_id = 12;
+	bool multi_region = false;
+	bool water_mod = false;
+	int j_material = 1;
 
 	int nelement = 0;
 	int mcyc = 0;
@@ -129,10 +132,10 @@ namespace comvar {
 	
 	std::ofstream file2; 
 
-	std::ofstream file57(filepath + L"Cpermeability.dat");
+	std::ofstream file57; 
 	std::ifstream inFile;
 
-	std::ofstream file9("Cbound.dat");
+	std::ofstream file9;  // ("Cbound.dat");
 	std::ofstream logfile;
 
 	

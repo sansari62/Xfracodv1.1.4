@@ -1,4 +1,4 @@
-#include <common.h>
+#include <stdafx.h>
 #include <CommonPara.h>
 #include <WinInterface.h>
 #include<Work.h>
@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include<Save_and_Restore.h>
 #include <charconv>
+#include<Tip.h>
 
 
 
@@ -197,6 +198,8 @@ void processFracture()
             Edge_interface new_lin_intfce(xbeg, ybeg, xend, yend, mat1, mat2,num); 
             lin_intrfce_list[npli] = new_lin_intfce;
             npli++;
+            multi_region = true;
+
         }
         catch (std::ifstream::failure e)
         {
@@ -243,6 +246,7 @@ void processFracture()
             bvs = 0;
             bvn = 0;
             nq = nq + 1;
+            multi_region = true;
         }
         catch (std::ifstream::failure e)
         {
@@ -260,6 +264,7 @@ void processFracture()
     {
         string id;
         string lineData;
+        water_mod = true;
         try
         {
             getline(inFile, lineData);
@@ -455,8 +460,8 @@ void processFracture()
                 amin = min(amin, elm_list[m].a);
             }
             s5u.dtol = amin / 1000.0;
-
-            water();   
+            if (water_mod)
+                water();   
             // Write  elementdata to file
             for (int m = 0; m < numbe; ++m)
             {
@@ -975,6 +980,7 @@ void processFracture()
        string lineData;
        getline(inFile, lineData);
        int jmat = 1;
+       
        std::stringstream ss(lineData);
 
        if (ss)
@@ -1008,6 +1014,7 @@ void processFracture()
           
            s8[jmat].phi0 = s8[jmat].phi0 / 180.0 * pi;
            s8[jmat].phid0 = s8[jmat].phid0 / 180.0 * pi;
+           j_material = jmat;
             
        return;       
    }

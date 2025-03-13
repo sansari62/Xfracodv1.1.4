@@ -1,14 +1,13 @@
+#include<stdafx.h>
+
 #include <Tip.h>
 #include "CommonPara.h"
 #include<Work.h>
-#include<Source.h>
 #include<Input.h>
 #include<Geoplot.h>
-#include<Failure.h>
-#include<ExcavationCracks.h>
 #include<Fmax.h>
 #include<Initiation.h>
-#include<Mainb.h>
+#include<DX.h>
 
 using namespace CommonPara_h::comvar;
 
@@ -46,6 +45,66 @@ void Tip::save_to_file(ofstream& f)
 }
 
 
+
+
+
+
+
+void set_frac_mech_properties(int index, float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb,
+    float& phid_bb, float& ap_bb, float& apr_bb, int mm)
+{
+
+    if (s8[index].equl_zero())
+    {
+        ap_bb = s8[mm].apert0;
+        apr_bb = s8[mm].apert_r;
+        aks_bb = 10e12;
+        akn_bb = 10e12;
+        phi_bb = 30. * 3.14 / 180;
+        phid_bb = 0;
+        coh_bb = 0;
+    }
+    else
+    {
+        akn_bb = s8[index].akn0;
+        aks_bb = s8[index].aks0;
+        phi_bb = s8[index].phi0;
+        coh_bb = s8[index].coh0;
+        phid_bb = s8[index].phid0;
+        ap_bb = s8[index].apert0;
+        apr_bb = s8[index].apert_r;
+    }
+    return;
+}
+
+
+
+
+void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, float& phid_bb,
+    float& ap_bb, float& apr_bb, int im, int mm)
+{
+    if (mm == 0)   mm = 1;
+    if (im == 1 || im == 0)
+    {
+        set_frac_mech_properties(11, aks_bb, akn_bb, phi_bb, coh_bb, phid_bb, ap_bb, apr_bb, mm);
+
+    }
+    else if (im == 2)
+        set_frac_mech_properties(12, aks_bb, akn_bb, phi_bb, coh_bb, phid_bb, ap_bb, apr_bb, mm);
+
+    else if (im == 4)
+    {  // excavation induced cracks
+        int k = 1;
+        akn_bb = s8[k].akn0;
+        aks_bb = s8[k].aks0;
+        phi_bb = s8[k].phi0;
+        coh_bb = s8[k].coh0;
+        phid_bb = s8[k].phid0;
+        ap_bb = s8[k].apert0;
+        apr_bb = s8[k].apert_r;
+    }
+
+}
 
 
 
@@ -469,6 +528,8 @@ void newtips(float dr)
 
 
 
+
+
  void arrangetip()
 {
         int id =0;
@@ -503,7 +564,7 @@ void newtips(float dr)
 
 
 
-    void check_crack_growth()
+void check_crack_growth()
     {
         float creep_growth_max = 0;
         float fm = 0;
@@ -513,8 +574,6 @@ void newtips(float dr)
         creep.vel_creep_max = 0;
         creep.ID_fast_crack = 0;
         file2 << "Cycle#" << mcyc << endl;
-        //#pragma omp parallel for
-//#pragma omp parallel for  private(fm,angle,vel_creep,creep_growth_max,vel)
                
         for ( ni = 0; ni < no; ni++) 
         {
@@ -631,7 +690,7 @@ void newtips(float dr)
 
 
 
-    void If_No_tip(wstring selectedFile)
+void If_No_tip()
     {
         if (no == 0)
         {
@@ -678,7 +737,7 @@ void newtips(float dr)
 
 
 
-    void add_crack_growth()
+void add_crack_growth()
     {       
         /* add new elements to simulate crack growth */
 

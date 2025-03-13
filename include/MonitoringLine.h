@@ -13,7 +13,7 @@ public:
 
 	MonitoringLine() : x1l(0), y1l(0), x2l(0), y2l(0), npl(1) {}
 
-	void save_to_file(ofstream& f)
+	void save_to_file(std::ofstream& f)
 	{
 		f << x1l << " " << y1l << " " << x2l << " " << y2l << " " << npl << std::endl;
 	}

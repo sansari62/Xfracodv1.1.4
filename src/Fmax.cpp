@@ -1,3 +1,5 @@
+#include<stdafx.h>
+
 #include <Fmax.h>
 #include "CommonPara.h"
 #include "Work.h"
@@ -5,7 +7,6 @@
 #include <WinInterface.h>
 #include <DX.h>
 
-#include<Mainb.h>
 
 using namespace WinInterface_h::winvar;
 using namespace CommonPara_h::comvar;
@@ -13,20 +14,81 @@ using namespace CommonPara_h::comvar;
 
 
 
-void newcoord(float dr)
+
+
+int check_elastic_growth(int m)
+{
+
+    int kk = 0; // = 0 is not checking elastic growth
+    float aki = 0, akii = 0, akie = 0;
+    int mm = elm_list[m].mat_no;
+    if (multi_region)
+            mm = check_material_id(elm_list[m].xm, elm_list[m].ym);
+    
+
+    int ms = 2 * m; //Sara because of index error in d0[2m-1 in line64 add this indexs,make sure it works correctly
+    int mn = ms + 1;
+
+    if (s4.d0[mn] > 0)
+    {
+        aki = 0;
+    }
+    else
+    {
+        aki = abs(rock1[mm].e / (8 * pi * (1 - (rock1[mm].pr * rock1[mm].pr))) *
+            sqrt(2 * pi / elm_list[m].a) * s4.d0[mn]) * 2.5; // 2.5 is a correction factor
+    }
+
+    akii = abs(rock1[mm].e / (8 * pi * (1 - (rock1[mm].pr * rock1[mm].pr))) *
+        sqrt(2 * pi / elm_list[m].a) * s4.d0[ms]) * 2.5;
+
+    if (akii == 0)       
+    {
+        akii = 1e-9;
+    }
+
+
+    float temp = aki / akii;
+    float seta1 = atanf(0.25 * (temp + sqrt(temp * temp + 8)));
+    float seta2 = atanf(0.25 * (temp - sqrt(temp * temp + 8)));
+
+    float temp2 = seta1 / 2;  //Sara do this for sta2
+    float akie1 = aki * pow(cosf(temp2), 3) - 3 * akii * pow(cosf(temp2), 2) * sinf(temp2);
+    float akie2 = aki * pow(cosf(seta2 / 2), 3) - 3 * akii * pow(cosf(seta2 / 2), 2) *
+        sinf(seta2 / 2);
+
+    akie = max(akie1, akie2);
+
+    if (akie > factors.factor_e * rock1[mm].akic || akii > factors.factor_e * rock1[mm].akiic)
+    {
+        kk = 1;             // 1 is checking elastic growth
+    }
+
+    return kk;
+}
+
+
+
+
+
+
+void newcoord()
 {    
+
+    /*compute the coordinates of gost element*/
+
     float sigxx = 0, sigyy = 0, sigxy = 0;  
     float xd = 0, yd = 0, sw = 0, cosb = 0, sinb = 0, ss = 0, sn = 0,
         pxx = 0, pyy = 0, pxy = 0, y0 = 0;
+    float dr = 0;
 
     float xb = 0.0f, yb = 0.0f, xe = 0.0f, ye = 0.0f;   
     Tip& t = tips[ni];  //alias
   
-    // Initializations
-    xb = tips[ni].xbe;
-    yb = tips[ni].ybe;
-    xe = tips[ni].xen;
-    ye = tips[ni].yen;
+    xb = t.xbe;
+    yb = t.ybe;
+    xe = t.xen;
+    ye = t.yen;
 
     if (t.ityp == -1 || t.ityp == -3)
     {
@@ -102,7 +164,6 @@ float call_work1_setting_fi0(float dtt, float& fi0, int mm, int mode, float& ang
 {
     float  gi0 = 0.0, fi = 0.0;
     float wi = 0.0;
-    //float w1 = 0;
     if (mode == 1)
     {
         work1(1); // 0 = not first time; 1 = mode I    2 = mode II
@@ -162,18 +223,7 @@ float ang_setting(float angi0, float& fi0, int mm, int mode, float& angi)
       
     angi = angi0;
     //0.000009 only till cycl13
-    //0.00001 to cycl13
-    /*float q = round(angi0 - 8);
-    float d = abs(angi0 - 8 - round(angi0 - 8));
-    if (abs(angi0 - 8 - round(angi0 - 8)) <= 0.00009 && abs(angi0 - 8 - round(angi0 - 8)) >= 0)
-        s_index = round(angi0 - 8);
-    else
-        s_index = int(angi0 - 8);
-
-    if (abs(angi0 + 8 - round(angi0 + 8)) <= 0.00009 && abs(angi0 + 8 - round(angi0 + 8)) >=0)
-        e_index = round(angi0 + 8);
-    else
-        e_index = int(angi0 + 8);*/
+    //0.00001 to cycl13  
 
     //0.000001works till test 11
     if(float(int(angi0)) != round(angi0))
@@ -271,9 +321,10 @@ void compute_f(float& f0, float fi0, float angi, float angii, float& angle, floa
 
 
 
+
 void fmax1(float& f0, float& angle)
 {
-    // determine the fmax and angel using teh F criterion    
+    /*determine the fmax and angel using the F - criterion */ 
     
     float fi0 = 0., fii0 = 0., angi0 = 0., angii0 = 0.;
     int message = 0, itooclose = 0;
@@ -295,19 +346,26 @@ void fmax1(float& f0, float& angle)
     if (b_elm[m].jstate == 0)
     {
         kk = check_elastic_growth(m);
-        if (kk == 0) return;      //Sara if kk==1 doublecheck           
+        if (kk == 0) return;                
     }
 
     numbe++;
-    newcoord(0);    
-    //mainb_work1_ini();
+    newcoord();    
+    bool flag0 = (be.xm == symm.xsym && (symm.ksym == 1 || symm.ksym == 4) ||
+        be.ym == symm.ysym && (symm.ksym == 2 || symm.ksym == 4));
+    bool flag1 = b_elm[m].jstate == 2 && b_elm[m].jslipd == 1;
+    bool flag2 = b_elm[m].jstate == 2 && b_elm[m].jslipd == -1;
+    bool flag3 = (be.xm - symm.xsym) <= be.a / 1000 && abs(be.sinbet) > sinf(85 * pi / 180)
+        && (symm.ksym == 1 || symm.ksym == 4);
+    bool flag4 = (be.ym - symm.ysym) <= be.a / 1000 && abs(be.cosbet) > cosf(5 * pi / 180)
+        && (symm.ksym == 2 || symm.ksym == 4);
+    //float factor = pi / 180.0;   
 
     for (int icyc = 100; icyc >= -100; icyc -= 10)
     {
         ang = icyc * pi / 180.0;
 
-        if (be.xm == symm.xsym && (symm.ksym == 1 || symm.ksym == 4) ||
-            be.ym == symm.ysym && (symm.ksym == 2 || symm.ksym == 4))
+        if (flag0)
         {
             ang = 0;
         }
@@ -324,7 +382,7 @@ void fmax1(float& f0, float& angle)
 
         }
 
-        if (!((b_elm[m].jstate == 2 && b_elm[m].jslipd == 1 && icyc < -20)||(b_elm[m].jstate == 2 && b_elm[m].jslipd == -1 && icyc > 20)))
+        if (!((flag1 && icyc < -20)||(flag2 && icyc > 20)))
         {
             wi = call_work1_setting_fi0(dtt, fi0, mm, 1, angi0, ang);
         }
@@ -333,20 +391,13 @@ void fmax1(float& f0, float& angle)
         
         wii = call_work1_setting_fi0(dtt, fii0, mm, 2, angii0, ang);
                 
-        if ((be.xm - symm.xsym) <= be.a / 1000 && abs(be.sinbet) > sinf(85 * pi / 180) 
-            && (symm.ksym == 1 || symm.ksym == 4)) 
+        if (flag3 || flag4)
         {
             compute_f(f0, fi0, angi, angii, angle, fii0, m, wi, wii);
             numbe--;
             return;
         }
-        if ((be.ym - symm.ysym) <= be.a / 1000 && abs(be.cosbet) > cosf(5 * pi/180)
-            && (symm.ksym == 2 || symm.ksym == 4))
-        {
-            compute_f(f0, fi0, angi, angii, angle, fii0, m, wi, wii);
-            numbe--;
-            return;
-        }              
+        
     } //label400
     //--- ---------------------------------------------------------
 
