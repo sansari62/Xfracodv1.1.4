@@ -20,9 +20,7 @@ void point(float xp, float yp, float& sig1, float& sig2, float& bet, float& sig1
     int mm = j_material;
     if (multi_region)
         mm = check_material_id(xp,yp);
-    /*int material = check_material_id(xp, yp);
-    int mm = material;*/
-
+    
     s2us.reset();
     float ux = 0.0;
     float uy = 0.0;
