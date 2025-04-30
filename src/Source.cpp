@@ -1,5 +1,4 @@
 #include<stdafx.h>
-
 #include "Source.h"
 #include<ExcavationCracks.h>
 #include "CommonPara.h"
@@ -7,7 +6,7 @@
 #include<Input.h>
 #include<Geoplot.h>
 #include<chrono>
-#include<iostream>
+//#include<iostream>
 
 
 using namespace CommonPara_h::comvar;
@@ -296,7 +295,6 @@ void compute_n_vlaid_all_points() {
 
 
 
-
 void Central_control()
 {    
     auto start = std::chrono::high_resolution_clock::now();
@@ -338,6 +336,8 @@ void Central_control()
     creep.time = 0;
     while (!StopReturn)
     {
+        //auto start2 = std::chrono::high_resolution_clock::now();
+
         mcyc++;  
         cout << " cycle " << comvar::mcyc << " of " <<mcyc0<<"  is running.... ";
 
@@ -357,7 +357,7 @@ void Central_control()
                     creep.time += creep.deltaT;
             }
 
-            if (insituS.incres != 0 && ktipgrow == true) //special treatment th final grownth element in cycle
+            if (insituS.incres != 0 && ktipgrow == true)     //special treatment th final grownth element in cycle
             {
                 int incres_tem = insituS.incres;
                 insituS.incres = 0;
@@ -366,8 +366,13 @@ void Central_control()
             }
             if (insituS.incres != 0)   
                 n_it = 20;    //iteration process
-            work0(0);     //First calculation in every cycle - mode = 0. In work0(), only - 1 or 0 is allowed
-
+            work0(0);         //First calculation in every cycle - mode = 0. In work0(), only - 1 or 0 is allowed
+            if (numbe >= m0 - 1)
+            {
+                MessageBox(nullptr, L"Maximum BE limit exceeded!", L"Message!", MB_OK);
+                exit(0);
+                return;
+            }
             // --------------------------------------------------------
             check_crack_growth();              //include instant and creep
             geoplot();
@@ -377,9 +382,7 @@ void Central_control()
             prenumbe = numbe;
             add_crack_growth(); 
             cout << " finished!!!\n";
-            if (creep.time == creep.totalT || creep.ID_creep == 0 || creep.ID_fast_crack == 1)                
-                break;
-            //if not a creep problem or if fast crack growth, exit
+           
         } while (creep.time != creep.totalT && creep.ID_creep != 0 && creep.ID_fast_crack != 1); 
         //END creep time cycle
 
@@ -388,19 +391,15 @@ void Central_control()
                     {
                         if (lastinput != "endf")
                         {
-                            //MessageBox(nullptr, L"Defined cycle is completed, continue from input file.", L"Message!", MB_OK);
                             input();
                         }
-                        else                                       
-                            {                                
-                                    auto end1 = std::chrono::high_resolution_clock::now();
-                                   // auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end1 - start);
-                                    // cout<< "Run time=  "<< duration.count()<<" ms";
-                                     std::cout << "Run time: " << std::chrono::duration<double>(end1 - start).count() << " seconds\n";
-                                     logfile << "Run time=  " << std::chrono::duration<double>(end1 - start).count() << " seconds\n";
-
-                                    MessageBox(nullptr, L"End of cycle & input file! press OK to quit.", L"Message!", MB_OK);  
-                                    return;                             
+                        if (lastinput == "endf")
+                            { 
+                                auto end1 = std::chrono::high_resolution_clock::now();                                  
+                                std::cout << "Run time: " << std::chrono::duration<double>(end1 - start).count() << " seconds\n";
+                                logfile << "Run time=  " << std::chrono::duration<double>(end1 - start).count() << " seconds\n";
+                                MessageBox(nullptr, L"End of cycle & input file! press OK to quit.", L"Message!", MB_OK);  
+                                return;                             
                             }
                     }                    
     }     

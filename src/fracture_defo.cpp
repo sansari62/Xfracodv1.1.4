@@ -236,8 +236,7 @@ void frac_defo_Rec_win(int& jpoint) {
 
 void fracture_defo(int id, int& jpoint) {
 
-    wstring filename = dir + L"/Fract_defo" + std::to_wstring(state) + L".csv";
-
+    wstring filename = fd_dir + L"/Fract_defo" + std::to_wstring(state) + L".dat";
     std::ofstream outfile(filename);
 
     outfile << "     xp        yp         ds        bet        dn        set      aperture    zet\n";

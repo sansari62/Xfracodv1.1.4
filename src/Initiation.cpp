@@ -58,7 +58,7 @@ void point(float xp, float yp, float& sig1, float& sig2, float& bet, float& sig1
         float cosbj = elm_list[j].cosbet;
         float sinbj = elm_list[j].sinbet;
 
-        coeff(xp, yp, xj, yj, aj, cosbj, sinbj, +1, mm, s2us);
+        coeff(xp, yp, xj, yj, aj, cosbj, sinbj, +1, mm);
 
         switch (symm.ksym + 1)
         {
@@ -66,25 +66,25 @@ void point(float xp, float yp, float& sig1, float& sig2, float& bet, float& sig1
             break;
         case 2:
             xj = 2.0 * symm.xsym - elm_list[j].xm;
-            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm, s2us);
+            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm);
             break;
         case 3:
             yj = 2.0 * symm.ysym - elm_list[j].ym;
-            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm, s2us);
+            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm);
             break;
         case 4:
             xj = 2.0 * symm.xsym - elm_list[j].xm;
             yj = 2.0 * symm.ysym - elm_list[j].ym;
-            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm, s2us);
+            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm);
             break;
         case 5:
             xj = 2.0 * symm.xsym - elm_list[j].xm;
-            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm, s2us);
+            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm);
             xj = elm_list[j].xm;
             yj = 2.0 * symm.ysym - elm_list[j].ym;
-            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm, s2us);
+            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm);
             xj = 2.0 * symm.xsym - elm_list[j].xm;
-            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm, s2us);
+            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm);
 
         }
         ux += s2us.uxs * s4.d0[js] + s2us.uxn * s4.d0[jn];
@@ -878,8 +878,9 @@ void InitiationR()
         // use default fracture initiation element size if it was not given
         r = (s15.a_ini == 0) ? s15.aa : s15.a_ini;       // use given fracture initiation element size
 
-        if (failt >= s15.f_ini0 && randn <= powf((failt - s15.f_ini0) /
-            (1.0001 - s15.f_ini0), 2))
+        if (failt >= s15.f_ini0 && randn <= ((failt - s15.f_ini0) /
+            (1.0001 - s15.f_ini0))* ((failt - s15.f_ini0) /
+            (1.0001 - s15.f_ini0) ))
         {
             Sum_Failure(xp, yp, r, alphat, 1, failt, 2); // last "2" is location, ie. intact rock
             ktipgrow = true;
@@ -892,7 +893,7 @@ void InitiationR()
         sig_sum2 = call_point_and_cal_sig_sum(1, xp, yp, alphas2, mm, r);
         sig_sum2 += call_point_and_cal_sig_sum(2, xp, yp, alphas2, mm, r);
 
-        if (fails >= s15.f_ini0 && randn <= std::powf((fails - s15.f_ini0) / (1.0001 - s15.f_ini0), 2))
+        if (fails >= s15.f_ini0 && randn <= ((fails - s15.f_ini0) / (1.0001 - s15.f_ini0)) * ((fails - s15.f_ini0) / (1.0001 - s15.f_ini0)))
         {
             if (sig_sum1 > sig_sum2)
                 Sum_Failure(xp, yp, r, alphas1, 2, fails, 2); //last "2" is location, ie.intack rock

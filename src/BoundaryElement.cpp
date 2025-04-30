@@ -54,8 +54,7 @@ void BoundaryElement::bound(int i, float& ss, float& sn, float& ustem, float& un
 
     int mm = mat_no;
     int is = i * 2;
-    int in = is + 1;
-    
+    int in = is + 1;    
 
     float y0 = g.y_surf;
     float pxx = symm.pxx1 + g.skx * (y0 - ym);
@@ -109,10 +108,7 @@ void  MatrixB(int m)
     
     int ms = 2 * m;
     int mn = ms + 1;
-    
-
     float y0;
-
     y0 = g.y_surf;
     float pxx = symm.pxx1 + g.skx * (y0 - elm_list[m].ym);
     float pyy = symm.pyy1 + g.sky * (y0 - elm_list[m].ym);

@@ -111,7 +111,7 @@ namespace comvar {
 
 	waterCommon watercm;
 	std::vector< Rock>  rock1(10, Rock());
-	std::vector<Tip> tips(m0/3);
+	std::vector<Tip> tips(m0/3);// 500 in v2.3
 	DispWindow dispwin;
 
 
@@ -119,23 +119,24 @@ namespace comvar {
 	Excavation exca;
 	SET factors;
 
-	std::vector<Limited_initiation_points>  init_point(m0/2);    
+	std::vector<Limited_initiation_points>  init_point(5000);    
 	
-	Permeability perm;
-
-	//ofstream file7(filename1, std::ios::binary);
-	
+	Permeability perm;	
 	std::ofstream file50("Ccreep_results.dat");
 	wstring filepath = L"";
 
 	wstring dir = L"";
-	
+	wstring stress_dir;
+	wstring BE_dir;
+	wstring fd_dir;
+	wstring monit_dir;
+	std::array<std::ofstream, 20> mon_files;
+	std::array<std::ofstream, 10> ml_files;
 	std::ofstream file2; 
-
 	std::ofstream file57; 
 	std::ifstream inFile;
 
-	std::ofstream file9;  // ("Cbound.dat");
+	std::fstream file9;  // ("Cbound.dat");
 	std::ofstream logfile;
 
 	

@@ -1,15 +1,10 @@
 #include<stdafx.h>
-
 #include <Failure.h>
 #include "CommonPara.h"
 #include<DX.h>
 #include<Tip.h>
 
-
-
 using namespace CommonPara_h::comvar;
-
-
 
 
 
@@ -126,7 +121,7 @@ int  check_material_id(float xp, float yp)
 {
 
     float dist0 = 10e8;
-    int mm = 0, mclosest = 0;
+    int mm = 1, mclosest = 0;
 
     int k = 0;
     float xc = 0, yc = 0, xt = 0, yt = 0, dist = 0;
@@ -268,7 +263,6 @@ void  Sum_Failure(float xp, float yp, float r, float alpha, int im, float fos, i
 
 
 
-
 void setting_elem_and_tipn_failure(int m, int im)
 {
     float sigxx = 0.0, sigyy = 0.0, sigxy = 0.0;
@@ -339,9 +333,9 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
         fos = 1.0;
     }
     
-    if (numbe >= 2000)
+    if (numbe >= m0-1)
     {
-        MessageBox(nullptr, L"Memory Overflow - Reduce In Situ Stresses.", L"Message!", MB_OK);
+        MessageBox(nullptr, L"Maximum BE limit exceeded!", L"Message!", MB_OK);
         exit(0);        
         return;   
     }
@@ -350,10 +344,10 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
     yb = yp - 1 / 2.0 * r * sinf(alpha);
     xn = xp;
     yn = yp;
-    int mm = j_material;
+    material = j_material;
     if (multi_region)
-        mm = check_material_id(xp, yp);
-    material = check_material_id(0.5 * (xb + xn), 0.5 * (yb + yn));    
+        material = check_material_id(0.5 * (xb + xn), 0.5 * (yb + yn));
+    //material = check_material_id(0.5 * (xb + xn), 0.5 * (yb + yn));    
     float dl = sqrtf(std::powf(xn - xb,2) + std::powf(yn - yb,2));
     tips[n].assign_val(xb, yb, xn, yn, dl, cosf(alpha), sinf(alpha), -1, material);  
     no++;
@@ -487,10 +481,9 @@ void failureB(float xp, float yp, float r, float alpha, int im, float& fos)
         fos = 1.0;
     }   
 
-    if (numbe >= 2000)
+    if (numbe >= m0-1)
     {
-       MessageBox(nullptr, L"Memory Overflow - Reduce In Situ Stresses.", L"Message!", MB_OK);
-
+        MessageBox(nullptr, L"Maximum BE limit exceeded!", L"Message!", MB_OK);
         exit(0);          
         return;  
     } 

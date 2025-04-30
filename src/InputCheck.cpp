@@ -702,7 +702,7 @@ void arc_reordering(fstream& file25)
     //reordering all defined arcs 
     for (int i = 0; i < na; ++i) 
     {
-        if (ncr[i] < 1)  //Sara! 14.10 change 2 to 1
+        if (ncr[i] < 2)  //Sara! 14.10 change 2 to 1
             continue;
 
         for (int nn = 0; nn < ncr[i]; ++nn) 
@@ -944,7 +944,7 @@ void final_wrap_up()
             int nume = ai.get_elenum();
             float xcen = ai.get_xcent();
             float ycen = ai.get_ycent();
-            float diam = 2.0 *ai.get_diameter();
+            float diam = ai.get_diameter();
             float ang1 = ai.get_beg_ang();
             float ang2 = ai.get_end_ang();
             int mat2 =ai.get_pos_mat();
@@ -954,10 +954,10 @@ void final_wrap_up()
             {
                 float seta1 = ang1 + ((ang2 - ang1) / static_cast<float>(nume)) * static_cast<float>(m);
                 float seta2 = ang1 + ((ang2 - ang1) / static_cast<float>(nume)) * static_cast<float>(m+1);
-                float xbeg = xcen + 0.5 * diam * cosf(seta1);
-                float ybeg = ycen + 0.5 * diam * sinf(seta1);
-                float xend = xcen + 0.5 * diam * cosf(seta2);
-                float yend = ycen + 0.5 * diam * sinf(seta2);
+                float xbeg = xcen +  diam * cosf(seta1);
+                float ybeg = ycen + diam * sinf(seta1);
+                float xend = xcen +  diam * cosf(seta2);
+                float yend = ycen +  diam * sinf(seta2);
                 Interface(1, xbeg, ybeg, xend, yend, mat1, mat2);  // interface function defined in source.cpp
             }
         }
@@ -999,7 +999,7 @@ void cross_arc_with_boundaries(int i, float  xc, float yc, float angb, float ang
         }
 
         //label750:
-        float de = sqrt(pow(xc - xe, 2) + pow(yc - ye, 2));
+        float de = sqrt(powf(xc - xe, 2) + powf(yc - ye, 2));
         if (de > 1.05 * r || de < 0.95 * r)
             continue;
 
@@ -1031,7 +1031,7 @@ void cross_arc_with_fractures(int i, float  xc, float yc, float angb, float ange
         float xe = f.get_xend();
         float ye = f.get_yend();
 
-        float db = sqrt(pow(xc - xb, 2) + pow(yc - yb, 2));
+        float db = sqrt((xc - xb)* (xc - xb) + (yc - yb)* (yc - yb));
         float ang = static_cast<float>(atan2(yb - yc, xb - xc));
         if (!(db > 1.05 * r || db < 0.95 * r || ang < (angb - 1e-5) || ang >(ange + 1e-5) ) )
         {
@@ -1046,7 +1046,7 @@ void cross_arc_with_fractures(int i, float  xc, float yc, float angb, float ange
                 itip[j] = 0;
            
         }
-        float de = sqrt(pow(xc - xe, 2) + pow(yc - ye, 2));
+        float de = sqrt((xc - xe)* (xc - xe) + (yc - ye)* (yc - ye));
         if (de > 1.05 * r || de < 0.95 * r)
             continue;
 
@@ -1074,8 +1074,7 @@ void check_cross_arcs(fstream& file25)
 {
 
     //because of this location diff in test12 need to keep it
-    pi = 4.0 * atan(1.0);
-   
+    pi = 4.0 * atanf(1.0); //3.14159      
     for (int i = 0; i < na; ++i)
     {
         Arch& arc = arc_list[i];        //alias for arc
@@ -1083,19 +1082,15 @@ void check_cross_arcs(fstream& file25)
         float yc = arc.get_arcy();
         float r = arc.get_arcr();
 
-
         if ((arc.get_arcend() - arc.get_arcbeg()) == 2.0 * pi)
         {
             arc.take_arcbeg(-pi);
             arc.take_arcend(pi);
-
         }
-
         float angb = arc.get_arcbeg();
         float ange = arc.get_arcend();
 
         ncr[i] = 0;
-
         //check the potential crossing between each arc and all of fractures
         cross_arc_with_fractures(i, xc, yc, angb, ange, r);
         //check the potential crossing between each arc and all of boundaries

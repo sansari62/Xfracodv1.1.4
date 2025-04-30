@@ -152,7 +152,13 @@ int main()
     wstring filename = std::filesystem::path{ selectedFile }.filename();    
 
     wcout << L"The simulation is running...\n";  
-   
+    float dr = 0;
+    /*cout << std::setprecision(15)<<"tanf(30.0 / 180.0 * pi) = "<<tanf(30.0 / 180.0 * pi) << ",tanf(0.524)=  " << std::setprecision(15)<<tanf(0.524) << "pi/180.0= " << pi / 180.0 << endl;
+    cout << "sinf(85 * pi / 180)= " << std::setprecision(15)<<sinf(85 * pi / 180) << "cosf(5 * pi / 180)= " << std::setprecision(15) << cosf(5 * pi / 180) <<endl;
+    cout<<"180. / pi="<< std::setprecision(15) << 180. / pi <<"  cosf(dr)= "<< std::setprecision(15) << cosf(dr)<<"sinf(dr)= "<< sinf(dr)<<endl;
+    cout << "180. / pi=" << std::setprecision(15) << 180. / pi << "  cosf(0)= " << std::setprecision(15) << cosf(0) << "sinf(0)= " << std::setprecision(15) << sinf(0) << endl;
+    cout << "4.0 * atan(1.0) = "<< std::setprecision(15) << 4.0 * atan(1.0) <<endl;*/
+
     wstring filename1 = std::filesystem::path{ selectedFile }.stem();     
 
     dir = filepath + L"\\" + filename1 + L"_Results";
@@ -165,13 +171,38 @@ int main()
     }
     file2.open(dir + L"/Coutput.dat");
     logfile.open(dir + L"/Clog.txt");
-    //file57.open(dir + L"Cpermeability.dat");
-    file9.open(dir+L"Cbound.dat");
+    //file57.open(dir + L"/Cpermeability.dat");
+    //file9.open(dir+L"/Cbound.dat",  std::ios::in | std::ios::out | std::ios::trunc);   
     if (!logfile.is_open())
     {
         cout << "log file is not opend.\n";       
     }
     logfile<< " The release version: " << VERSION << "\n";
+
+    stress_dir = dir + L"\\" + L"Stress";
+    if (std::filesystem::create_directory(stress_dir) || ERROR_ALREADY_EXISTS == GetLastError()) {
+    }
+    else {
+        std::cout << "Failed to create stress directory.\n";
+    }
+    BE_dir = dir + L"\\" + L"BE";
+    if (std::filesystem::create_directory(BE_dir) || ERROR_ALREADY_EXISTS == GetLastError()) {
+    }
+    else {
+        std::cout << "Failed to create BE directory.\n";
+    }
+    fd_dir = dir + L"\\" + L"Frc_defo";
+    if (std::filesystem::create_directory(fd_dir) || ERROR_ALREADY_EXISTS == GetLastError()) {
+    }
+    else {
+        std::cout << "Failed to create frac_defo directory.\n";
+    }
+    monit_dir  = dir + L"\\" + L"Monitoring";
+    if (std::filesystem::create_directory(monit_dir) || ERROR_ALREADY_EXISTS == GetLastError()) {
+    }
+    else {
+        std::cout << "Failed to create monitoring directory.\n";
+    }
 
     file_preprocesing(selectedFile);
 

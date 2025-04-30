@@ -10,7 +10,6 @@ using namespace CommonPara_h::comvar;
 
 
 
-
    
 
 
@@ -135,7 +134,6 @@ void  check_point_in_rock(float xp, float yp, bool flag, int& n_valid)
     float x0, y0, dd0, dd1, dd2, xc = 0, yc = 0, dist = 0,
         xb, yb, xe, ye, sinb, cosb;
     const float epsilon = 1e-6;
-
     
     for (int l = 0; l < ntunnel; ++l)         
     {
@@ -184,7 +182,6 @@ void  check_point_in_rock(float xp, float yp, bool flag, int& n_valid)
             xc = 2.0 * symm.xsym - elm_list[m].xm;
             yc = elm_list[m].ym;
             dist = sqrt(pow(xp - xc, 2) + pow(yp - yc, 2));
-
             if (dist < dist0) 
             {
                 n = m;
@@ -198,7 +195,6 @@ void  check_point_in_rock(float xp, float yp, bool flag, int& n_valid)
             xc = elm_list[m].xm;
             yc = 2.0 * symm.ysym - elm_list[m].ym;
             dist = sqrt(pow(xp - xc, 2) + pow(yp - yc, 2));
-
             if (dist < dist0)
             {
                 n = m;
@@ -212,7 +208,6 @@ void  check_point_in_rock(float xp, float yp, bool flag, int& n_valid)
             xc = 2.0 * symm.xsym - elm_list[m].xm;
             yc = 2.0 * symm.ysym - elm_list[m].ym;
             dist = sqrt(pow(xp - xc, 2) + pow(yp - yc, 2));
-
             if (dist < dist0) 
             {
                 n = m;
@@ -239,7 +234,6 @@ void  check_point_in_rock(float xp, float yp, bool flag, int& n_valid)
             cosb = elm_list[n].cosbet;
             ypprime = -(xp - xc) * sinb + (yp - yc) * cosb;
             break;
-
         case 2:
             xc = elm_list[n].xm;
             yc = 2.0 * symm.ysym - elm_list[n].ym;
@@ -305,7 +299,6 @@ void  check_point_in_rock(float xp, float yp, bool flag, int& n_valid)
             }
         }
     }
-
      if(symm.ksym != 0)
         check_symm_and_set_n_valid(xp, yp, flag, n_valid);
 

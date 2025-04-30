@@ -1,5 +1,4 @@
 #include<stdafx.h>
-
 #include <Fmax.h>
 #include "CommonPara.h"
 #include "Work.h"
@@ -7,11 +6,8 @@
 #include <WinInterface.h>
 #include <DX.h>
 
-
 using namespace WinInterface_h::winvar;
 using namespace CommonPara_h::comvar;
-
-
 
 
 
@@ -160,16 +156,15 @@ void newcoord()
 
 
 
-float call_work1_setting_fi0(float dtt, float& fi0, int mm, int mode, float& angip, float ang)
+float call_work1_setting_fi0(float dtt, float& fi0, int mm, int mode, float& angip,
+    float ang)
 {
     float  gi0 = 0.0, fi = 0.0;
     float wi = 0.0;
     if (mode == 1)
     {
-        work1(1); // 0 = not first time; 1 = mode I    2 = mode II
-        //cout << "tip: "<<ni<<"  mode1:" << ang << "  w1:" << w1<<endl;
-
-        wi = (b_elm[numbe-1].jstate != 1) ? w0 : w1;       // if tip element not openp, ignore it
+        work1(1); //  1 = mode I   2 = mode II
+        wi = (b_elm[numbe-1].jstate != 1) ? w0 : w1; // if tip element not open,ignore it
          if (dtt == 0)
         {
              MessageBox(nullptr,L"dtt equals 0",L"Error", MB_OK);
@@ -177,15 +172,16 @@ float call_work1_setting_fi0(float dtt, float& fi0, int mm, int mode, float& ang
         else
         {
             gi0 = abs(wi - w0) / dtt;
+           // fi = gi0 / (rock1[mm].akic* rock1[mm].akic * (1 - rock1[mm].pr * rock1[mm].pr) / rock1[mm].e);
             fi = gi0 / (pow(rock1[mm].akic, 2) * (1 - pow(rock1[mm].pr, 2)) / rock1[mm].e);
-        }
+
+
+         }
     }
     else
     {
-        work1(2); // 0 = not first time; 1 = mode I    2 = mode II
-        //cout << "tip: " << ni << "mode2: " << ang << "  w1:" << w1 << endl;
-
-        wi = (b_elm[numbe - 1].jstate != 2) ? w0 : w1;    // if tip element not openp, ignore it
+        work1(2);    
+        wi = (b_elm[numbe - 1].jstate != 2) ? w0 : w1;
         if (dtt == 0)
         {
            MessageBox(nullptr, L"dtt equals 0", L"Error", MB_OK);
@@ -193,6 +189,7 @@ float call_work1_setting_fi0(float dtt, float& fi0, int mm, int mode, float& ang
         else
         {
             gi0 = abs(wi - w0) / dtt;
+            //fi = gi0 / (rock1[mm].akiic* rock1[mm].akiic * (1 - (rock1[mm].pr* rock1[mm].pr)) / rock1[mm].e);
             fi = gi0 / (pow(rock1[mm].akiic, 2) * (1 - pow(rock1[mm].pr, 2)) / rock1[mm].e);
         }
     }
@@ -201,11 +198,9 @@ float call_work1_setting_fi0(float dtt, float& fi0, int mm, int mode, float& ang
     {
         angip = ang * 180.0/ pi; 
         fi0 = fi;
-    }
-    
+    }    
     return wi;
 }
-
 
 
 
@@ -240,17 +235,13 @@ float ang_setting(float angi0, float& fi0, int mm, int mode, float& angi)
     }
     else 
     {
-
         s_index = int(angi0 - 8);
         e_index = int(angi0 + 8);
-    }    
-
+    }   
 
     for (int icyc = s_index; icyc <= e_index; icyc += 2)
     {
-        ang = icyc * pi / 180.0;
-
-        
+        ang = icyc * pi / 180.0;        
         if (tips[ni].ityp == 4)
         {
             dtt = dxi(ang, true); // first fracture initiation from boundary
@@ -261,8 +252,7 @@ float ang_setting(float angi0, float& fi0, int mm, int mode, float& angi)
         }
 
         wi = call_work1_setting_fi0(dtt, fi0, mm, mode, angi, ang);
-    }
-  
+    }  
     return wi;
 }
 
@@ -270,7 +260,8 @@ float ang_setting(float angi0, float& fi0, int mm, int mode, float& angi)
 
 
 
-void compute_f(float& f0, float fi0, float angi, float angii, float& angle, float fii0, int m, float wi, float wii)
+void compute_f(float& f0, float fi0, float angi, float angii, float& angle, 
+    float fii0, int m, float wi, float wii)
 {    
     float dtt = 0.0;
     if (fi0 >= fii0)
@@ -285,9 +276,7 @@ void compute_f(float& f0, float fi0, float angi, float angii, float& angle, floa
         angle = angii;
         tips[ni].imode = 2;
     }
-
     angle = angle * pi / 180.0;
-
     if (tips[ni].ityp == 4)
     {
         dtt = dxi(angle,true);   //dxiB 
@@ -297,9 +286,11 @@ void compute_f(float& f0, float fi0, float angi, float angii, float& angle, floa
         dtt = dxi(angle,false);   //dxi
     }
 
-    if ((elm_list[m].xm - symm.xsym) <= elm_list[m].a / 1000 && abs(elm_list[m].sinbet) >
-        sinf(85 * pi / 180) && (symm.ksym == 1 || symm.ksym == 4)  ||
-        (elm_list[m].ym - symm.ysym) <= elm_list[m].a / 1000 && abs(elm_list[m].cosbet) > 
+    if ((elm_list[m].xm - symm.xsym) <= elm_list[m].a / 1000 &&
+        abs(elm_list[m].sinbet) > sinf(85 * pi / 180) && (symm.ksym == 1 ||
+            symm.ksym == 4)  ||
+        (elm_list[m].ym - symm.ysym) <= elm_list[m].a / 1000 && 
+        abs(elm_list[m].cosbet) > 
         cosf(5 * pi / 180) && (symm.ksym == 2 || symm.ksym == 4 ))
     {
         f0 = 2.0 * f0;
@@ -326,13 +317,11 @@ void fmax1(float& f0, float& angle)
 {
     /*determine the fmax and angel using the F - criterion */ 
     
-    float fi0 = 0., fii0 = 0., angi0 = 0., angii0 = 0.;
-    int message = 0, itooclose = 0;
+    float fi0 = 0., fii0 = 0., angi0 = 0., angii0 = 0.;    
     angle = 0;
     f0 = 0.;
-
     int m = tips[ni].mpointer;
-    int mm = elm_list[m].mat_no;     //mat_no instead of mat
+    int mm = elm_list[m].mat_no;   
     int kk = 0;
 
     float sn =0;
@@ -348,38 +337,34 @@ void fmax1(float& f0, float& angle)
         kk = check_elastic_growth(m);
         if (kk == 0) return;                
     }
-
     numbe++;
     newcoord();    
     bool flag0 = (be.xm == symm.xsym && (symm.ksym == 1 || symm.ksym == 4) ||
         be.ym == symm.ysym && (symm.ksym == 2 || symm.ksym == 4));
     bool flag1 = b_elm[m].jstate == 2 && b_elm[m].jslipd == 1;
     bool flag2 = b_elm[m].jstate == 2 && b_elm[m].jslipd == -1;
-    bool flag3 = (be.xm - symm.xsym) <= be.a / 1000 && abs(be.sinbet) > sinf(85 * pi / 180)
+    //0.99619472026825       //0.996195
+    bool flag3 = (be.xm - symm.xsym) <= be.a / 1000 && abs(be.sinbet) > sinf(85 * pi / 180) 
         && (symm.ksym == 1 || symm.ksym == 4);
-    bool flag4 = (be.ym - symm.ysym) <= be.a / 1000 && abs(be.cosbet) > cosf(5 * pi / 180)
+    bool flag4 = (be.ym - symm.ysym) <= be.a / 1000 && abs(be.cosbet) >  cosf(5 * pi / 180)       
         && (symm.ksym == 2 || symm.ksym == 4);
     //float factor = pi / 180.0;   
 
     for (int icyc = 100; icyc >= -100; icyc -= 10)
     {
-        ang = icyc * pi / 180.0;
+        ang = icyc * pi / 180.0;//0.017453291681077746;// 0.0174533;
 
         if (flag0)
         {
             ang = 0;
         }
-
         if (tips[ni].ityp == 4)
         {
             dtt = dxi(ang,true);  // first fracture initiation from boundary,dxiB flagB = true
-            //cout <<" icyc: "<<icyc<< " ang: " << ang << "  dtt: " << dtt << endl;
         }
         else
         {
             dtt = dxi(ang,false);      //call dxi flagB = false
-           // cout << " icyc: " << icyc << " ang: " << ang << "  dtt: " << dtt << endl;
-
         }
 
         if (!((flag1 && icyc < -20)||(flag2 && icyc > 20)))

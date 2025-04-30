@@ -55,8 +55,7 @@ void increment()
 !    The newly grown elements have their s4.b0() brought from the failure process, and defined in newtip*/
 
     int ms = 0, mn = 0;
-    float dss, dnn;   //add in 31.01.2025 still not sure if it's insitue.dss or local var
-
+    float dss, dnn;    
     // Far-field stress change
     if (insituS.incres == 1)
     {
@@ -82,15 +81,15 @@ void increment()
     // Some boundaries stress change
         else if (insituS.incres == 3)
             {
-                ifstream inFile("Cbound.dat");
                 string IDD;
-
-                while(inFile >> IDD)
+                file9.open(dir + L"/Cbound.dat",std::ios::in);
+                
+                while(file9>> IDD)
                 {
                     if (IDD == "dbou")
                     {
                         float x1 = 0, x2 = 0, y1 = 0, y2 = 0;
-                        inFile >> x1 >> x2 >> y1 >> y2 >> dss >> dnn;  //not sure about dss and dnn here Sara!
+                        file9 >> x1 >> x2 >> y1 >> y2 >> dss >> dnn;
 
                         for (int m = 0; m < numbe_old; ++m)
                         {
@@ -102,14 +101,14 @@ void increment()
                                 continue;
                             ms = 2 * m;
                             mn = ms + 1;
-                            s4.b1[ms] += insituS.dss / n_it;
-                            s4.b1[mn] += insituS.dnn / n_it;
+                            s4.b1[ms] += dss / n_it;
+                            s4.b1[mn] += dnn / n_it;
                         }
                     }
                     else if (IDD == "darc")
                     {
                         float xcen, ycen, diam1, diam2, ang1, ang2;
-                        inFile >> xcen >> ycen >> diam1 >> diam2 >> ang1 >> ang2 >> dss >> dnn;
+                        file9 >> xcen >> ycen >> diam1 >> diam2 >> ang1 >> ang2 >> dss >> dnn;
 
                         for (int m = 0; m < numbe_old; ++m)
                         {
@@ -118,7 +117,7 @@ void increment()
 
                             float radius = sqrt(pow(elm_list[m].xm - xcen, 2) + pow(elm_list[m].ym - ycen, 2));
                             float ang = atan2f((elm_list[m].ym - ycen) / radius,
-                                (elm_list[m].xm - xcen) / radius) * 180.0 / 3.14;  //ang = -pi, pi
+                                (elm_list[m].xm - xcen) / radius) * 180.0 / 3.14;  
 
                             if (radius < diam1 / 2 || radius > diam2 / 2 || ang < ang1 || ang > ang2)
                                 continue;
@@ -132,7 +131,7 @@ void increment()
                     }
                 }             
 
-                inFile.close();
+                file9.close();
             }
    
     // Final treatment
@@ -155,7 +154,7 @@ void increment()
        Hydraulic pressure
   ------------------------------------------------ -*/
   //only called from work0(), not water is considered for fictitious element
-void water()
+/*void water()
 {
     float jwater_old[m0] = { 0.0 };
     int ms = 0, mn = 0;
@@ -275,18 +274,139 @@ void water()
     }
 
     return;
+}*/
+
+
+
+
+
+
+void monitoring_point(float xp, float yp, float& sigxx, float& sigyy, float& sigxy, float& ux, float& uy)
+{
+
+    int mm = j_material;
+    if (multi_region)
+        mm = check_material_id(xp, yp);
+
+    s2us.reset();
+    ux = 0.0;
+    uy = 0.0;
+
+    float y0 = g.y_surf;
+    float pxx = symm.pxx1 + g.skx * (y0 - yp);
+    float pyy = symm.pyy1 + g.sky * (y0 - yp);
+    float pxy = symm.pxy1;
+
+    sigxx = pxx;
+    sigyy = pyy;
+    sigxy = pxy;
+
+    if (mm == mat_lining)
+    {
+        sigxx = 0;
+        sigyy = 0;
+        sigxy = 0;
+    }
+
+    for (int j = 0; j < numbe; ++j)
+    {
+        BoundaryElement& b_ei = elm_list[j];
+        if (mm != b_ei.mat_no) continue;
+        int js = 2 * j;
+        int jn = js + 1;
+        s2us.reset();
+        float xj = b_ei.xm;
+        float yj = b_ei.ym;
+        float aj = b_ei.a;
+
+        float cosbj = b_ei.cosbet;
+        float sinbj = b_ei.sinbet;
+
+        coeff(xp, yp, xj, yj, aj, cosbj, sinbj, +1, mm);
+        switch (symm.ksym + 1)
+        {
+        case 1: break;
+        case 2:
+            xj = 2.0 * symm.xsym - b_ei.xm;
+            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm);
+            break;
+
+        case 3:
+            yj = 2.0 * symm.ysym - b_ei.ym;
+            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm);
+            break;
+
+        case 4:
+            xj = 2.0 * symm.xsym - b_ei.xm;
+            yj = 2.0 * symm.ysym - b_ei.ym;
+            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm);
+            break;
+
+        case 5:
+            xj = 2.0 * symm.xsym - b_ei.xm;
+            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm);
+            xj = b_ei.xm;
+            yj = 2.0 * symm.ysym - b_ei.ym;
+
+            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm);
+            xj = 2.0 * symm.xsym - b_ei.xm;
+            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm);
+        }
+
+        ux += s2us.uxs * s4.d0[js] + s2us.uxn * s4.d0[jn];
+        uy += s2us.uys * s4.d0[js] + s2us.uyn * s4.d0[jn];
+        sigxx += s2us.sxxs * s4.d0[js] + s2us.sxxn * s4.d0[jn];
+        sigyy += s2us.syys * s4.d0[js] + s2us.syyn * s4.d0[jn];
+        sigxy += s2us.sxys * s4.d0[js] + s2us.sxyn * s4.d0[jn];
+    }
+
+    return;
 }
 
 
 
 
 
-void third_correction_run()
+
+
+void write_monitor_data(int file_type, int i, int mcyc, int it,  float xmon,
+     float ymon, float sigxx, float sigyy, float sigxy, float uxneg, float uyneg)
+{
+    ofstream* filem = nullptr;
+    if (file_type == 0)
+        filem = &mon_files[i+1];
+    else
+        filem = &ml_files[i+1];
+
+    *filem << "  "
+        << std::setw(6) << mcyc << "(" << std::setw(2) << it << ")" << "      "
+        << std::scientific << std::setprecision(3)
+        << std::setw(11) << creep.time                   // e11.3
+        << "  " << std::fixed << std::setprecision(3)
+        << std::setw(8) << xmon                 // f8.3
+        << "  " << std::setw(8) << ymon         // f8.3
+        << "  " << std::scientific << std::setprecision(3)
+        << std::setw(11) << sigxx
+        << "  " << std::setw(11) << sigyy
+        << "  " << std::setw(11) << sigxy
+        << "  " << std::setw(11) << uxneg
+        << "  " << std::setw(11) << uyneg
+        << "  " << std::setw(11) << creep.vel_creep_max
+        << std::endl;
+   }
+
+
+
+
+
+
+void third_correction_run(int& it)
 {
     float dist;
-    float ss, sn, usneg, unneg, angle0, uxneg, uyneg, sigxx, sigyy, sigxy;
+    float ss, sn, usneg, unneg, angle0, uxneg, uyneg, sigxx=0, sigyy=0, sigxy = 0;
     for(int i=0; i < ihist; i++)
     {
+        bool jump = 0;
         for (int m = 0; m < numbe; m++)
         {
             if (elm_list[m].kod != 5 && elm_list[m].kod != 6 &&
@@ -296,44 +416,48 @@ void third_correction_run()
                     pow(elm_list[m].ym - mpoint_list[i].ymon, 2));
                 if (dist <= 1.1 * elm_list[m].a)
                 {
-
                     ss = b_elm[m].sigma_s;
                     sn = b_elm[m].sigma_n;
                     usneg = b_elm[m].us_neg;
                     unneg = b_elm[m].un_neg;
-                    angle0 = atan2f(elm_list[m].sinbet, elm_list[m].cosbet) * 180 / pi; 
+                    angle0 = atan2f(elm_list[m].sinbet, elm_list[m].cosbet) * 180 / pi;
                     uxneg = usneg * elm_list[m].cosbet - unneg * elm_list[m].sinbet;
                     uyneg = usneg * elm_list[m].sinbet + unneg * elm_list[m].cosbet;
 
                     float sinbt = elm_list[m].sinbet;
 
-                    if (abs(sinbt) >= 0.95) 
+                    if (abs(sinbt) >= 0.95)
                     {
                         sigxx = sn;
                         sigyy = 0.0;
                         sigxy = ss;
                     }
-
                     else if (abs(sinbt) <= 0.05)
                     {
                         sigxx = 0.0;
                         sigyy = sn;
                         sigxy = ss;
                     }
-
                     else if (abs(sinbt) >= 0.05 && abs(sinbt) <= 0.95)
                     {
                         sigxx = sn;
                         sigyy = sn;
                         sigxy = ss;
-                    }                   
-                }
-            } //end if
+                    }
+
+                    write_monitor_data(0, i, mcyc, it, mpoint_list[i].xmon, mpoint_list[i].ymon,
+                        sigxx, sigyy, sigxy, uxneg, uyneg);
+                    jump = 1;
+                    break;
+                } //end if
+            }
         }
-
-    //call monitoring_point with the sigxx,xy,yy parameters  need to add this method
-    // monitoring_point(xp, yp, sigxx, sigyy, sigxy, ux, uy);  //Sara uncommet this
-
+    if (jump)
+        continue;
+    float ux, uy = 0;
+    monitoring_point(mpoint_list[i].xmon, mpoint_list[i].ymon, sigxx, sigyy, sigxy, ux, uy); 
+    write_monitor_data(0,i, mcyc, it,mpoint_list[i].xmon, mpoint_list[i].ymon,
+        sigxx, sigyy, sigxy, ux, uy);
     }
     return;
  }
@@ -344,7 +468,7 @@ void third_correction_run()
 void run_check(int mode)
 {
     // mainb(mode); 
-     mainb_work0( mode);
+     mainb( mode);
      s4.limit_d();   
      /*redo the d0() accumulation with correct fracture state*/
     for (int k = 0; k < numbe; k++)
@@ -400,13 +524,17 @@ void calc_bound_stress(int it)
 
 
 
+
+
+
 //mode = -1, back step; = 0 normal w0 calculation; should not be 1 or 2 there
 
 void work0(int mode)
 {
     /*-calculate the total strain enegery before fracture growth-*/
-    if (water_mod)
-        water();
+   /* if (water_mod)
+        water();*/
+
     safety_check();   
 
     //first time consider it as elastic fracture
@@ -471,8 +599,8 @@ void work0(int mode)
                 // Open fracture conditions
                 Sigma_n_prime = be.sigma_n + watercm.pwater[m] * watercm.jwater[m];
                 //sntem = Sigma_n_prime - s4.d0[m * 2 + 1] * elm_list[m].akn;
-
-                if (Sigma_n_prime > -1e4 && untem < 0)
+                const float eps = 1e-5f;
+                if (Sigma_n_prime > -1e4 && untem < -eps )
                 {
                     be.jstate = 1;
                     be.jslipd = 0;
@@ -572,7 +700,7 @@ void work0(int mode)
         }
         // ---------- possible 3nd run - correction(above) ---------
        //label880 in code
-        third_correction_run();
+        third_correction_run(it);
         //for monitoring lines
         float xp, yp;
         float sigxx, sigyy, sigxy, ux, uy;
@@ -583,8 +711,8 @@ void work0(int mode)
             {
                 xp = mline_list[i].x1l + j * (mline_list[i].x2l - mline_list[i].x1l) /mline_list[i].npl;
                 yp =mline_list[i].y1l + j * (mline_list[i].y2l -mline_list[i].y1l) /mline_list[i].npl;
-                //monitoring_point(xp, yp, sigxx, sigyy, sigxy, ux, uy);  //Sara uncommet this
-                // again write data in files
+                monitoring_point(xp, yp, sigxx, sigyy, sigxy, ux, uy);  
+                write_monitor_data(1, i, mcyc, it, xp, yp,sigxx, sigyy, sigxy, ux, uy);
             }
         }
     }
@@ -664,7 +792,7 @@ void work1(int mode)
     for (int k = 2 * numbe - 2; k < 2 * numbe; ++k)
             s4.b[k] = s4.b0[k];      //s4.b0(k) has been defined in sub newcoordinate as the stresses in intact rock
 
-    mainb_work1(mode);
+    mainb(mode);
     //total stress/displacement using d0(m) total, not increment d(m)   
     elm_list[numbe-1].bound(numbe-1, ss, sn, ustem, untem, usneg, unneg);
 
@@ -683,16 +811,15 @@ void work1(int mode)
            belm.jslipd = -copysign(1.0, ss);
         }
         //Sara set m to 0   change m to numbe-1 Sara! 9.9.2024
-        if (sn + watercm.pwater[numbe - 1] * watercm.jwater[numbe - 1] < 0 && abs(ss) < streng)    //m instead of numbe check later in test
+        float epsilon = 1e-5;
+        if (sn + watercm.pwater[numbe - 1] * watercm.jwater[numbe - 1] < -epsilon && abs(ss) < streng)    //m instead of numbe check later in test
            belm.jstate = 0;
     }
-
     //label30
     if (belm.jstate != 0)
-        mainb_work1(mode);
+        mainb(mode);
 
-    //temperatory accumulation of element displacement, undo it later  
-
+    //temperatory accumulation of element displacement, undo it later 
     for (int k = 0; k < 2 * numbe; k += 2)
     {
         s4.d0[k] += s4.d[k];
@@ -702,9 +829,7 @@ void work1(int mode)
     {
         auto& elm = elm_list[m];
         auto& belm = b_elm[m];
-
         elm.bound(m, ss, sn, ustem, untem, usneg, unneg);
-
         belm.us = ustem;
         belm.un = untem;
         belm.forces = belm.force1 + ss * 2.0 * elm.a;
@@ -714,15 +839,14 @@ void work1(int mode)
 
     //undo accumulation because the fictitious element is not real element yet
     for (int k = 0; k < 2 * numbe; ++k)
-        s4.d0[k] -= s4.d[k];        
-
+        s4.d0[k] -= s4.d[k];  
 
     float sum = 0.0;
     for (int m = 0; m < numbe; ++m)
     {
         auto& belm = b_elm[m];
-        float term1 = 0.5 * belm.forces * belm.us;
-        float term2 = 0.5 * belm.forcen * belm.un;
+        double term1 = 0.5 * belm.forces * belm.us;
+        double term2 = 0.5 * belm.forcen * belm.un;
 
         switch (elm_list[m].kod)
         {
@@ -741,103 +865,12 @@ void work1(int mode)
         }
     }
     w1 = sum;
-
     //reset the fictitous element to no water pressure   
-     watercm.jwater[numbe - 1]= 0;
+    // watercm.jwater[numbe - 1]= 0;
 
     return;
 }
 
-
-
-
-
-void monitoring_point(float xp, float yp, float& sigxx, float& sigyy, float& sigxy, float& ux, float& uy)
-{ 
-
-    int mm = j_material;
-    if (multi_region)
-        mm = check_material_id(xp, yp);
-
-    s2us.reset();                        
-    ux = 0.0;
-    uy = 0.0;
-      
-
-    float y0 = g.y_surf;
-    float pxx = symm.pxx1 + g.skx * (y0 - yp);
-    float pyy = symm.pyy1 + g.sky * (y0 - yp);
-    float pxy = symm.pxy1;
-
-    sigxx = pxx;
-    sigyy = pyy;
-    sigxy = pxy;
-
-    if (mm == mat_lining)
-    {
-        sigxx = 0.0;
-        sigyy = 0.0;
-        sigxy = 0.0;
-    }
-
-    for (int j = 0; j < numbe; ++j)
-    {
-        if (mm != elm_list[j].mat_no) continue;
-           
-        int jn = 2 * j;
-        int js = jn - 1;
-
-        s2us.reset();                                   // Call initl();
-        float xj = elm_list[j].xm;
-        float yj = elm_list[j].ym;
-        float aj = elm_list[j].a;
-
-        float cosbj = elm_list[j].cosbet;
-        float sinbj = elm_list[j].sinbet;
-
-        coeff(xp, yp, xj, yj, aj, cosbj, sinbj, +1, mm, s2us);
-        switch (symm.ksym + 1) 
-        {
-            case 1: break;
-            case 2: 
-                xj = 2.0 * symm.xsym - elm_list[j].xm;
-                coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm, s2us);
-                break;
-
-            case 3: 
-                yj = 2.0 * symm.ysym - elm_list[j].ym;
-                coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm, s2us);
-                break;
-
-            case 4: 
-                xj = 2.0 * symm.xsym - elm_list[j].xm;
-                yj = 2.0 * symm.ysym - elm_list[j].ym;
-                coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm, s2us);
-                break;
-
-            case 5: 
-                xj = 2.0 * symm.xsym - elm_list[j].xm;
-                coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm, s2us);
-
-                xj = elm_list[j].xm;
-                yj = 2.0 * symm.ysym - elm_list[j].ym;
-
-                coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm, s2us);
-                xj = 2.0 * symm.xsym - elm_list[j].xm;
-                coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm, s2us);
-                  
-        }
-
-        ux += s2us.uxs * s4.d0[js] + s2us.uxn * s4.d0[jn];
-        uy += s2us.uys * s4.d0[js] + s2us.uyn * s4.d0[jn];
-        sigxx +=  s2us.sxxs * s4.d0[js] + s2us.sxxn * s4.d0[jn];
-        sigyy += s2us.syys * s4.d0[js] + s2us.syyn * s4.d0[jn];
-        sigxy += s2us.sxys * s4.d0[js] + s2us.sxyn * s4.d0[jn];
-
-    }
-
-return;
-}
 
 
 
