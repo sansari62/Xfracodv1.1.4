@@ -296,13 +296,10 @@ void compute_stress_displ_at_specified_points(int& npoint, stringstream& buffer)
             it = valid.erase(it);                  
             continue;
         }
-
-        y0 = g.y_surf;    //new!
+        y0 = g.y_surf;    
         pxx = symm.pxx1 + g.skx * (y0 - yp);
         pyy = symm.pyy1 + g.sky * (y0 - yp);
-        pxy = symm.pxy1;
-       /* material = check_material_id(xp, yp);
-        mm = material;*/
+        pxy = symm.pxy1;       
 
         mm = j_material;
         if(multi_region)
@@ -316,9 +313,7 @@ void compute_stress_displ_at_specified_points(int& npoint, stringstream& buffer)
             sigyy = 0;
             sigxy = 0;
         }
-
-        for_j_loop(mm, sigxx, sigyy, sigxy, ux, uy, xp, yp);  
-
+        for_j_loop(mm, sigxx, sigyy, sigxy, ux, uy, xp, yp);
         bet = (sigxx == sigyy) ? pi / 2.0 : 0.5 * atan(2.0 * sigxy / (sigxx - sigyy));
 
         float cosf1 = cosf(bet);
@@ -326,13 +321,10 @@ void compute_stress_displ_at_specified_points(int& npoint, stringstream& buffer)
         float sinf1 = sinf(bet);
         float sinf2 = sinf1 * sinf1;
         sig1 = sigxx * cosf2 + 2 * sigxy * sinf1 * cosf1 + sigyy * sinf2;
-        sig2 = sigxx * sinf2 - 2 * sigxy * sinf1 * cosf1 + sigyy * cosf2;
-        //sig1 = sigxx * cosf(bet) * cosf(bet) + 2 * sigxy * sinf(bet) * cosf(bet) + sigyy * sinf(bet) * sinf(bet);
-        //sig2 = sigxx * sinf(bet) * sinf(bet) - 2 * sigxy * sinf(bet) * cosf(bet) + sigyy * cosf(bet) * cosf(bet);
+        sig2 = sigxx * sinf2 - 2 * sigxy * sinf1 * cosf1 + sigyy * cosf2;        
 
         sig12 = (sig1 - sig2) / 2.0;
         set = (sig12 > 0) ? bet + pi / 4.0 : bet - pi / 4.0;
-
         disp = sqrt(ux * ux + uy * uy);
         zet = ux > 0. ? atanf(uy / ux) :
             (ux < 0. ? pi + atanf(uy / ux) :
@@ -661,7 +653,6 @@ void save_buffer_to_file(ofstream& file4, stringstream& buffer)
 
 
 
-
 void internal(int id , int& npoint)
 {
     /* internal grid point stresses and displacements */    
@@ -674,30 +665,14 @@ void internal(int id , int& npoint)
     buffer << "  xp        yp        sig1        sig2     bet      sig12      set     disp        zet      mat_region" << std::endl;
     buffer << "------------------------------------------------------------------------------------------------------------" << std::endl;
 
-    //buffer << "xp , yp, sig1, sig2, bet, sig12, set, disp, zet, mat-region" << std::endl;
-
-
     // compute displacements and stresses at specified points in body.
     npoint = 0;     
-    compute_stress_displ_at_specified_points(npoint, buffer);
-    
+    compute_stress_displ_at_specified_points(npoint, buffer);    
     compute_stress_on_boundary_surfaces(npoint, buffer);
     int perc = 2;
     buffer.precision(perc);  
     
-        for (size_t i = 0; i < npoint; ++i) /*{
-           buffer << fixed << setprecision(perc + 1)<<setw(7) << stress[i].w_xp<< ","<< setw(7) <<
-               stress[i].w_yp << ","
-            << setw(10) << scientific <<  setprecision(perc) <<stress[i].w_sig1 << ","
-            << setw(10) << scientific << setprecision(perc) << stress[i].w_sig2 << ","
-            << setprecision(3) << stress[i].w_bet <<","
-            << setw(10) << scientific << setprecision(perc) << stress[i].w_sig12 <<","
-            << setprecision(perc + 1) << stress[i].w_set <<","
-            << scientific << setprecision(perc) << stress[i].w_disp << ","
-            << scientific << setprecision(perc) << stress[i].w_zet << ","
-            << stress[i].w_mat << endl;
-
-            }   */
+        for (size_t i = 0; i < npoint; ++i) 
         {
             Stress& st = stress[i];
             buffer << fixed << setprecision(perc+1) << setw(7) << st.w_xp << "  "
@@ -709,14 +684,10 @@ void internal(int id , int& npoint)
                 <<fixed << setprecision(perc+1) << st.w_set << "  "
                 << scientific << setprecision(2) << st.w_disp << "   "
                 << scientific << setprecision(perc) << st.w_zet << "    "
-                << st.w_mat << endl;        
-        
-        }
-
-  
+                << st.w_mat << endl;          
+        }  
     save_buffer_to_file(file4, buffer);    
     buffer.flags(old_flags);
-    file4.close();
-    
+    file4.close();    
     return;
 }

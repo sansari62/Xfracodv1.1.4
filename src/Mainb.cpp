@@ -71,7 +71,7 @@ void coeff(float xi, float yi, float xj, float yj, float aj, float cosbj, float 
     float cos2b = cosbj * cosbj - sinbj * sinbj;
     float sin2b = 2. * sinbj * cosbj;
     float cosb2 = cosbj * cosbj;
-    float sinb2 = sinbj * sinbj;
+    double sinb2 = sinbj * sinbj;
 
     float xb = (xi - xj) * cosbj + (yi - yj) * sinbj;
     float yb = -(xi - xj) * sinbj + (yi - yj) * cosbj;

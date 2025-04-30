@@ -786,8 +786,7 @@ void work1(int mode)
     float ph = 30.0 * 3.1416 / 180.0;
 
     for (int k = 0; k < 2 * (numbe - 1); ++k)
-         s4.b[k] = 0;
-   
+         s4.b[k] = 0;   
 
     for (int k = 2 * numbe - 2; k < 2 * numbe; ++k)
             s4.b[k] = s4.b0[k];      //s4.b0(k) has been defined in sub newcoordinate as the stresses in intact rock
@@ -811,7 +810,7 @@ void work1(int mode)
            belm.jslipd = -copysign(1.0, ss);
         }
         //Sara set m to 0   change m to numbe-1 Sara! 9.9.2024
-        float epsilon = 1e-5;
+        float epsilon = 0;// 1e-5;
         if (sn + watercm.pwater[numbe - 1] * watercm.jwater[numbe - 1] < -epsilon && abs(ss) < streng)    //m instead of numbe check later in test
            belm.jstate = 0;
     }
