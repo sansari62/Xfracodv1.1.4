@@ -1,12 +1,242 @@
+#include<stdafx.h>
 #include <Failure.h>
 #include "CommonPara.h"
-#include<ExcavationCracks.h>
-#include <Mainb.h>
-#include<Source.h>
-
-
+#include<DX.h>
+#include<Tip.h>
 
 using namespace CommonPara_h::comvar;
+
+
+
+
+int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, int flagB)
+{
+    //if flagB = 1 then it works like checkNewElementB in the original code
+    //one more condition added to loop, maybe need to optimized
+
+    int legal = 1;
+    float x1 = xc - ac * cosbeta;
+    float y1 = yc - ac * sinbeta;
+    float x2 = xc + ac * cosbeta;
+    float y2 = yc + ac * sinbeta;
+    int  en;
+    float thr = 0.0003; //6e-4;
+    //const float epsilon = 1e-6;
+
+    if (flagB == 0)
+        en = numbe - 1;
+    else
+        en = numbe;
+
+    for (int i = 0; i < en; ++i)
+    {
+        BoundaryElement& be = elm_list[i];
+        if (flagB == 1)
+        {
+            if (be.kod != 5) continue;
+        }
+
+        float dist1 = sqrt(powf(x1 - be.xm, 2) + powf(y1 - be.ym, 2));
+        float dist2 = sqrt(powf(x2 - be.xm, 2) + powf(y2 - be.ym, 2));
+
+
+        if (min(dist1, dist2) - thr <= factors.tolerance * max(ac, be.a))
+        {
+
+            return(0);
+        }
+
+        if (symm.ksym == 1 || symm.ksym == 4)
+        {
+            dist1 = sqrt(powf(x1 - (2.0 * symm.xsym - be.xm), 2) +
+                powf(y1 - be.ym, 2));
+            dist2 = sqrtf(powf(x2 - (2.0 * symm.xsym - be.xm), 2) +
+                powf(y2 - be.ym, 2));
+            if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a))
+            {
+
+                return(0);
+            }
+
+        }
+
+        if (symm.ksym == 2 || symm.ksym == 4)
+        {
+            dist1 = sqrt(powf(x1 - be.xm, 2) + powf(y1 - (2.0 * symm.ysym - be.ym), 2));
+            dist2 = sqrt(pow(x2 - be.xm, 2) + powf(y2 - (2.0 * symm.ysym - be.ym), 2));
+            if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a))
+            {
+
+                return(0);
+            }
+        }
+
+        if (symm.ksym == 3 || symm.ksym == 4)
+        {
+            dist1 = sqrt(powf(x1 - (2.0 * symm.xsym - be.xm), 2) + powf(y1 - (2.0 * symm.ysym - be.ym), 2));
+            dist2 = sqrt(powf(x2 - (2.0 * symm.xsym - be.xm), 2) + powf(y2 - (2.0 * symm.ysym - be.ym), 2));
+            if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a))
+            {
+
+                return(0);
+            }
+        }
+    }
+
+    if (symm.ksym == 1 || symm.ksym == 4)
+    {
+        if ((x1 - symm.xsym) * (x2 - symm.xsym) < -s5u.dtol)
+        {
+
+            return(0);
+        }
+    }
+    if (symm.ksym == 2 || symm.ksym == 4)
+    {
+        if ((y1 - symm.ysym) * (y2 - symm.ysym) < -s5u.dtol)
+        {
+            //legal = 0;
+            return(0);
+        }
+    }
+    if (symm.ksym == 3 || symm.ksym == 4)
+    {
+        if ((x1 - symm.xsym) / (y1 - symm.ysym) == -(x2 - symm.xsym) / (y2 - symm.ysym))
+        {
+            //legal = 0;
+            return(0);
+        }
+    }
+
+    return legal;
+}
+
+
+
+
+
+
+
+int  check_material_id(float xp, float yp)
+{
+
+    float dist0 = 10e8;
+    int mm = 1, mclosest = 0;
+
+    int k = 0;
+    float xc = 0, yc = 0, xt = 0, yt = 0, dist = 0;
+    float ypprime, xpprime;
+    //remove prenumbe from for loop because of the issue with multi region problem
+
+    for (int m = 0; m < numbe; ++m)
+    {
+        dist = std::sqrt(std::pow(xp - elm_list[m].xm, 2) + std::pow(yp - elm_list[m].ym, 2));
+
+        if (dist <= dist0)
+        {
+            mclosest = m;
+            dist0 = dist;
+            k = 0;
+        }
+
+        if (symm.ksym != 0)
+        {
+            if (symm.ksym == 1 || symm.ksym == 4)
+            {
+                xc = 2.0 * symm.xsym - elm_list[m].xm;
+                yc = elm_list[m].ym;
+                dist = std::sqrt(std::pow(xp - xc, 2) + std::pow(yp - yc, 2));
+
+                if (dist < dist0)
+                {
+                    mclosest = m;
+                    k = 1;
+                    dist0 = dist;
+                }
+            }
+            if (symm.ksym == 2 || symm.ksym == 4)
+            {
+                xc = elm_list[m].xm;
+                yc = 2.0 * symm.ysym - elm_list[m].ym;
+                dist = std::sqrt(std::pow(xp - xc, 2) + std::pow(yp - yc, 2));
+                if (dist < dist0)
+                {
+                    mclosest = m;
+                    k = 2;
+                    dist0 = dist;
+                }
+            }
+            if (symm.ksym == 3 || symm.ksym == 4)
+            {
+                xc = 2.0 * symm.xsym - elm_list[m].xm;
+                yc = 2.0 * symm.ysym - elm_list[m].ym;
+                dist = std::sqrt(std::pow(xp - xc, 2) + std::pow(yp - yc, 2));
+
+                if (dist < dist0)
+                {
+                    mclosest = m;
+                    k = 3;
+                    dist0 = dist;
+                }
+            }
+        }
+        // label_51: continue;
+    }
+
+    if (elm_list[mclosest].kod != 6)
+    {
+        mm = elm_list[mclosest].mat_no;
+        return mm;
+    }
+    else
+    {
+        xt = xp;
+        yt = yp;
+
+        switch (k)
+        {
+        case 1:
+            xt = 2.0 * symm.xsym - xp;
+            break;
+        case 2:
+            yt = 2.0 * symm.ysym - yp;
+            break;
+        case 3:
+            xt = 2.0 * symm.xsym - xp;
+            yt = 2.0 * symm.ysym - yp;
+
+        }
+
+        float xpprime = (xt - elm_list[mclosest].xm) * elm_list[mclosest].cosbet +
+            (yt - elm_list[mclosest].ym) * elm_list[mclosest].sinbet;
+        float ypprime = -(xt - elm_list[mclosest].xm) * elm_list[mclosest].sinbet +
+            (yt - elm_list[mclosest].ym) * elm_list[mclosest].cosbet;
+
+        if (ypprime <= 0)
+        {
+            mm = elm_list[mclosest].mat_no;
+        }
+        else
+        {
+
+            if (elm_list[mclosest - 1].xm == elm_list[mclosest].xm &&
+                elm_list[mclosest - 1].ym == elm_list[mclosest].ym)
+            {
+                mm = elm_list[mclosest - 1].mat_no;
+            }
+            if (elm_list[mclosest + 1].xm == elm_list[mclosest].xm &&
+                elm_list[mclosest + 1].ym == elm_list[mclosest].ym)
+            {
+                mm = elm_list[mclosest + 1].mat_no;
+            }
+
+        }
+    }
+
+    return mm;
+}
+
+
 
 
 
@@ -29,88 +259,6 @@ void  Sum_Failure(float xp, float yp, float r, float alpha, int im, float fos, i
 }
 
 
-
-void NewFractureCentralPoint(float xp, float yp, float& sigxx, float& sigyy, float& sigxy)
-{
-    /* obtain the centre point of a new fracture and add it into the matrix */
-      
-    float  y0 = 0.0;
-    int mm = check_material_id(xp, yp);   
-
-    s2us.reset();
-    y0 = g.y_surf;
-
-    float pxx = symm.pxx1 + g.skx * (y0 - yp);
-    float pyy = symm.pyy1 + g.sky * (y0 - yp);
-    float pxy = symm.pxy1;
-
-    sigxx = pxx;
-    sigyy = pyy;
-    sigxy = pxy;
-
-    if (mm == mat_lining)
-    {
-        sigxx = 0;
-        sigyy = 0;
-        sigxy = 0;
-    }
-
-    for (int j = 0; j < numbe_old; ++j)
-    {
-        BoundaryElement& be = elm_list[j];
-        if (mm != be.mat_no)
-            continue;
-
-        int js = 2 * j;
-        int jn = js + 1;
-        s2us.reset();
-        float xj = be.xm;
-        float yj = be.ym;
-        float aj = be.a;
-
-        float cosbj = be.cosbet;
-        float sinbj = be.sinbet;
-
-        coeff(xp, yp, xj, yj, aj, cosbj, sinbj, +1, mm);
-
-        switch (symm.ksym + 1) {
-        case 1:
-            break;
-
-        case 2:
-            xj = 2.0 * symm.xsym - be.xm;
-            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm);
-            break;
-
-        case 3:
-            yj = 2.0 * symm.ysym - be.ym;
-            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm);
-            break;
-
-        case 4:
-            xj = 2.0 * symm.xsym - be.xm;
-            yj = 2.0 * symm.ysym - be.ym;
-            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm);
-            break;
-
-        case 5:
-            xj = 2.0 * symm.xsym - be.xm;
-            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm);
-            xj = be.xm;
-            yj = 2.0 * symm.ysym - be.ym;
-
-            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm);
-            xj = 2.0 * symm.xsym - be.xm;
-            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm);
-           
-        }
-        
-        sigxx += s2us.sxxs * s4.d0[js] + s2us.sxxn * s4.d0[jn];
-        sigyy += s2us.syys * s4.d0[js] + s2us.syyn * s4.d0[jn];
-        sigxy += s2us.sxys * s4.d0[js] + s2us.sxyn * s4.d0[jn];
-    }
-    return;
-}
 
 
 
@@ -185,19 +333,21 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
         fos = 1.0;
     }
     
-    if (numbe >= 1498)
+    if (numbe >= m0-1)
     {
-        MessageBox(nullptr, L"Memory Overflow - Reduce In Situ Stresses.", L"Message!", MB_OK);
+        MessageBox(nullptr, L"Maximum BE limit exceeded!", L"Message!", MB_OK);
         exit(0);        
-        return;   //instead of stop
+        return;   
     }
     int n = no;
     xb = xp - 1 / 2.0 * r * cosf(alpha);     // xbe(?) etc are potential (additional) element, not actual  instead of 1/2r, dl used here
     yb = yp - 1 / 2.0 * r * sinf(alpha);
     xn = xp;
     yn = yp;
-
-    material = check_material_id(0.5 * (xb + xn), 0.5 * (yb + yn));    
+    material = j_material;
+    if (multi_region)
+        material = check_material_id(0.5 * (xb + xn), 0.5 * (yb + yn));
+    //material = check_material_id(0.5 * (xb + xn), 0.5 * (yb + yn));    
     float dl = sqrtf(std::powf(xn - xb,2) + std::powf(yn - yb,2));
     tips[n].assign_val(xb, yb, xn, yn, dl, cosf(alpha), sinf(alpha), -1, material);  
     no++;
@@ -268,7 +418,8 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
         yb = yp;
         xn = xp + 1 / 2.0 * r * cosf(alpha); 
         yn = yp + 1 / 2.0 * r * sinf(alpha);
-        material = check_material_id(0.5 * (xb + xn), 0.5 * (yb + yn));  
+        if(multi_region)
+             material = check_material_id(0.5 * (xb + xn), 0.5 * (yb + yn));  
         dl = std::sqrt(std::pow(xn - xb,2) + std::pow(yn - yb, 2));
 
         tips[n].assign_val(xb, yb, xn, yn, dl, cosf(alpha), sinf(alpha), 1, material);
@@ -328,19 +479,13 @@ void failureB(float xp, float yp, float r, float alpha, int im, float& fos)
     if (fos > 1.0) 
     {
         fos = 1.0;
-    }
-    else
-        if (fos == 0)
-        {
-            //WRITE(1,*) 0000          write into file 
-        }
+    }   
 
-    if (numbe >= 1498)
+    if (numbe >= m0-1)
     {
-       MessageBox(nullptr, L"Memory Overflow - Reduce In Situ Stresses.", L"Message!", MB_OK);
-
+        MessageBox(nullptr, L"Maximum BE limit exceeded!", L"Message!", MB_OK);
         exit(0);          
-        return;   //instead of stop
+        return;  
     } 
 
     int n = no;
@@ -351,10 +496,11 @@ void failureB(float xp, float yp, float r, float alpha, int im, float& fos)
     yb = yp + 0.5 * r * sinb;
     xe = xp + 1.0 * r * cosb;
     ye = yp + 1.0 * r * sinb;
-   
-    int material = check_material_id(0.5 * (xb + xe), 0.5 * (yb + ye)); 
+    int material = j_material;
+    if (multi_region)
+        material = check_material_id(0.5 * (xb + xe), 0.5 * (yb + ye));
+   // int material = check_material_id(0.5 * (xb + xe), 0.5 * (yb + ye)); 
     float dl = sqrt(pow(xe - xb,2) + pow(ye - yb,2));
-    //float dl = sqrt((xe - xb) * (xe - xb) + (ye - yb) * (ye - yb));     
     tips[n].assign_val(xb, yb, xe, ye, dl, cosb, sinb, 4, material);
     no++; 
 
@@ -384,7 +530,9 @@ void failureB(float xp, float yp, float r, float alpha, int im, float& fos)
     {
         setting_elem_and_tipn_failure(m-1, im);
         // -----------------------------------------------       
-        material = check_material_id(0.5 * (xb + xe), 0.5 * (yb + ye));        
+        //material = check_material_id(0.5 * (xb + xe), 0.5 * (yb + ye));        
+        if (multi_region)
+            material = check_material_id(0.5 * (xb + xe), 0.5 * (yb + ye));
              
         elm_list[m].xm = 0.5 * (xb + xe);
         elm_list[m].ym = 0.5 * (yb + ye);

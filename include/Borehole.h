@@ -2,7 +2,7 @@
 #ifndef Borehole_h
 #define Borehole_h
 #include<GeologicalForm.h>
-#include <common.h>
+#include <fstream>
 
 
 class Borehole:public GeologicalForm

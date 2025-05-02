@@ -1,5 +1,5 @@
-﻿#include <Mainb.h>
-#include <mkl.h>   
+﻿#include<stdafx.h>
+#include <Mainb.h>
 #include "CommonPara.h"
 
 using namespace CommonPara_h::comvar;
@@ -9,9 +9,6 @@ using namespace CommonPara_h::comvar;
 
 void solve(int n, int mode)
 {
-
-    int nonzeroCount = 0;
-
     int nb = n - 1;
     for (int j = 0; j < nb; ++j)
     {
@@ -19,7 +16,6 @@ void solve(int n, int mode)
         {
             if (s4.c[jj][j] == 0)
                 continue;
-            nonzeroCount++;
             float xx = s4.c[jj][j] / s4.c[j][j];
             for (int i = j; i < n; ++i)
             {
@@ -29,11 +25,11 @@ void solve(int n, int mode)
         }
     }
 
-    
+
     s4.d[n - 1] = s4.b[n - 1] / s4.c[n - 1][n - 1];
     if (elm_list[int(n / 2) - 1].kod == 5 && mode == 0)
     {
-        if (std::abs((s4.d[n - 1]) > d_max))
+        if (std::abs(s4.d[n - 1]) > d_max)
             s4.d[n - 1] = int(s4.d[n - 1] / abs(s4.d[n - 1])) * d_max;
     }
 
@@ -41,7 +37,8 @@ void solve(int n, int mode)
     {
         int jj = n - 1 - j;
         float sum = 0.0;
-        for (int i = jj + 1; i < n; ++i)
+        int l = jj + 1;
+        for (int i = l; i < n; ++i)
         {
             sum += s4.c[jj][i] * s4.d[i];
         }
@@ -56,8 +53,6 @@ void solve(int n, int mode)
 
     return;
 }
-
-
 
 
 
@@ -107,10 +102,10 @@ void coeff(float xi, float yi, float xj, float yj, float aj, float cosbj, float 
 
     float fb6 = con * (((xb - aj) * (xb - aj) - yb * yb) / (r1s * r1s) - ((xb + aj) * (xb + aj) - yb * yb) / (r2s * r2s));
     float fb7 = 2.0 * con * yb * ((xb - aj) / (r1s * r1s) - (xb + aj) / (r2s * r2s));
-
+    
     float uxds = -pr1 * sinbj * fb2 + pr2 * cosbj * fb3 + yb * (sinbj * fb4 - cosbj * fb5);
     float uxdn = -pr1 * cosbj * fb2 - pr2 * sinbj * fb3 - yb * (cosbj * fb4 + sinbj * fb5);
-    float uyds =  pr1 * cosbj * fb2 + pr2 * sinbj * fb3 - yb * (cosbj * fb4 + sinbj * fb5);
+    float uyds = pr1 * cosbj * fb2 + pr2 * sinbj * fb3 - yb * (cosbj * fb4 + sinbj * fb5);
     float uydn = -pr1 * sinbj * fb2 + pr2 * cosbj * fb3 - yb * (sinbj * fb4 - cosbj * fb5);
 
     float sxxds = cons * (2. * cosb2 * fb4 + sin2b * fb5 + yb * (cos2b * fb6 - sin2b * fb7));
@@ -131,7 +126,6 @@ void coeff(float xi, float yi, float xj, float yj, float aj, float cosbj, float 
     s2us.syyn += syydn;
     s2us.sxys += msym * sxyds;
     s2us.sxyn += sxydn;
-
     return;
 }
 
@@ -143,7 +137,6 @@ void coeff(float xi, float yi, float xj, float yj, float aj, float cosbj, float 
 void interface_matrix(int i, int j)
 {
     /* set up the interface matrix */
-
     matx.A_is_js = 0;
     matx.A_is_jn = 0;
     matx.A_in_js = 0;
@@ -165,7 +158,6 @@ void interface_matrix(int i, int j)
     float sinbi = be.sinbet;
     int mm = be.mat_no; // to confirm this later
 
-
     int js = 2 * j;
     int jn = js + 1;
 
@@ -178,7 +170,6 @@ void interface_matrix(int i, int j)
     float aj = bj.a;
 
     if (mm != mmj) return; // avoid mixing 2 different interfaces
-
     // -----------------------------------------------------------
     coeff(xi, yi, xj, yj, aj, cosbj, sinbj, +1, mm);
     switch (symm.ksym + 1)
@@ -207,9 +198,7 @@ void interface_matrix(int i, int j)
         xj = 2.0 * symm.xsym - bj.xm;
         coeff(xi, yi, xj, yj, aj, -cosbj, -sinbj, +1, mm);
         break;
-    
     }
-
     matx.A_is_js = (s2us.syys - s2us.sxxs) * sinbi * cosbi + s2us.sxys * (cosbi * cosbi - sinbi * sinbi);
     matx.A_is_jn = (s2us.syyn - s2us.sxxn) * sinbi * cosbi + s2us.sxyn * (cosbi * cosbi - sinbi * sinbi);
     matx.A_in_js = s2us.sxxs * sinbi * sinbi - 2.0 * s2us.sxys * sinbi * cosbi + s2us.syys * cosbi * cosbi;
@@ -227,7 +216,7 @@ void interface_matrix(int i, int j)
 
 
 
-void label_500(int i, int j,int mm, int mmj,int is, int in, int js, int jn,int mode)
+void label_500(int i, int j, int mm, int mmj, int is, int in, int js, int jn, int mode)
 {
     /* this function implements all code after label 500 in mainb
     as before  label500 there is a jump to end of j loop means it's not part of
@@ -371,253 +360,187 @@ void label_500(int i, int j,int mm, int mmj,int is, int in, int js, int jn,int m
 
 
 
-
-void mainb(int mode)
+void mainb_ini(int mode, int i_st, int i_en, int j_st, int j_en)
 {
-    int in = 0, is = 0, mm = 0, mmj = 0, jn = 0, js = 0, n =0 ;
-    float xi = 0, yi = 0, cosbi = 0, sinbi = 0, xj,yj, cosbj = 0, sinbj = 0, aj = 0;
-    double ks = 0.0, kn = 0.0; float ph = 0.0, pd = 0.0;
+    int in = 0, is = 0, mm = 0, mmj = 0, jn = 0, js = 0, n = 0;
+    float xi = 0, yi = 0, cosbi = 0, sinbi = 0, xj, yj, cosbj = 0, sinbj = 0, aj = 0;
+    double ks = 0.0, kn = 0.0;
+    float ph = 0.0, pd = 0.0;
     float S_is_js = 0, S_is_jn = 0, S_in_js = 0, S_in_jn = 0, d_is_js = 0, d_is_jn = 0, d_in_js = 0, d_in_jn = 0;
-   
-#pragma omp parallel for
-    for (int i = 0; i < numbe; ++i)
+    double sinbi2 = 0;
+    double cosbi2 = 0;
+    double sincosbi = 0;
+    for (int i = i_st; i < i_en; ++i)
     {
+        BoundaryElement elm_i = elm_list[i];
         is = 2 * i;
         in = is + 1;
-
-        xi = elm_list[i].xm;
-        yi = elm_list[i].ym;
-        cosbi = elm_list[i].cosbet;
-        sinbi = elm_list[i].sinbet;        
-        mm = elm_list[i].mat_no;
+        xi = elm_i.xm;
+        yi = elm_i.ym;
+        cosbi = elm_i.cosbet;
+        sinbi = elm_i.sinbet;
+        mm = elm_i.mat_no;
+        sinbi2 = sinbi * sinbi;
+        cosbi2 = cosbi * cosbi;
+        sincosbi = sinbi * cosbi;
 
         if (mm == 0)
         {
             MessageBox(nullptr, L"material not defined_i mainb.", L"Error", MB_OK);
-            file2 <<"program stopped due to undefined material number for element = " << i << endl;
+            file2 << "program stopped due to undefined material number for element = " << i << endl;
             logfile << "program stopped due to undefined material number for element = " << i << endl;
             exit(EXIT_FAILURE);
         }
-
-        for (int j = 0; j < numbe; ++j) 
+        for (int j = j_st; j < j_en; ++j)
         {
-                mmj = elm_list[j].mat_no;
-                js = 2 * j;
-                jn = js + 1;
-
-                if (mm != mmj || elm_list[i].kod == 6)
-                {
-                    label_500(i, j, mm, mmj, is, in, js, jn,mode);
-                    continue;
-                }
-
-        //--------------- - read existing influence coefficients---------- -
-
-            if (i < numbe_old && j < numbe_old && mode > 0) 
+            BoundaryElement elm_j = elm_list[j];
+            mmj = elm_j.mat_no;
+            js = 2 * j;
+            jn = js + 1;
+            if (mm != mmj || elm_list[i].kod == 6)
             {
-                switch (elm_list[i].kod) 
-                {
-
-                    case 1:
-                    case 5:
-                    case 11:
-                    case 15:
-                        s4.c[is][js] = s4.c_s[is][js];
-                        s4.c[is][jn] = s4.c_s[is][jn];
-                        s4.c[in][js] = s4.c_s[in][js];
-                        s4.c[in][jn] = s4.c_s[in][jn];
-                        break;       //goto label2025;
-
-                    case 2:
-                    case 7:
-                    case 12:
-                    case 17:
-                       s4.c[is][js] = s4.c_d[is][js];
-                       s4.c[is][jn] = s4.c_d[is][jn];
-                       s4.c[in][js] = s4.c_d[in][js];
-                       s4.c[in][jn] = s4.c_d[in][jn];
-                       break;
-
-                    case 3:
-                    case 13:
-                       s4.c[is][js] = s4.c_d[is][js];
-                       s4.c[is][jn] = s4.c_d[is][jn];
-                       s4.c[in][js] = s4.c_s[in][js];
-                       s4.c[in][jn] = s4.c_s[in][jn];
-                       break;
-
-                    case 4:
-                    case 14:
-                       s4.c[is][js] = s4.c_s[is][js];
-                       s4.c[is][jn] = s4.c_s[is][jn];
-                       s4.c[in][js] = s4.c_d[in][js];
-                       s4.c[in][jn] = s4.c_d[in][jn];
-                       break;     
-                    case 6:
-                    case 16:
-                           label_500(i, j, mm, mmj, is, in, js, jn,mode);
-                           continue;
-                }
+                label_500(i, j, mm, mmj, is, in, js, jn, mode);
+                continue;
             }
-            else
+            //label 2111-------------------------
+            s2us.reset();
+            xj = elm_j.xm;
+            yj = elm_j.ym;
+            cosbj = elm_j.cosbet;
+            sinbj = elm_j.sinbet;
+            aj = elm_j.a;
+            //-------------------------------
+            coeff(xi, yi, xj, yj, aj, cosbj, sinbj, +1, mm);
+
+            switch (symm.ksym + 1)
             {
-                //label 2111-------------------------                
-                s2us.reset();
-                xj = elm_list[j].xm;
-                yj = elm_list[j].ym;
-                cosbj = elm_list[j].cosbet;
-                sinbj = elm_list[j].sinbet;
-                aj = elm_list[j].a;
-                //-------------------------------
-
-                coeff(xi, yi, xj, yj, aj, cosbj, sinbj, +1, mm);
-
-                switch (symm.ksym + 1)
-                {
-                case 1:
-                    break;
-                case 2:
-                    xj = 2.0 * symm.xsym - elm_list[j].xm;
-                    coeff(xi, yi, xj, yj, aj, cosbj, -sinbj, -1, mm);
-                    break;
-                case 3:
-                    yj = 2.0 * symm.ysym - elm_list[j].ym;
-                    coeff(xi, yi, xj, yj, aj, -cosbj, sinbj, -1, mm);
-                    break;
-                case 4:
-                    xj = 2.0 * symm.xsym - elm_list[j].xm;
-                    yj = 2.0 * symm.ysym - elm_list[j].ym;
-                    coeff(xi, yi, xj, yj, aj, -cosbj, -sinbj, +1, mm);
-                    break;
-                case 5:
-                    xj = 2.0 * symm.xsym - elm_list[j].xm;
-                    coeff(xi, yi, xj, yj, aj, cosbj, -sinbj, -1, mm);
-                    xj = elm_list[j].xm;
-                    yj = 2.0 * symm.ysym - elm_list[j].ym;
-                    coeff(xi, yi, xj, yj, aj, -cosbj, sinbj, -1, mm);
-                    xj = 2.0 * symm.xsym - elm_list[j].xm;
-                    coeff(xi, yi, xj, yj, aj, -cosbj, -sinbj, +1, mm);
-                    
-                }
+            case 1:
+                break;
+            case 2:
+                xj = 2.0 * symm.xsym - elm_j.xm;
+                coeff(xi, yi, xj, yj, aj, cosbj, -sinbj, -1, mm);
+                break;
+            case 3:
+                yj = 2.0 * symm.ysym - elm_j.ym;
+                coeff(xi, yi, xj, yj, aj, -cosbj, sinbj, -1, mm);
+                break;
+            case 4:
+                xj = 2.0 * symm.xsym - elm_j.xm;
+                yj = 2.0 * symm.ysym - elm_j.ym;
+                coeff(xi, yi, xj, yj, aj, -cosbj, -sinbj, +1, mm);
+                break;
+            case 5:
+                xj = 2.0 * symm.xsym - elm_j.xm;
+                coeff(xi, yi, xj, yj, aj, cosbj, -sinbj, -1, mm);
+                xj = elm_j.xm;
+                yj = 2.0 * symm.ysym - elm_j.ym;
+                coeff(xi, yi, xj, yj, aj, -cosbj, sinbj, -1, mm);
+                xj = 2.0 * symm.xsym - elm_j.xm;
+                coeff(xi, yi, xj, yj, aj, -cosbj, -sinbj, +1, mm);
                 //label 240
-                /*float S_is_js = 0, S_is_jn = 0, S_in_js = 0, S_in_jn = 0,
-                    d_is_js = 0, d_is_jn = 0, d_in_js = 0, d_in_jn = 0;*/
-                double sinbi2 = sinbi * sinbi;
-                double cosbi2 = cosbi * cosbi;
-                double sincosbi = sinbi * cosbi;
+            }
+            S_is_js = (s2us.syys - s2us.sxxs) * sincosbi + s2us.sxys * (cosbi2 - sinbi2);
+            S_is_jn = (s2us.syyn - s2us.sxxn) * sincosbi + s2us.sxyn * (cosbi2 - sinbi2);
+            S_in_js = s2us.sxxs * sinbi2 - 2.0 * s2us.sxys * sincosbi + s2us.syys * cosbi2;
+            S_in_jn = s2us.sxxn * sinbi2 - 2.0 * s2us.sxyn * sincosbi + s2us.syyn * cosbi2;
+            d_is_js = s2us.uxs * cosbi + s2us.uys * sinbi;
+            d_is_jn = s2us.uxn * cosbi + s2us.uyn * sinbi;
+            d_in_js = -s2us.uxs * sinbi + s2us.uys * cosbi;
+            d_in_jn = -s2us.uxn * sinbi + s2us.uyn * cosbi;          
 
-                S_is_js = (s2us.syys - s2us.sxxs) * sincosbi + s2us.sxys * (cosbi2 - sinbi2);
-                S_is_jn = (s2us.syyn - s2us.sxxn) * sincosbi + s2us.sxyn * (cosbi2 - sinbi2);
-                S_in_js = s2us.sxxs * sinbi2 - 2.0 * s2us.sxys * sincosbi + s2us.syys * cosbi2;
-                S_in_jn = s2us.sxxn * sinbi2 - 2.0 * s2us.sxyn * sincosbi + s2us.syyn * cosbi2;
-                d_is_js = s2us.uxs * cosbi + s2us.uys * sinbi;
-                d_is_jn = s2us.uxn * cosbi + s2us.uyn * sinbi;
-                d_in_js = -s2us.uxs * sinbi + s2us.uys * cosbi;
-                d_in_jn = -s2us.uxn * sinbi + s2us.uyn * cosbi;
+            if (i == j && elm_i.kod != 5)
+            {
+                S_is_js += comvar::k_num;
+                S_in_jn += comvar::k_num;
+            }
+            switch (elm_i.kod)
+            {
+            case 1:
+            case 5:
+            case 11:
+            case 15:
+                s4.c[is][js] = S_is_js;
+                s4.c[is][jn] = S_is_jn;
+                s4.c[in][js] = S_in_js;
+                s4.c[in][jn] = S_in_jn;
+                break;
+            case 2:
+            case 7:
+            case 12:
+            case 17:
+                s4.c[is][js] = d_is_js;
+                s4.c[is][jn] = d_is_jn;
+                s4.c[in][js] = d_in_js;
+                s4.c[in][jn] = d_in_jn;
+                break;
 
+            case 3:
+            case 13:
+                s4.c[is][js] = d_is_js;
+                s4.c[is][jn] = d_is_jn;
+                s4.c[in][js] = S_in_js;
+                s4.c[in][jn] = S_in_jn;
+                break;
+            case 4:
+            case 14:
+                s4.c[is][js] = S_is_js;
+                s4.c[is][jn] = S_is_jn;
+                s4.c[in][js] = d_in_js;
+                s4.c[in][jn] = d_in_jn;
+                break;
+            case 6:
+            case 16:
+                label_500(i, j, mm, mmj, is, in, js, jn, mode);
+                continue;
+            }
+            //label2010
+            //---------------save influence coefficients, save the coeff. all time ------
+            s4.c_s[is][js] = S_is_js;
+            s4.c_s[is][jn] = S_is_jn;
+            s4.c_s[in][js] = S_in_js;
+            s4.c_s[in][jn] = S_in_jn;
 
-                if (i == j && elm_list[i].kod != 5)
+            s4.c_d[is][js] = d_is_js;
+            s4.c_d[is][jn] = d_is_jn;
+            s4.c_d[in][js] = d_in_js;
+            s4.c_d[in][jn] = d_in_jn;
+            //--------end of coeff.saving------------------------------------------
+                //---- - gravity and infinity problem-----------------------------
+            //label2020
+            if (elm_i.kod > 10 && i == j)
+            {
+                ks = rock1[1].e / 1e4;
+                kn = rock1[1].e / 1e4;
+                switch (elm_i.kod)
                 {
-                    S_is_js += comvar::k_num;
-                    S_in_jn += comvar::k_num;
-                }
-                switch (elm_list[i].kod)
-                {
-
-                case 1:
-                case 5:
                 case 11:
-                case 15:
-                    s4.c[is][js] = S_is_js;
+                    s4.c[is][js] = S_is_js + ks;
                     s4.c[is][jn] = S_is_jn;
                     s4.c[in][js] = S_in_js;
-                    s4.c[in][jn] = S_in_jn;
+                    s4.c[in][jn] = S_in_jn + kn;
                     break;
-
-                case 2:
-                case 7:
                 case 12:
-                case 17:
                     s4.c[is][js] = d_is_js;
                     s4.c[is][jn] = d_is_jn;
                     s4.c[in][js] = d_in_js;
                     s4.c[in][jn] = d_in_jn;
                     break;
-
-                case 3:
                 case 13:
                     s4.c[is][js] = d_is_js;
                     s4.c[is][jn] = d_is_jn;
                     s4.c[in][js] = S_in_js;
-                    s4.c[in][jn] = S_in_jn;
+                    s4.c[in][jn] = S_in_jn + kn;
                     break;
-                case 4:
                 case 14:
-                    s4.c[is][js] = S_is_js;
+                    s4.c[is][js] = S_is_js + ks;
                     s4.c[is][jn] = S_is_jn;
                     s4.c[in][js] = d_in_js;
                     s4.c[in][jn] = d_in_jn;
-                    break;
-                case 6:
-                case 16:
-                    label_500(i, j, mm, mmj, is, in, js, jn, mode);
-                    continue;                   
-                }
-                //label2010
-                //---------------save influence coefficients, save the coeff. all time ------
-
-                s4.c_s[is][js] = S_is_js;
-                s4.c_s[is][jn] = S_is_jn;
-                s4.c_s[in][js] = S_in_js;
-                s4.c_s[in][jn] = S_in_jn;
-
-                s4.c_d[is][js] = d_is_js;
-                s4.c_d[is][jn] = d_is_jn;
-                s4.c_d[in][js] = d_in_js;
-                s4.c_d[in][jn] = d_in_jn;
-
-                //--------end of coeff.saving------------------------------------------
-
-                  //---- - gravity and infinity problem-----------------------------
-                //label2020
-                if (elm_list[i].kod > 10 && i == j)
-                {
-
-                    ks = rock1[1].e / 1e4;    
-                    kn = rock1[1].e / 1e4;
-                    switch (elm_list[i].kod)
-                    {
-
-                    case 11:
-                        s4.c[is][js] = S_is_js + ks;
-                        s4.c[is][jn] = S_is_jn;
-                        s4.c[in][js] = S_in_js;
-                        s4.c[in][jn] = S_in_jn + kn;
-                        break;
-                    case 12:
-                        s4.c[is][js] = d_is_js;
-                        s4.c[is][jn] = d_is_jn;
-                        s4.c[in][js] = d_in_js;
-                        s4.c[in][jn] = d_in_jn;
-                        break;
-                    case 13:
-                        s4.c[is][js] = d_is_js;
-                        s4.c[is][jn] = d_is_jn;
-                        s4.c[in][js] = S_in_js;
-                        s4.c[in][jn] = S_in_jn + kn;
-                        break;
-                    case 14:
-                        s4.c[is][js] = S_is_js + ks;
-                        s4.c[is][jn] = S_is_jn;
-                        s4.c[in][js] = d_in_js;
-                        s4.c[in][jn] = d_in_jn;                        
-                    }
                 }
             }
             //label 2025
-            if (elm_list[i].kod != 5 || i != j) continue;  //2080 is goto 300 continue loop j
-
-            if (i == numbe-1 && mode > 0)
+            if (elm_i.kod != 5 || i != j) continue;  //2080 is goto 300 continue loop j
+            if (i == numbe - 1 && mode > 0)
             {
                 ks = 10e22;
                 kn = 10e22;
@@ -626,74 +549,540 @@ void mainb(int mode)
             }
             else
             {
-                ks = b_elm[i].aks ;
-                kn = b_elm[i].akn ;
-                ph = b_elm[i].phi ;
-                pd = b_elm[i].phid ;
+                ks = b_elm[i].aks;
+                kn = b_elm[i].akn;
+                ph = b_elm[i].phi;
+                pd = b_elm[i].phid;
             }
-
-            if (i == numbe-1 && mode == 1)
+            if (i == numbe - 1 && mode == 1)
             {
                     //second round
                     switch (b_elm[i].jstate + 1)
                     {
                     case 1:
                     case 3:
-                       s4.c[is][js] += ks;
-                       s4.c[in][jn] += kn;
+                        s4.c[is][js] += ks;
+                        s4.c[in][jn] += kn;
                         break;
                     case 2:
-                       s4.c[is][js] +=  ks;
-                        
+                        s4.c[is][js] += ks;
                     }
-            }
+                }               
+           
             else if (i == numbe - 1 && mode == 2)
+            {
+                //third run
+                switch (b_elm[i].jstate + 1)
                 {
-                        //third run
-                        switch (b_elm[i].jstate + 1)
-                        {
-                        case 1:
-                           s4.c[is][js] +=  ks;
-                           s4.c[in][jn] +=  kn;
-                            break;
-                        case 2:
-                            s4.c[in][jn] += kn; 
-                            s4.c[is][jn] = s4.c[is][jn];
-                            break;
-                        case 3:
-                            s4.c[in][jn] += kn;
-                            s4.c[is][jn] = s4.c[is][jn]+ kn * tanf(ph) * b_elm[i].jslipd;                            
-                        }                     
-                }            
+                case 1:
+                    s4.c[is][js] += ks;
+                    s4.c[in][jn] += kn;
+                    break;
+                case 2:
+                    s4.c[in][jn] += kn;
+                    s4.c[is][jn] = s4.c[is][jn];
+                    break;
+                case 3:
+                    s4.c[in][jn] += kn;
+                    s4.c[is][jn] = s4.c[is][jn] + kn * tanf(ph) * b_elm[i].jslipd;
+                }
+            }
             else
             {
                 switch (b_elm[i].jstate + 1)
                 {
                 case 1:
-                   s4.c[is][js] += ks;
-                   s4.c[in][jn] += kn;
+                    s4.c[is][js] += ks;
+                    s4.c[in][jn] += kn;
                     break;
-               
                 case 3:
-                    s4.c[in][jn] +=  kn;
-                    s4.c[is][jn] = s4.c[is][jn]+ kn * tanf(ph) * b_elm[i].jslipd;
-                    s4.c[in][js] = s4.c[in][js]+ kn * tanf(pd) * (- b_elm[i].jslipd);  
-                default:
-                    break;
-                    
+                    s4.c[in][jn] += kn;
+                    s4.c[is][jn] = s4.c[is][jn] + kn * tanf(ph) * b_elm[i].jslipd;
+                    s4.c[in][js] = s4.c[in][js] + kn * tanf(pd) * (-b_elm[i].jslipd);
                 }
-            } 
+            }
+
             //label2080 goto 300
                //next iteration of j loop
-            //label 500 written as a function       
-                     
-        }     
+            //label 500 written as a function   
+        }
+
     }
-
-    //  solve system of algebric equations.
-    n = 2 * numbe;
-    solve(n, mode);
-
 }
 
+
+
+
+
+void mainb_work0(int mode)
+{ 
+    mainb_ini(mode, 0, numbe, 0, numbe);
+    //  solve system of algebric equations.
+    int n = 2 * numbe;
+    solve(n, mode);
+}
+
+
+
+
+
+
+void mainb_work1_ini()
+{
+    int in = 0, is = 0, mm = 0, mmj = 0, jn = 0, js = 0, n = 0;
+    float xi = 0, yi = 0, cosbi = 0, sinbi = 0, xj, yj, cosbj = 0, sinbj = 0, aj = 0;
+    double ks = 0.0, kn = 0.0;
+    float ph = 0.0, pd = 0.0;
+    float S_is_js = 0, S_is_jn = 0, S_in_js = 0, S_in_jn = 0, d_is_js = 0,
+        d_is_jn = 0, d_in_js = 0, d_in_jn = 0;
+    double sinbi2 = 0;
+    double cosbi2 = 0;
+    double sincosbi = 0;
+    //s2 local_s2us;  
+    bool exit_early = false; 
+
+    for (int i = 0; i < numbe_old; ++i)
+    {
+        BoundaryElement &elm_i = elm_list[i];
+        is = 2 * i;
+        in = is + 1;
+        xi = elm_i.xm;
+        yi = elm_i.ym;
+        cosbi = elm_i.cosbet;
+        sinbi = elm_i.sinbet;
+        mm = elm_i.mat_no;
+        sinbi2 = sinbi * sinbi;
+        cosbi2 = cosbi * cosbi;
+        sincosbi = sinbi * cosbi;
+
+        if (mm == 0)
+        {
+            MessageBox(nullptr, L"material not defined_i mainb.", L"Error", MB_OK);
+            file2 << "program stopped due to undefined material number for element = " << i << endl;
+            logfile << "program stopped due to undefined material number for element = " << i << endl;
+            exit(EXIT_FAILURE);
+        }
+        for (int j = 0; j < numbe_old; ++j)
+        {
+            BoundaryElement &elm_j = elm_list[j];
+            mmj = elm_j.mat_no;
+            js = 2 * j;
+            jn = js + 1;
+            if (mm != mmj || elm_list[i].kod == 6)
+            {
+                label_500(i, j, mm, mmj, is, in, js, jn, 1);
+                continue;
+            }
+            //--------------- - read existing influence coefficients----------
+            switch (elm_i.kod)
+            {
+            case 1:
+            case 5:
+            case 11:
+            case 15:
+                s4.c[is][js] = s4.c_s[is][js];
+                s4.c[is][jn] = s4.c_s[is][jn];
+                s4.c[in][js] = s4.c_s[in][js];
+                s4.c[in][jn] = s4.c_s[in][jn];
+                break;       //goto label2025;
+
+            case 2:
+            case 7:
+            case 12:
+            case 17:
+                s4.c[is][js] = s4.c_d[is][js];
+                s4.c[is][jn] = s4.c_d[is][jn];
+                s4.c[in][js] = s4.c_d[in][js];
+                s4.c[in][jn] = s4.c_d[in][jn];
+                break;
+
+            case 3:
+            case 13:
+                s4.c[is][js] = s4.c_d[is][js];
+                s4.c[is][jn] = s4.c_d[is][jn];
+                s4.c[in][js] = s4.c_s[in][js];
+                s4.c[in][jn] = s4.c_s[in][jn];
+                break;
+
+            case 4:
+            case 14:
+                s4.c[is][js] = s4.c_s[is][js];
+                s4.c[is][jn] = s4.c_s[is][jn];
+                s4.c[in][js] = s4.c_d[in][js];
+                s4.c[in][jn] = s4.c_d[in][jn];
+                break;
+            case 6:
+            case 16:
+                label_500(i, j, mm, mmj, is, in, js, jn, 1);
+                continue;
+            }
+
+            if (elm_i.kod != 5 || i != j) continue;  //2080 is goto 300 continue loop j
+
+            ks = b_elm[i].aks;
+            kn = b_elm[i].akn;
+            ph = b_elm[i].phi;
+            pd = b_elm[i].phid;
+            switch (b_elm[i].jstate + 1)
+            {
+            case 1:
+                s4.c[is][js] += ks;
+                s4.c[in][jn] += kn;
+                break;
+            case 3:
+                s4.c[in][jn] += kn;
+                s4.c[is][jn] = s4.c[is][jn] + kn * tanf(ph) * b_elm[i].jslipd;
+                s4.c[in][js] = s4.c[in][js] + kn * tanf(pd) * (-b_elm[i].jslipd);
+            }
+        }
+    }
+    return;
+}
+
+
+
+
+
+
+void mainb_work1(int mode)
+{
+    mainb_work1_ini();
+    mainb_ini(mode, 0, numbe, numbe - 1, numbe);
+    mainb_ini(mode, numbe - 1, numbe, 0, numbe);
+    int n = 2 * numbe;
+    solve(n, mode);
+}
+
+
+
+
+
+
+
+
+
+
+//
+//void mainb(int mode)
+//{
+//    int in = 0, is = 0, mm = 0, mmj = 0, jn = 0, js = 0, n = 0;
+//    float xi = 0, yi = 0, cosbi = 0, sinbi = 0, xj, yj, cosbj = 0, sinbj = 0, aj = 0;
+//    double ks = 0.0, kn = 0.0; float ph = 0.0, pd = 0.0;
+//    float S_is_js = 0, S_is_jn = 0, S_in_js = 0, S_in_jn = 0, d_is_js = 0, d_is_jn = 0, d_in_js = 0, d_in_jn = 0;
+//
+////#pragma omp parallel for
+//    for (int i = 0; i < numbe; ++i)
+//    {
+//        is = 2 * i;
+//        in = is + 1;
+//
+//        xi = elm_list[i].xm;
+//        yi = elm_list[i].ym;
+//        cosbi = elm_list[i].cosbet;
+//        sinbi = elm_list[i].sinbet;
+//        mm = elm_list[i].mat_no;
+//
+//        if (mm == 0)
+//        {
+//            MessageBox(nullptr, L"material not defined_i mainb.", L"Error", MB_OK);
+//            file2 << "program stopped due to undefined material number for element = " << i << endl;
+//            exit(EXIT_FAILURE);
+//        }
+//
+//        for (int j = 0; j < numbe; ++j)
+//        {
+//            mmj = elm_list[j].mat_no;
+//            js = 2 * j;
+//            jn = js + 1;
+//
+//            if (mm != mmj || elm_list[i].kod == 6)
+//            {
+//                label_500(i, j, mm, mmj, is, in, js, jn, mode);
+//                continue;
+//            }
+//
+//            //--------------- - read existing influence coefficients---------- -
+//
+//            if (i < numbe_old && j < numbe_old && mode > 0)
+//            {
+//                switch (elm_list[i].kod)
+//                {
+//
+//                case 1:
+//                case 5:
+//                case 11:
+//                case 15:
+//                    s4.c[is][js] = s4.c_s[is][js];
+//                    s4.c[is][jn] = s4.c_s[is][jn];
+//                    s4.c[in][js] = s4.c_s[in][js];
+//                    s4.c[in][jn] = s4.c_s[in][jn];
+//                    break;       //goto label2025;
+//
+//                case 2:
+//                case 7:
+//                case 12:
+//                case 17:
+//                    s4.c[is][js] = s4.c_d[is][js];
+//                    s4.c[is][jn] = s4.c_d[is][jn];
+//                    s4.c[in][js] = s4.c_d[in][js];
+//                    s4.c[in][jn] = s4.c_d[in][jn];
+//                    break;
+//
+//                case 3:
+//                case 13:
+//                    s4.c[is][js] = s4.c_d[is][js];
+//                    s4.c[is][jn] = s4.c_d[is][jn];
+//                    s4.c[in][js] = s4.c_s[in][js];
+//                    s4.c[in][jn] = s4.c_s[in][jn];
+//                    break;
+//
+//                case 4:
+//                case 14:
+//                    s4.c[is][js] = s4.c_s[is][js];
+//                    s4.c[is][jn] = s4.c_s[is][jn];
+//                    s4.c[in][js] = s4.c_d[in][js];
+//                    s4.c[in][jn] = s4.c_d[in][jn];
+//                    break;
+//                case 6:
+//                case 16:
+//                    label_500(i, j, mm, mmj, is, in, js, jn, mode);
+//                    continue;
+//                }
+//            }
+//            else
+//            {
+//                //label 2111-------------------------                
+//                s2us.reset();
+//                xj = elm_list[j].xm;
+//                yj = elm_list[j].ym;
+//                cosbj = elm_list[j].cosbet;
+//                sinbj = elm_list[j].sinbet;
+//                aj = elm_list[j].a;
+//                //-------------------------------
+//
+//                coeff(xi, yi, xj, yj, aj, cosbj, sinbj, +1, mm);
+//
+//                switch (symm.ksym + 1)
+//                {
+//                case 1:
+//                    break;
+//                case 2:
+//                    xj = 2.0 * symm.xsym - elm_list[j].xm;
+//                    coeff(xi, yi, xj, yj, aj, cosbj, -sinbj, -1, mm);
+//                    break;
+//                case 3:
+//                    yj = 2.0 * symm.ysym - elm_list[j].ym;
+//                    coeff(xi, yi, xj, yj, aj, -cosbj, sinbj, -1, mm);
+//                    break;
+//                case 4:
+//                    xj = 2.0 * symm.xsym - elm_list[j].xm;
+//                    yj = 2.0 * symm.ysym - elm_list[j].ym;
+//                    coeff(xi, yi, xj, yj, aj, -cosbj, -sinbj, +1, mm);
+//                    break;
+//                case 5:
+//                    xj = 2.0 * symm.xsym - elm_list[j].xm;
+//                    coeff(xi, yi, xj, yj, aj, cosbj, -sinbj, -1, mm);
+//                    xj = elm_list[j].xm;
+//                    yj = 2.0 * symm.ysym - elm_list[j].ym;
+//                    coeff(xi, yi, xj, yj, aj, -cosbj, sinbj, -1, mm);
+//                    xj = 2.0 * symm.xsym - elm_list[j].xm;
+//                    coeff(xi, yi, xj, yj, aj, -cosbj, -sinbj, +1, mm);
+//
+//                }
+//                //label 240
+//                /*float S_is_js = 0, S_is_jn = 0, S_in_js = 0, S_in_jn = 0,
+//                    d_is_js = 0, d_is_jn = 0, d_in_js = 0, d_in_jn = 0;*/
+//                double sinbi2 = sinbi * sinbi;
+//                double cosbi2 = cosbi * cosbi;
+//                double sincosbi = sinbi * cosbi;
+//
+//                S_is_js = (s2us.syys - s2us.sxxs) * sincosbi + s2us.sxys * (cosbi2 - sinbi2);
+//                S_is_jn = (s2us.syyn - s2us.sxxn) * sincosbi + s2us.sxyn * (cosbi2 - sinbi2);
+//                S_in_js = s2us.sxxs * sinbi2 - 2.0 * s2us.sxys * sincosbi + s2us.syys * cosbi2;
+//                S_in_jn = s2us.sxxn * sinbi2 - 2.0 * s2us.sxyn * sincosbi + s2us.syyn * cosbi2;
+//                d_is_js = s2us.uxs * cosbi + s2us.uys * sinbi;
+//                d_is_jn = s2us.uxn * cosbi + s2us.uyn * sinbi;
+//                d_in_js = -s2us.uxs * sinbi + s2us.uys * cosbi;
+//                d_in_jn = -s2us.uxn * sinbi + s2us.uyn * cosbi;
+//
+//
+//                if (i == j && elm_list[i].kod != 5)
+//                {
+//                    S_is_js += comvar::k_num;
+//                    S_in_jn += comvar::k_num;
+//                }
+//                switch (elm_list[i].kod)
+//                {
+//
+//                case 1:
+//                case 5:
+//                case 11:
+//                case 15:
+//                    s4.c[is][js] = S_is_js;
+//                    s4.c[is][jn] = S_is_jn;
+//                    s4.c[in][js] = S_in_js;
+//                    s4.c[in][jn] = S_in_jn;
+//                    break;
+//
+//                case 2:
+//                case 7:
+//                case 12:
+//                case 17:
+//                    s4.c[is][js] = d_is_js;
+//                    s4.c[is][jn] = d_is_jn;
+//                    s4.c[in][js] = d_in_js;
+//                    s4.c[in][jn] = d_in_jn;
+//                    break;
+//
+//                case 3:
+//                case 13:
+//                    s4.c[is][js] = d_is_js;
+//                    s4.c[is][jn] = d_is_jn;
+//                    s4.c[in][js] = S_in_js;
+//                    s4.c[in][jn] = S_in_jn;
+//                    break;
+//                case 4:
+//                case 14:
+//                    s4.c[is][js] = S_is_js;
+//                    s4.c[is][jn] = S_is_jn;
+//                    s4.c[in][js] = d_in_js;
+//                    s4.c[in][jn] = d_in_jn;
+//                    break;
+//                case 6:
+//                case 16:
+//                    label_500(i, j, mm, mmj, is, in, js, jn, mode);
+//                    continue;
+//                }
+//                //label2010
+//                //---------------save influence coefficients, save the coeff. all time ------
+//
+//                s4.c_s[is][js] = S_is_js;
+//                s4.c_s[is][jn] = S_is_jn;
+//                s4.c_s[in][js] = S_in_js;
+//                s4.c_s[in][jn] = S_in_jn;
+//
+//                s4.c_d[is][js] = d_is_js;
+//                s4.c_d[is][jn] = d_is_jn;
+//                s4.c_d[in][js] = d_in_js;
+//                s4.c_d[in][jn] = d_in_jn;
+//
+//                //--------end of coeff.saving------------------------------------------
+//
+//                  //---- - gravity and infinity problem-----------------------------
+//                //label2020
+//                if (elm_list[i].kod > 10 && i == j)
+//                {
+//
+//                    ks = rock1[1].e / 1e4;
+//                    kn = rock1[1].e / 1e4;
+//                    switch (elm_list[i].kod)
+//                    {
+//
+//                    case 11:
+//                        s4.c[is][js] = S_is_js + ks;
+//                        s4.c[is][jn] = S_is_jn;
+//                        s4.c[in][js] = S_in_js;
+//                        s4.c[in][jn] = S_in_jn + kn;
+//                        break;
+//                    case 12:
+//                        s4.c[is][js] = d_is_js;
+//                        s4.c[is][jn] = d_is_jn;
+//                        s4.c[in][js] = d_in_js;
+//                        s4.c[in][jn] = d_in_jn;
+//                        break;
+//                    case 13:
+//                        s4.c[is][js] = d_is_js;
+//                        s4.c[is][jn] = d_is_jn;
+//                        s4.c[in][js] = S_in_js;
+//                        s4.c[in][jn] = S_in_jn + kn;
+//                        break;
+//                    case 14:
+//                        s4.c[is][js] = S_is_js + ks;
+//                        s4.c[is][jn] = S_is_jn;
+//                        s4.c[in][js] = d_in_js;
+//                        s4.c[in][jn] = d_in_jn;
+//                    }
+//                }
+//            }
+//            //label 2025
+//            if (elm_list[i].kod != 5 || i != j) continue;  //2080 is goto 300 continue loop j
+//
+//            if (i == numbe - 1 && mode > 0)
+//            {
+//                ks = 10e22;
+//                kn = 10e22;
+//                ph = 30.0 * 3.1416 / 180.0;
+//                pd = 0;
+//            }
+//            else
+//            {
+//                ks = b_elm[i].aks;
+//                kn = b_elm[i].akn;
+//                ph = b_elm[i].phi;
+//                pd = b_elm[i].phid;
+//            }
+//
+//            if (i == numbe - 1 && mode == 1)
+//            {
+//                //second round
+//                switch (b_elm[i].jstate + 1)
+//                {
+//                case 1:
+//                case 3:
+//                    s4.c[is][js] += ks;
+//                    s4.c[in][jn] += kn;
+//                    break;
+//                case 2:
+//                    s4.c[is][js] += ks;
+//
+//                }
+//            }
+//            else if (i == numbe - 1 && mode == 2)
+//            {
+//                //third run
+//                switch (b_elm[i].jstate + 1)
+//                {
+//                case 1:
+//                    s4.c[is][js] += ks;
+//                    s4.c[in][jn] += kn;
+//                    break;
+//                case 2:
+//                    s4.c[in][jn] += kn;
+//                    s4.c[is][jn] = s4.c[is][jn];
+//                    break;
+//                case 3:
+//                    s4.c[in][jn] += kn;
+//                    s4.c[is][jn] = s4.c[is][jn] + kn * tanf(ph) * b_elm[i].jslipd;
+//                }
+//            }
+//            else
+//            {
+//                switch (b_elm[i].jstate + 1)
+//                {
+//                case 1:
+//                    s4.c[is][js] += ks;
+//                    s4.c[in][jn] += kn;
+//                    break;
+//
+//                case 3:
+//                    s4.c[in][jn] += kn;
+//                    s4.c[is][jn] = s4.c[is][jn] + kn * tanf(ph) * b_elm[i].jslipd;
+//                    s4.c[in][js] = s4.c[in][js] + kn * tanf(pd) * (-b_elm[i].jslipd);
+//                default:
+//                    break;
+//
+//                }
+//            }
+//            //label2080 goto 300
+//               //next iteration of j loop
+//            //label 500 written as a function      
+//
+//        }
+//    }
+//
+//    //  solve system of algebric equations.
+//    n = 2 * numbe;
+//    solve(n, mode);
+//
+//}
 

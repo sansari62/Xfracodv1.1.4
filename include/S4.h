@@ -1,6 +1,5 @@
 #ifndef S4_h
 #define  S4_h
-#include <common.h>
 
 
 class S4

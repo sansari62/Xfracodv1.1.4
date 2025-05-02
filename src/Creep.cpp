@@ -1,4 +1,7 @@
+#include<stdafx.h>
+
 #include "Creep.h"
+using namespace std;
 
 Creep::Creep() : creep_a{0},creep_x{0},creep_l{0},creep_y{0}, growth_length{0}, time(0),
 time0(0), deltaT_max(1), deltaT(1), deltaT_min(1), totalT(0), v1(0), nn1(0), v2(0), nn2(0), 
@@ -9,7 +12,7 @@ vel_creep_max(0), ID_creep(0), ID_fast_crack(0){}
 
 
 
-void Creep::save_to_file(ofstream& f)
+void Creep::save_to_file(std::ofstream& f)
 {
 	for (int m = 0; m < 500; ++m) 
 	{

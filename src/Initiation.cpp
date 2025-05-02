@@ -1,13 +1,126 @@
+#include<stdafx.h>
+
 #include <Initiation.h>
 #include <CommonPara.h>
-#include <Failure.h>
-#include <Work.h>
 #include <random>
-#include <Source.h>
 #include <ExcavationCracks.h>
 #include<Failure.h>
+#include<Mainb.h>
 
 using namespace CommonPara_h::comvar;
+
+
+
+
+
+void point(float xp, float yp, float& sig1, float& sig2, float& bet, float& sig12,
+    float& set, float& disp, float& zet)
+{
+
+    int mm = j_material;
+    if (multi_region)
+        mm = check_material_id(xp,yp);
+    
+    s2us.reset();
+    float ux = 0.0;
+    float uy = 0.0;
+
+    float y0;
+    y0 = g.y_surf;
+
+    float pxx = symm.pxx1 + g.skx * (y0 - yp);
+    float pyy = symm.pyy1 + g.sky * (y0 - yp);
+    float pxy = symm.pxy1;
+
+    float sigxx = pxx;
+    float sigyy = pyy;
+    float sigxy = pxy;
+
+    if (mm == mat_lining)
+    {
+        sigxx = 0;
+        sigyy = 0;
+        sigxy = 0;
+    }
+
+    for (int j = 0; j < numbe; ++j)
+    {
+        if (mm != elm_list[j].mat_no) continue;
+
+        int js = 2 * j;
+        int jn = js + 1;
+
+        s2us.reset();
+
+        float xj = elm_list[j].xm;
+        float yj = elm_list[j].ym;
+        float aj = elm_list[j].a;
+        float cosbj = elm_list[j].cosbet;
+        float sinbj = elm_list[j].sinbet;
+
+        coeff(xp, yp, xj, yj, aj, cosbj, sinbj, +1, mm);
+
+        switch (symm.ksym + 1)
+        {
+        case 1:
+            break;
+        case 2:
+            xj = 2.0 * symm.xsym - elm_list[j].xm;
+            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm);
+            break;
+        case 3:
+            yj = 2.0 * symm.ysym - elm_list[j].ym;
+            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm);
+            break;
+        case 4:
+            xj = 2.0 * symm.xsym - elm_list[j].xm;
+            yj = 2.0 * symm.ysym - elm_list[j].ym;
+            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm);
+            break;
+        case 5:
+            xj = 2.0 * symm.xsym - elm_list[j].xm;
+            coeff(xp, yp, xj, yj, aj, cosbj, -sinbj, -1, mm);
+            xj = elm_list[j].xm;
+            yj = 2.0 * symm.ysym - elm_list[j].ym;
+            coeff(xp, yp, xj, yj, aj, -cosbj, sinbj, -1, mm);
+            xj = 2.0 * symm.xsym - elm_list[j].xm;
+            coeff(xp, yp, xj, yj, aj, -cosbj, -sinbj, +1, mm);
+
+        }
+        ux += s2us.uxs * s4.d0[js] + s2us.uxn * s4.d0[jn];
+        uy += s2us.uys * s4.d0[js] + s2us.uyn * s4.d0[jn];
+        sigxx += s2us.sxxs * s4.d0[js] + s2us.sxxn * s4.d0[jn];
+        sigyy += s2us.syys * s4.d0[js] + s2us.syyn * s4.d0[jn];
+        sigxy += s2us.sxys * s4.d0[js] + s2us.sxyn * s4.d0[jn];
+    }
+
+    bet = (sigxx == sigyy) ? pi / 2.0 : 0.5 * atan2f(2.0 * sigxy, (sigxx - sigyy));
+
+    //if (mcyc == 5 && bet == 0) exit;
+    sig1 = sigxx * cosf(bet) * cosf(bet) + 2 * sigxy * sinf(bet) * cosf(bet) + sigyy * sinf(bet) * sinf(bet);
+    sig2 = sigxx * sinf(bet) * sinf(bet) - 2 * sigxy * sinf(bet) * cosf(bet) + sigyy * cosf(bet) * cosf(bet);
+    sig12 = (sig1 - sig2) / 2.0;
+
+    set = (sig12 > 0) ? bet + pi / 4.0 : bet - pi / 4.0;
+
+    if (sig2 < sig1)
+    {
+        float tem = sig1;
+        sig1 = sig2;
+        sig2 = tem;
+        bet += pi / 2;
+    }
+    disp = sqrt(ux * ux + uy * uy);
+    zet = ux > 0.0 ? atanf(uy / ux) :
+        ux < 0.0 ? pi + atanf(uy / ux) :
+        1.57 * int(copysign(1, uy));
+
+    return;
+}
+
+
+
+
 
 
 
@@ -732,8 +845,11 @@ void InitiationR()
             continue;
         }
 
-        int material = check_material_id(xp, yp);
-        mm = material;
+        /*int material = check_material_id(xp, yp);
+        mm = material;*/
+        mm = j_material;
+        if(multi_region)
+            mm = check_material_id(xp, yp);
 
         point(xp, yp, sig1, sig2, bet, sig12, set, disp, zet);
         //random failure
@@ -762,8 +878,9 @@ void InitiationR()
         // use default fracture initiation element size if it was not given
         r = (s15.a_ini == 0) ? s15.aa : s15.a_ini;       // use given fracture initiation element size
 
-        if (failt >= s15.f_ini0 && randn <= powf((failt - s15.f_ini0) /
-            (1.0001 - s15.f_ini0), 2))
+        if (failt >= s15.f_ini0 && randn <= ((failt - s15.f_ini0) /
+            (1.0001 - s15.f_ini0))* ((failt - s15.f_ini0) /
+            (1.0001 - s15.f_ini0) ))
         {
             Sum_Failure(xp, yp, r, alphat, 1, failt, 2); // last "2" is location, ie. intact rock
             ktipgrow = true;
@@ -776,7 +893,7 @@ void InitiationR()
         sig_sum2 = call_point_and_cal_sig_sum(1, xp, yp, alphas2, mm, r);
         sig_sum2 += call_point_and_cal_sig_sum(2, xp, yp, alphas2, mm, r);
 
-        if (fails >= s15.f_ini0 && randn <= std::powf((fails - s15.f_ini0) / (1.0001 - s15.f_ini0), 2))
+        if (fails >= s15.f_ini0 && randn <= ((fails - s15.f_ini0) / (1.0001 - s15.f_ini0)) * ((fails - s15.f_ini0) / (1.0001 - s15.f_ini0)))
         {
             if (sig_sum1 > sig_sum2)
                 Sum_Failure(xp, yp, r, alphas1, 2, fails, 2); //last "2" is location, ie.intack rock

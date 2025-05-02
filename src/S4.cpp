@@ -1,3 +1,5 @@
+#include<stdafx.h>
+
 #include "S4.h"
 #include<CommonPara.h>
 

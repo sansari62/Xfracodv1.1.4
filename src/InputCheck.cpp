@@ -1,4 +1,4 @@
-#include <common.h>
+#include <stdafx.h>
 #include <CommonPara.h>
 #include<Source.h>
 
@@ -11,6 +11,135 @@ using namespace CommonPara_h::comvar;
 const int len = 400;
 int ncr[len] = {0}, itip[len] = {0};
 float xcr[len][len] = {0.0}, ycr[len][len] = { 0.0 }, acr[len][len] = {0.0};
+
+
+static void Interface(int num, float xbeg, float ybeg, float xend, float yend, int mat1, int mat2)
+{
+    float st, angd, ang0, a0, xs, ys, xd, yd, sw;
+    int  m, n, mn, ms, nn, ns;
+    float pxx, pyy, pxy;
+    float cosb, sinb, ss, sn;
+
+    // Define locations, size, orientations of multiregion interfaces
+    st = sqrt((xend - xbeg) * (xend - xbeg) + (yend - ybeg) * (yend - ybeg));
+    angd = pi / num;
+    ang0 = 0.5 * angd;
+    a0 = st * 0.5;
+
+    xs = xbeg;
+    ys = ybeg;
+    xd = (xend - xbeg) / num;
+    yd = (yend - ybeg) / num;
+    sw = sqrt(xd * xd + yd * yd);
+    int numbe0 = numbe;
+    for (int ne = 0; ne < num; ++ne)
+    {
+        numbe += 2;
+        m = numbe - 2;
+        n = numbe - 1;
+        BoundaryElement& be = elm_list[m];
+
+        sw = st / num;
+        xd = (xend - xbeg) * sw / st;
+        yd = (yend - ybeg) * sw / st;
+        xs += xd;
+        ys += yd;
+
+        be.xm = xs - 0.5 * xd;
+        be.ym = ys - 0.5 * yd;
+        be.a = 0.5 * sw;
+        be.sinbet = yd / sw;
+        be.cosbet = xd / sw;
+        be.kod = 6;
+        b_elm[m].ipair = 1;
+        be.mat_no = mat1;
+
+        elm_list[n].xm = be.xm;
+        elm_list[n].ym = be.ym;
+        elm_list[n].a = be.a;
+        elm_list[n].sinbet = -be.sinbet;
+        elm_list[n].cosbet = -be.cosbet;
+        elm_list[n].kod = 6;
+        b_elm[n].ipair = 2;
+        elm_list[n].mat_no = mat2;
+        //************************* Avoid double definition of elements********************************
+        bool jmp_label = false;
+        for (int ii = 0; ii < m - 1; ++ii)
+        {
+            if (be.xm == elm_list[ii].xm && be.ym == elm_list[ii].ym &&
+                be.a == elm_list[ii].a && be.sinbet == elm_list[ii].sinbet && be.cosbet == elm_list[ii].cosbet)
+            {
+                numbe -= 2;    // I think those two newly added elements should be removed and the size of vector elm_list controlled by vec.size               
+                jmp_label = true;
+                break;
+            }
+        }
+        if (jmp_label) continue;   //jmp to label110
+        ms = 2 * m;
+        mn = ms + 1;
+        s4.b1[ms] = 0;
+        s4.b1[mn] = 0;
+
+        ns = 2 * n;
+        nn = ns + 1;
+        s4.b1[ns] = 0;
+        s4.b1[nn] = 0;
+
+        //------------------ Adjust stress boundary values to account for initial stresses-------------------------
+        float y0 = g.y_surf;
+        pxx = symm.pxx1 + g.skx * (y0 - be.ym);
+        pyy = symm.pyy1 + g.sky * (y0 - be.ym);
+        pxy = symm.pxy1;
+
+        cosb = be.cosbet;
+        sinb = be.sinbet;
+        ss = (pyy - pxx) * sinb * cosb + pxy * (cosb * cosb - sinb * sinb);
+        sn = pxx * sinb * sinb - 2.0 * pxy * sinb * cosb + pyy * cosb * cosb;
+
+        // Zero at interface - it is not real boundary value; for concrete lining insitu stresses should not be included
+        if (be.mat_no == mat_lining || elm_list[n].mat_no == mat_lining)
+        {
+            s4.b0[ms] = -ss;                //interface element
+            s4.b0[mn] = -sn;
+        }
+        else
+        {
+            s4.b0[ms] = 0;                  //interface element
+            s4.b0[mn] = 0;
+        }
+        s4.b0[ns] = 0;                      //interface element
+        s4.b0[nn] = 0;
+
+        // Calculate forces         !Force1 etc is not function of b0, but pxx etc.
+        //still work done by interface if it is between lining and rock
+        if (be.mat_no == mat_lining)
+        {
+            b_elm[m].force1 = 0;
+            b_elm[m].force2 = 0;
+        }
+        //still work done by interface if it is between lining and rock
+        else
+        {
+            b_elm[m].force1 = 2.0 * be.a * (-ss);
+            b_elm[m].force2 = 2.0 * be.a * (-sn);
+        }
+
+        if (elm_list[n].mat_no == mat_lining)
+        {
+            b_elm[n].force1 = 0;
+            b_elm[n].force2 = 0;
+        }
+        else
+        {
+            b_elm[n].force1 = 2.0 * elm_list[n].a * (-ss);
+            b_elm[n].force2 = 2.0 * elm_list[n].a * (-sn);
+        }
+    }
+    //label110
+    numbe_old = numbe;
+    return;
+}
+
 
 
 
@@ -702,7 +831,7 @@ void arc_reordering(fstream& file25)
     //reordering all defined arcs 
     for (int i = 0; i < na; ++i) 
     {
-        if (ncr[i] < 1)  //Sara! 14.10 change 2 to 1
+        if (ncr[i] < 2)  //Sara! 14.10 change 2 to 1
             continue;
 
         for (int nn = 0; nn < ncr[i]; ++nn) 
@@ -944,7 +1073,7 @@ void final_wrap_up()
             int nume = ai.get_elenum();
             float xcen = ai.get_xcent();
             float ycen = ai.get_ycent();
-            float diam = 2.0 *ai.get_diameter();
+            float diam = ai.get_diameter();
             float ang1 = ai.get_beg_ang();
             float ang2 = ai.get_end_ang();
             int mat2 =ai.get_pos_mat();
@@ -954,10 +1083,10 @@ void final_wrap_up()
             {
                 float seta1 = ang1 + ((ang2 - ang1) / static_cast<float>(nume)) * static_cast<float>(m);
                 float seta2 = ang1 + ((ang2 - ang1) / static_cast<float>(nume)) * static_cast<float>(m+1);
-                float xbeg = xcen + 0.5 * diam * cosf(seta1);
-                float ybeg = ycen + 0.5 * diam * sinf(seta1);
-                float xend = xcen + 0.5 * diam * cosf(seta2);
-                float yend = ycen + 0.5 * diam * sinf(seta2);
+                float xbeg = xcen +  diam * cosf(seta1);
+                float ybeg = ycen + diam * sinf(seta1);
+                float xend = xcen +  diam * cosf(seta2);
+                float yend = ycen +  diam * sinf(seta2);
                 Interface(1, xbeg, ybeg, xend, yend, mat1, mat2);  // interface function defined in source.cpp
             }
         }
@@ -999,7 +1128,7 @@ void cross_arc_with_boundaries(int i, float  xc, float yc, float angb, float ang
         }
 
         //label750:
-        float de = sqrt(pow(xc - xe, 2) + pow(yc - ye, 2));
+        float de = sqrt(powf(xc - xe, 2) + powf(yc - ye, 2));
         if (de > 1.05 * r || de < 0.95 * r)
             continue;
 
@@ -1031,7 +1160,7 @@ void cross_arc_with_fractures(int i, float  xc, float yc, float angb, float ange
         float xe = f.get_xend();
         float ye = f.get_yend();
 
-        float db = sqrt(pow(xc - xb, 2) + pow(yc - yb, 2));
+        float db = sqrt((xc - xb)* (xc - xb) + (yc - yb)* (yc - yb));
         float ang = static_cast<float>(atan2(yb - yc, xb - xc));
         if (!(db > 1.05 * r || db < 0.95 * r || ang < (angb - 1e-5) || ang >(ange + 1e-5) ) )
         {
@@ -1046,7 +1175,7 @@ void cross_arc_with_fractures(int i, float  xc, float yc, float angb, float ange
                 itip[j] = 0;
            
         }
-        float de = sqrt(pow(xc - xe, 2) + pow(yc - ye, 2));
+        float de = sqrt((xc - xe)* (xc - xe) + (yc - ye)* (yc - ye));
         if (de > 1.05 * r || de < 0.95 * r)
             continue;
 
@@ -1074,8 +1203,7 @@ void check_cross_arcs(fstream& file25)
 {
 
     //because of this location diff in test12 need to keep it
-    pi = 4.0 * atan(1.0);
-   
+    pi = 4.0 * atanf(1.0); //3.14159      
     for (int i = 0; i < na; ++i)
     {
         Arch& arc = arc_list[i];        //alias for arc
@@ -1083,19 +1211,15 @@ void check_cross_arcs(fstream& file25)
         float yc = arc.get_arcy();
         float r = arc.get_arcr();
 
-
         if ((arc.get_arcend() - arc.get_arcbeg()) == 2.0 * pi)
         {
             arc.take_arcbeg(-pi);
             arc.take_arcend(pi);
-
         }
-
         float angb = arc.get_arcbeg();
         float ange = arc.get_arcend();
 
         ncr[i] = 0;
-
         //check the potential crossing between each arc and all of fractures
         cross_arc_with_fractures(i, xc, yc, angb, ange, r);
         //check the potential crossing between each arc and all of boundaries

@@ -1,3 +1,5 @@
+#include<stdafx.h>
+
 #include "Edge.h"
 
 Edge::Edge(): GeologicalForm(), x_beg(0), y_beg(0), x_end(0), y_end(0), bvs(0), bvn(0), ds(0), dn(0), grad_ny(0), grad_sy(0) {}

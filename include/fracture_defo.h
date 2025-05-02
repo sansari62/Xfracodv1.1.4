@@ -3,7 +3,6 @@
 #define fracture_defo_h
 
 #include <WinInterface.h>
-#include <iostream>
 #include <fstream>
 
 
