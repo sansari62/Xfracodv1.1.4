@@ -1,7 +1,6 @@
 
 #ifndef Rock_h
 #define Rock_h
-#include <common.h>
 
 
 class Rock
@@ -24,7 +23,6 @@ public:
 	void save_to_file(ofstream & f);
 
 };
-int  check_elastic_growth(int material_no);
 
 #endif
 

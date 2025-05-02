@@ -2,7 +2,6 @@
 
 #ifndef DispWindow_h
 #define DispWindow_h
-#include <common.h>
 
 
 

@@ -1,7 +1,6 @@
 #pragma once
 #ifndef BE_h
 #define BE_h
-#include <common.h>
 
 /* Boundary Element rest attr., length, orientation, joint status, joint properties,
 and joint surface stresses and displacement*/

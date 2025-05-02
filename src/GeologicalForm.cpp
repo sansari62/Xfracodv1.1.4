@@ -1,7 +1,6 @@
+#include<stdafx.h>
 #include <GeologicalForm.h>
 #include "CommonPara.h"
-
-
 
 using namespace CommonPara_h::comvar;
 using namespace std;
@@ -10,14 +9,12 @@ using namespace std;
 
 
 GeologicalForm::GeologicalForm():mat_no(1), elem_no(1), bound_type(1) {}
-
 GeologicalForm::GeologicalForm(int mat, int eleno, int kode) : mat_no(mat), elem_no(eleno), bound_type(kode) {}
-
-
-
 int GeologicalForm::getMatno(){ return mat_no;}
 int GeologicalForm::getElem_no() { return elem_no; }
 int GeologicalForm::getBoundtype() { return bound_type; }
+
+
 
 
 
@@ -49,7 +46,6 @@ void GeologicalForm::chk_potential_crack_growth(float xbeg, float ybeg,float xen
                     no++;
                     break;    //Sara ! not sure yet
                 }
-
             }
         }
         if (itype == 1 || itype == 2)
@@ -60,8 +56,7 @@ void GeologicalForm::chk_potential_crack_growth(float xbeg, float ybeg,float xen
                 y2 = elm_list[m].ym + elm_list[m].a * elm_list[m].sinbet;
 
                 if ((abs(xend - x2) <= 1e-5) && (abs(yend - y2) <= 1e-5)) 
-                {
-                    
+                {                    
                     tips[no].xbe = xend;
                     tips[no].ybe = yend;
                     tips[no].xen = tips[no].xbe + 2. * elm_list[m].a * elm_list[m].cosbet;
@@ -78,11 +73,11 @@ void GeologicalForm::chk_potential_crack_growth(float xbeg, float ybeg,float xen
                 }
             }
         }
-    }
-        
+    }        
      return;
-
 }
+
+
 
 
 //check dupliction of newly added element
@@ -99,7 +94,6 @@ bool  GeologicalForm::isNewElementUnique(const BoundaryElement& newelem)
             return false;
         }
     }
-
     return true;
 }
 
@@ -109,8 +103,7 @@ bool  GeologicalForm::isNewElementUnique(const BoundaryElement& newelem)
 // check if element m cross any of the saved elements or newly added elements 
 void GeologicalForm::cross_current_or_save_element(float xb1, float yb1, float xe1, float ye1, float xcross,
     float ycross, int m, int ii)
-    {
-   
+    {   
     elm_list[m].xm = 0.5 * (xb1 + xcross);
     elm_list[m].ym = 0.5 * (yb1 + ycross);
     float a0 = elm_list[m].a;
@@ -137,9 +130,8 @@ void GeologicalForm::cross_current_or_save_element(float xb1, float yb1, float x
     b_elm[ii].coh = b_elm[m].coh;
     joint[ii].aperture0 = joint[m].aperture0;
     joint[ii].aperture_r = joint[m].aperture_r;
-
-   s4.b0[2 * ii ] = s4.b0[2 * m ];
-   s4.b0[2 * ii +1] = s4.b0[2 * m +1];
+    s4.b0[2 * ii ] = s4.b0[2 * m ];
+    s4.b0[2 * ii +1] = s4.b0[2 * m +1];
     return ;
 }
 
@@ -187,7 +179,6 @@ void GeologicalForm::ctl_cross_elements(int& k,int m, int numbe0,int num)
         {
             continue;   
         }
-
         x2 = elm_list[j].xm;
         y2 = elm_list[j].ym;
         xb2 = elm_list[j].xm - elm_list[j].a * elm_list[j].cosbet;;
@@ -204,10 +195,8 @@ void GeologicalForm::ctl_cross_elements(int& k,int m, int numbe0,int num)
             (xcross > max(xb2, xe2) || xcross < min(xb2, xe2)) ||
             (ycross > max(yb2, ye2) || ycross < min(yb2, ye2))) 
         {
-           continue;       
-
+           continue;
         }
-
         if (!((abs(xcross - xb2) <= 1e-5 && abs(ycross - yb2) <= 1e-5) || 
             (abs(xcross - xe2) <= 1e-5 && abs(ycross - ye2) <= 1e-5)) )
         {          
@@ -223,8 +212,7 @@ void GeologicalForm::ctl_cross_elements(int& k,int m, int numbe0,int num)
         }
         k++;         //one new element will be added 
         int ii = numbe0 + num + k - 1;
-        cross_current_or_save_element(xb1, yb1, xe1, ye1, xcross, ycross, m, ii);
-       
+        cross_current_or_save_element(xb1, yb1, xe1, ye1, xcross, ycross, m, ii);       
     }       
     return;
   }
@@ -246,22 +234,16 @@ int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float
     */
 
     float x1=0, y1=0, xb1=0, xe1=0, yb1=0, ye1=0, xb2=0, xe2=0 , x2=0, y2=0,yb2=0,ye2=0, xcross = 0,ycross = 0;
-
-
-    int ieven = 0;
     int mm = mat_no;
     float st = sqrtf(pow((xend - xbeg), 2) + pow((yend - ybeg), 2));// an estimation of length of fracture 
     
     float angd = comvar::pi / num;  // here elementno insead of num  //new change elem_no to num because of archs
     float ang0 = 0.5 * angd;
-
     float xs = xbeg;
     float ys = ybeg;
  
     float xd = (xend - xbeg) / num;
     float yd = (yend - ybeg) / num;
-
-
     int k = 0;  
     int numbe0 = numbe;   // numbe0 is the current number of elements or the old no.
     int m = 0;
@@ -271,8 +253,7 @@ int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float
     float cosb = xd / sw;
     float tmp_a = 0.5 * sw;    // half of element length
     bool unique = true;
-    BoundaryElement newelement;      
-
+    BoundaryElement newelement;  
   
     /* we add element_no or num elements to the current list of elements
     for the new geological form
@@ -288,18 +269,20 @@ int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float
         newelement.ym = ys - 0.5 * yd;  //optimize it later
         newelement.a = tmp_a;
         newelement.sinbet = sinb;
-        newelement.cosbet = cosb;  
-
+        newelement.cosbet = cosb; 
         if (numbe > 0)
         {
             unique = isNewElementUnique(newelement);
             if (!unique)   continue;
-        }
-        //new element is unique?if not then add it  
-        
+        }        
         numbe++;
+        if (numbe >= m0 - 1)
+        {
+            MessageBox(nullptr, L"Maximum BE limit exceeded!", L"Message!", MB_OK);
+            exit(0);
+            return 1;
+        }
         m = numbe - 1;   //the position of new element to add 
-
         newelement.kod = bound_type;     // for all elems are equal
         newelement.mat_no = mat_no; 
         elm_list[m] = newelement;
@@ -315,9 +298,8 @@ int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float
             watercm.pwater[m] = 0;
             watercm.jwater[m] = 0;
         }
-
         int ms = 2 * m;
-        int mn = ms  + 1;        
+        int mn = ms  + 1;       
 
         s4.b1[ms] = bvs + elm_list[m].ym * gradsy;
         s4.b1[mn] = bvn + elm_list[m].ym * gradny;
@@ -327,8 +309,9 @@ int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float
         ctl_cross_elements(k, m, numbe0,num); // there are more than one element    
     }
 
-    numbe = numbe + k;  // k new elements added to the total number of elements which is numbe
-
+    numbe = numbe + k;  // k new elements added 
+    if(numbe >= m0 - 1)
+        MessageBox(nullptr, L"Maximum BE limit exceeded!", L"Message!", MB_OK);
     chk_potential_crack_growth(xbeg, ybeg, xend, yend, numbe0,itype);
     numbe_old = numbe;      // the old number of elements
     return numbe;

@@ -1,12 +1,10 @@
 #ifndef Tip_h
 #define Tip_h
-#include "Rock.h"
 
 /*tip elements*/
 
 class Tip
 {
-	// the begin and end points of fractures
 public:
 	float  xbe;
 	float  ybe;
@@ -42,11 +40,12 @@ void newtips(float dr);
 void arrangetip();
 
 void check_crack_growth();
-void If_No_tip(wstring);
+void If_No_tip();
 
 void add_crack_growth();
 void input_tip_check();
-
+void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, float& phid_bb,
+	float& ap_bb, float& apr_bb, int im, int mm);
 
 #endif
 
