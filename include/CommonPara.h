@@ -13,9 +13,9 @@
 #include<DispWindow.h>
 
 #include "S4.h"
+#include <array>
 
 #include<Creep.h>
-#include <common.h>
 #include<Arc.h>
 #include <Edge.h>
 #include <Fracture.h>
@@ -24,7 +24,7 @@
 #include<map>
 #include<BE.h>
 
-#define m0 2000
+#define m0 500 //2000
 
 
 
@@ -68,13 +68,14 @@ namespace comvar {
 	extern const int MAX_SIZE_frac;
 	extern const int MAX_SIZE_arc;
 	extern const float ge;
-
+	extern bool multi_region;
+	extern bool water_mod;
+	extern int j_material;
 	extern float pi;
 
 	extern const float zerof;
 	extern float dist_thr;
 
-	extern int test_id;
 	extern std::wstring selectedFile;
 	extern wstring dir;
 
@@ -135,11 +136,19 @@ namespace comvar {
 	extern std::ofstream file2;
 	extern std::ofstream file50;
 	extern std::ifstream inFile;
-	extern std::ofstream file9;
+	extern std::fstream file9;
 	extern std::ofstream logfile;
 
 	extern wstring filepath;
 	extern string filepath1;
+
+	extern wstring stress_dir;
+	extern wstring BE_dir;
+	extern wstring fd_dir;
+	extern wstring monit_dir;
+	extern std::array<std::ofstream, 20> mon_files;
+	extern std::array<std::ofstream, 10> ml_files;
+
 
 
 	//symmetry is S3 in the original code
@@ -376,7 +385,7 @@ namespace comvar {
 
 
 
-		waterCommon(): w_d{0}, w_x1{0}, w_x2{0} , w_y1{0}, w_y2{0}, wph{0}, wpr{0}, w_xc{0},
+		waterCommon() : jwater{0}, pwater{0}, w_d{0}, w_x1{0}, w_x2{0}, w_y1{0}, w_y2{0}, wph{0}, wpr{0}, w_xc{0},
 			w_yc{0}, iwhole(0), iwrect(0),ID_range(0) {}
 
 		void read_from_file1(ifstream& f)

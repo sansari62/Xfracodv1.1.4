@@ -1,4 +1,4 @@
-#include <common.h>
+#include <stdafx.h>
 #include <CommonPara.h>
 
 using namespace CommonPara_h::comvar;

@@ -8,10 +8,12 @@ void failure(float xp, float yp, float r, float alpha, int im, float &fos);
 
 void setting_elem_and_tipn_failure( int m, int im);
 
-void NewFractureCentralPoint(float xp, float yp, float& sigxx, float& sigyy, float& sigxy);
 
 void Sum_Failure(float xp, float yp, float r, float alpha, int im, float fos, int location);
 void Choose_Failure();
+int  check_material_id(float xp, float yp);
+int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, int flagB);
+
 
 
 #endif

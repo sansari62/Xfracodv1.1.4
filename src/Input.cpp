@@ -1,4 +1,4 @@
-#include <common.h>
+#include <stdafx.h>
 #include <CommonPara.h>
 #include <WinInterface.h>
 #include<Work.h>
@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include<Save_and_Restore.h>
 #include <charconv>
+#include<Tip.h>
 
 
 
@@ -197,6 +198,8 @@ void processFracture()
             Edge_interface new_lin_intfce(xbeg, ybeg, xend, yend, mat1, mat2,num); 
             lin_intrfce_list[npli] = new_lin_intfce;
             npli++;
+            multi_region = true;
+
         }
         catch (std::ifstream::failure e)
         {
@@ -243,6 +246,7 @@ void processFracture()
             bvs = 0;
             bvn = 0;
             nq = nq + 1;
+            multi_region = true;
         }
         catch (std::ifstream::failure e)
         {
@@ -260,6 +264,7 @@ void processFracture()
     {
         string id;
         string lineData;
+        water_mod = true;
         try
         {
             getline(inFile, lineData);
@@ -430,7 +435,7 @@ void processFracture()
                 exit(EXIT_FAILURE);
             }
             
-            file2 << tem << endl;              
+            //file2 << tem << endl;              
             mcyc0 += stoi(tem);               
         }
         //----------------------------
@@ -455,8 +460,8 @@ void processFracture()
                 amin = min(amin, elm_list[m].a);
             }
             s5u.dtol = amin / 1000.0;
-
-            water();   
+            //if (water_mod)
+               // water();   
             // Write  elementdata to file
             for (int m = 0; m < numbe; ++m)
             {
@@ -718,7 +723,7 @@ void processFracture()
 
    void dbouProcess()
    {
-       
+       file9.open(dir + L"/Cbound.dat", std::ios::in | std::ios::out | std::ios::trunc);
        if (!file9) {
            std::cerr << "Error opening boundary file!" << std::endl;
            return ;
@@ -735,7 +740,7 @@ void processFracture()
                file2 << std::fixed << std::setprecision(2) << std::setw(10) << x1 << std::setw(10) << x2 << std::setw(10) << y1 << std::setw(10)
                    << y2 << std::setw(10) << dss << std::setw(10) << dnn << std::endl;
                file9 << "dbou" << std::endl;
-               file9 << x1 << x2 << y1 << y2 << dss << dnn << std::endl;
+               file9 << x1 << " " << x2 << " " << y1 << " " << y2 << " " << dss << " " << dnn << std::endl;
               
            }
            catch (std::ifstream::failure e) 
@@ -744,7 +749,7 @@ void processFracture()
 
            }
            insituS.incres = 3;    
-           
+           file9.close();
            return;
    }
 
@@ -773,7 +778,8 @@ void processFracture()
                    << ang1 << " " << ang2 << " " << dss << " " << dnn << std::endl;
               
                file9 << "darc" << std::endl;
-               file9 << xcen <<  ycen <<  diam1 <<  diam2 << ang1 <<  ang2 << dss << dnn << std::endl;
+               file9 << xcen << " " <<  ycen << " " <<  diam1 << " " <<  diam2 << " " << ang1 << " " <<  ang2 <<
+                   " " << dss << " " << dnn << std::endl;
            }
            catch (std::ifstream::failure e)
            {
@@ -810,13 +816,14 @@ void processFracture()
            }
            file2 << "history file = hist" << ihist << ".dat" << std::endl
                << "monitoring point = " << mpoint.xmon << " " << mpoint.ymon << std::endl;
-           std::ofstream histPFile("hist" + std::to_string(ihist) + ".dat");     
-           if (!histPFile.is_open()) {
+           wstring filename =  monit_dir + L"/hist" + std::to_wstring(ihist) + L".dat";
+            mon_files[ihist].open(filename);
+           if (!mon_files[ihist]) {
                MessageBox(nullptr, L"Error in creating ihist File!", L"Error", MB_OK);
                }
            
 
-           histPFile << " -- Monitoring point close to a boundary will be calculated at the boundary and marked as AT BOUNDARY ELEMENT\n"
+           mon_files[ihist] << " -- Monitoring point close to a boundary will be calculated at the boundary and marked as AT BOUNDARY ELEMENT\n"
                << " -- in this case, the boundary normal and shear stress will be provided by sigxx, sigyy, and sigxy\n"
                << " -- if the boundary is vertical or horizontal, the normal stress = sigxx or sigyy, shear stress = sigxy\n"
                << " -- if the boundary is inclined, the normal stress = sigxx = sigyy, shear stress = sigxy\n\n"
@@ -855,11 +862,12 @@ void processFracture()
                << "monitoring line = " << monlin.npl << " " << monlin.x1l << " " << monlin.y1l << " \n"
                << monlin.x2l << " " << monlin.y2l << std::endl;
 
-           std::ofstream histLFile("hist_line" + std::to_string(lhist) + ".dat");
-        if (!histLFile) {
+           wstring filename = monit_dir + L"/hist_line" + std::to_wstring(lhist) + L".dat";
+           ml_files[lhist].open(filename);
+            if (!ml_files[lhist]) {
             MessageBox(nullptr, L"Error in creating hist_line File!", L"Error", MB_OK);
-       }
-           histLFile << " -- Monitoring points in a line will ignore the existence of boundary elements or fractures\n"
+                }
+            ml_files[lhist] << " -- Monitoring points in a line will ignore the existence of boundary elements or fractures\n"
                << " -- User should check if any points are too close to the existing elements\n"
                << " -- incorrect results could be resulted at these points\n\n"
                << "  Cycle(iteration)     Time     Line     xp       yp        sigxx         sigyy       sigxy         dx          dy              max creep velocity\n";
@@ -975,6 +983,7 @@ void processFracture()
        string lineData;
        getline(inFile, lineData);
        int jmat = 1;
+       
        std::stringstream ss(lineData);
 
        if (ss)
@@ -1008,6 +1017,7 @@ void processFracture()
           
            s8[jmat].phi0 = s8[jmat].phi0 / 180.0 * pi;
            s8[jmat].phid0 = s8[jmat].phid0 / 180.0 * pi;
+           j_material = jmat;
             
        return;       
    }
@@ -1019,7 +1029,7 @@ void processFracture()
    {
        irock = 1;
        int material = 1;
-       float rphi_tem, rcoh_tem, rst_tem;
+       float rphi_tem =0, rcoh_tem = 0, rst_tem = 0;
        string lineData;
        try
        {
@@ -1492,7 +1502,7 @@ void processFracture()
        string lineData;
       
       
-       auto start = std::chrono::high_resolution_clock::now();
+       //auto start = std::chrono::high_resolution_clock::now();
        using func = function<void()>;     
 
        unordered_map<string, func> mp{
@@ -1567,6 +1577,8 @@ void processFracture()
                if (it != mp.end()) {
                    // Call the corresponding function
                    it->second();
+                   if (id == "cycl")
+                       return;
                }
                else {
                    

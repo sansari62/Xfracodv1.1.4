@@ -1,3 +1,5 @@
+#include<stdafx.h>
+
 #include "Elliptical_opening.h"
 
 

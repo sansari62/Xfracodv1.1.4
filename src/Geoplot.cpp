@@ -1,4 +1,6 @@
-﻿#include "Geoplot.h"
+﻿#include<stdafx.h>
+
+#include "Geoplot.h"
 #include "CommonPara.h" 
 #include <WinInterface.h>
 #include <chrono> 
@@ -18,9 +20,17 @@ void geoplot()
 {
     int numbe_real = 0;             // Exclude the ghost elements
 
-    wstring filename = dir + L"/BE" + std::to_wstring(mcyc) + L".csv";
+    wstring filename = BE_dir + L"/BE" + std::to_wstring(mcyc) + L".csv";
     std::ofstream BEfile(filename);
 
+    //std::wstring filename = BE_dir + L"/BE" + std::to_wstring(mcyc) + L".dat";
+    //std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    //std::string filename = converter.to_bytes(filename_w);
+    //std::ofstream BEfile(filename, std::ios::binary);
+    /*if (!BEfile) {
+        std::cerr << "Failed to open BEfile for writing.\n";
+        return;
+    }*/
     int n1 = 0;
     int n2 = n1 + numbe;
     int l = 0;
@@ -36,7 +46,7 @@ void geoplot()
             geom[l].w_yend = be.ym + be.a * be.sinbet;
             geom[l].w_jstat = b_elm[i].jstate;
             geom[l].w_kod = be.kod > 10 ? be.kod - 10 : be.kod;
-            geom[l].w_jwater = watercm.jwater[i];    //Sara! think jwater fpr elem pr struct
+            geom[l].w_jwater = watercm.jwater[i];
             geom[l].w_mat = be.mat_no;           
             l++;
         }
@@ -66,8 +76,6 @@ void geoplot()
         }
     }
 
-
-
     if (symm.ksym == 2 || symm.ksym == 4)
         {
             n1 = n2 ;
@@ -91,7 +99,6 @@ void geoplot()
             }
     }
 
-
     if (symm.ksym == 1 || symm.ksym == 4)
     {
         n1 = n2 ;
@@ -110,13 +117,10 @@ void geoplot()
                 geom[l].w_jwater = watercm.jwater[j];
                 geom[l].w_mat = be2.mat_no;
                 numbe_real++;
-                l = numbe_real;
-                
+                l = numbe_real;                
             }
         }
-    }
-
-   
+    }  
 
     std::stringstream buffer;
     buffer << "x1"<<","<<"y1" << "," << "x2" << "," << "y2" << "," << "jstat" << "," << "kod" << "," << "jwater" << "," << "mat" << endl;
@@ -126,14 +130,13 @@ void geoplot()
         geom[l].w_jwater << "," << geom[l].w_mat << endl;
 
     BEfile << buffer.str();
-        
 
+    //BEfile.write(reinterpret_cast<const char*>(geom.data()), geom.size() * sizeof(Geom));
+    BEfile.close();
     win_exchange.w_numbe = numbe_real;
     int npoint, jpoint, npointp;
     internal(0, npoint);   
-    fracture_defo(0, jpoint);
-          
+    fracture_defo(0, jpoint);          
     ++state;
-
-        return;
+    return;
 }
