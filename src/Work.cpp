@@ -1,6 +1,4 @@
-
 #include<stdafx.h>
-
 #include "CommonPara.h"
 #include<Mainb.h>
 #include<Failure.h>
@@ -367,8 +365,6 @@ void monitoring_point(float xp, float yp, float& sigxx, float& sigyy, float& sig
 
 
 
-
-
 void write_monitor_data(int file_type, int i, int mcyc, int it,  float xmon,
      float ymon, float sigxx, float sigyy, float sigxy, float uxneg, float uyneg)
 {
@@ -394,7 +390,6 @@ void write_monitor_data(int file_type, int i, int mcyc, int it,  float xmon,
         << "  " << std::setw(11) << creep.vel_creep_max
         << std::endl;
    }
-
 
 
 
@@ -468,7 +463,7 @@ void third_correction_run(int& it)
 void run_check(int mode)
 {
     // mainb(mode); 
-     mainb( mode);
+     mainb_work0( mode);
      s4.limit_d();   
      /*redo the d0() accumulation with correct fracture state*/
     for (int k = 0; k < numbe; k++)
@@ -521,7 +516,6 @@ void calc_bound_stress(int it)
     }
     return;
 }
-
 
 
 
@@ -598,9 +592,8 @@ void work0(int mode)
             {
                 // Open fracture conditions
                 Sigma_n_prime = be.sigma_n + watercm.pwater[m] * watercm.jwater[m];
-                //sntem = Sigma_n_prime - s4.d0[m * 2 + 1] * elm_list[m].akn;
-                const float eps = 1e-5f;
-                if (Sigma_n_prime > -1e4 && untem < -eps )
+                const float eps = 0;// 1e-5f;
+                if (Sigma_n_prime > -1e4 && untem < 0 )
                 {
                     be.jstate = 1;
                     be.jslipd = 0;
@@ -791,7 +784,7 @@ void work1(int mode)
     for (int k = 2 * numbe - 2; k < 2 * numbe; ++k)
             s4.b[k] = s4.b0[k];      //s4.b0(k) has been defined in sub newcoordinate as the stresses in intact rock
 
-    mainb(mode);
+    mainb_work1(mode);
     //total stress/displacement using d0(m) total, not increment d(m)   
     elm_list[numbe-1].bound(numbe-1, ss, sn, ustem, untem, usneg, unneg);
 
@@ -811,12 +804,12 @@ void work1(int mode)
         }
         //Sara set m to 0   change m to numbe-1 Sara! 9.9.2024
         float epsilon = 0;// 1e-5;
-        if (sn + watercm.pwater[numbe - 1] * watercm.jwater[numbe - 1] < -epsilon && abs(ss) < streng)    //m instead of numbe check later in test
+        if (sn + watercm.pwater[numbe - 1] * watercm.jwater[numbe - 1] < epsilon && abs(ss) < streng)    //m instead of numbe check later in test
            belm.jstate = 0;
     }
     //label30
     if (belm.jstate != 0)
-        mainb(mode);
+        mainb_work1(mode);
 
     //temperatory accumulation of element displacement, undo it later 
     for (int k = 0; k < 2 * numbe; k += 2)
