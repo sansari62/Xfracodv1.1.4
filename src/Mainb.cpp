@@ -1432,7 +1432,7 @@ void mainb(int mode)
             }
             //label2080 goto 300
                //next iteration of j loop
-            //label 500 written as a function       
+            //label 500 written as a function      
 
         }
     }

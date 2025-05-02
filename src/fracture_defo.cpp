@@ -236,12 +236,11 @@ void frac_defo_Rec_win(int& jpoint) {
 
 void fracture_defo(int id, int& jpoint) {
 
-    wstring filename = fd_dir + L"/Fract_defo" + std::to_wstring(state) + L".dat";
+    wstring filename = fd_dir + L"/Frac_deform" + std::to_wstring(state) + L".dat";
     std::ofstream outfile(filename);
 
     outfile << "     xp        yp         ds        bet        dn        set      aperture    zet\n";
-    outfile << "-------------------------------------------------------------------------------------------\n";
-    
+    outfile << "-------------------------------------------------------------------------------------------\n";    
    
     jpoint = 0;
     stringstream buffer;
