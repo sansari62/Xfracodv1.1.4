@@ -108,12 +108,12 @@ void GeologicalForm::cross_current_or_save_element(float xb1, float yb1, float x
     elm_list[m].ym = 0.5 * (yb1 + ycross);
     float a0 = elm_list[m].a;
     
-    elm_list[m].a = 0.5 * sqrtf(powf(xb1 - xcross, 2) + powf(yb1 - ycross, 2));
+    elm_list[m].a = 0.5 * sqrt(pow(xb1 - xcross, 2) + pow(yb1 - ycross, 2));
     b_elm[m].force1 = b_elm[m].force1 * elm_list[m].a / a0;
     b_elm[m].force2 = b_elm[m].force2 * elm_list[m].a / a0;
     elm_list[ii].xm = 0.5 * (xe1 + xcross);
     elm_list[ii].ym = 0.5 * (ye1 + ycross);
-    elm_list[ii].a = 0.5 * sqrtf(powf(xe1 - xcross, 2) + powf(ye1 - ycross, 2));
+    elm_list[ii].a = 0.5 * sqrt(pow(xe1 - xcross, 2) + pow(ye1 - ycross, 2));
     
     elm_list[ii].sinbet = elm_list[m].sinbet;
     elm_list[ii].cosbet = elm_list[m].cosbet;
@@ -235,7 +235,7 @@ int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float
 
     float x1=0, y1=0, xb1=0, xe1=0, yb1=0, ye1=0, xb2=0, xe2=0 , x2=0, y2=0,yb2=0,ye2=0, xcross = 0,ycross = 0;
     int mm = mat_no;
-    float st = sqrtf(pow((xend - xbeg), 2) + pow((yend - ybeg), 2));// an estimation of length of fracture 
+    float st = sqrt(pow((xend - xbeg), 2) + pow((yend - ybeg), 2));// an estimation of length of fracture 
     
     float angd = comvar::pi / num;  // here elementno insead of num  //new change elem_no to num because of archs
     float ang0 = 0.5 * angd;
