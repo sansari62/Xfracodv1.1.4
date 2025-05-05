@@ -421,19 +421,19 @@ void third_correction_run(int& it)
 
                     float sinbt = elm_list[m].sinbet;
 
-                    if (abs(sinbt) >= 0.95)
+                    if (abs(sinbt) > 0.95)
                     {
                         sigxx = sn;
                         sigyy = 0.0;
                         sigxy = ss;
                     }
-                    else if (abs(sinbt) <= 0.05)
+                    else if (abs(sinbt) < 0.05)
                     {
                         sigxx = 0.0;
                         sigyy = sn;
                         sigxy = ss;
                     }
-                    else if (abs(sinbt) >= 0.05 && abs(sinbt) <= 0.95)
+                    else //if (abs(sinbt) >= 0.05 && abs(sinbt) <= 0.95)
                     {
                         sigxx = sn;
                         sigyy = sn;

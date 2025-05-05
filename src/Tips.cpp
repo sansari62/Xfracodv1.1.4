@@ -1,5 +1,4 @@
 #include<stdafx.h>
-
 #include <Tip.h>
 #include "CommonPara.h"
 #include<Work.h>
@@ -122,7 +121,7 @@ void label400_new_coordin_for_tip(int n, int mm, int mergtip, float xt, float yt
         t.xbe = xt;
         t.ybe = yt;
     }
-    t.dl = sqrtf(powf(t.xen - t.xbe, 2) + powf(t.yen - t.ybe, 2));
+    t.dl = sqrt(pow(t.xen - t.xbe, 2) + pow(t.yen - t.ybe, 2));
     //-------------------------Add new element--------------------------
     int m = numbe; 
     elm_list[m].kod = 5;
@@ -302,7 +301,7 @@ void newtips(float dr)
                 }              
             }
         }
-        float z = 0.0;
+        float z = 0 * tips[n].dl;
         //------------------------------------
         for (int i = 0; i < numbe; ++i)
         {
@@ -323,7 +322,6 @@ void newtips(float dr)
 
             if (dc <= tol1 * max(be.a, z))
             {
-
                 dbeg = sqrt(pow(xt - xbeg, 2) + pow(yt - ybeg, 2));
                 dend = sqrt(pow(xt - xend, 2) + pow(yt - yend, 2));
                 if (dbeg <= dend)
@@ -340,10 +338,10 @@ void newtips(float dr)
                 continue;
             }
 
-            dbeg = min(sqrt(powf(xt - xbeg, 2) + pow((yt - ybeg), 2)),
+            dbeg = min(sqrt(pow(xt - xbeg, 2) + pow((yt - ybeg), 2)),
                 sqrt(pow(xt0 - xbeg, 2) + pow(yt0 - ybeg, 2)));
 
-            dend = min(sqrt(powf(xt - xend, 2) + pow((yt - yend), 2)),
+            dend = min(sqrt(pow(xt - xend, 2) + pow((yt - yend), 2)),
                 sqrt(pow(xt0 - xend, 2) + pow(yt0 - yend, 2)));
 
             if (dbeg <= dend && dbeg <= tol * max(be.a, z))
@@ -372,7 +370,7 @@ void newtips(float dr)
             {
                 if (symm.ksym == 1 || symm.ksym == 4)
                 {
-                    dc = min(sqrt(powf(xt - (2. * symm.xsym - xc), 2) + pow(yt - yc, 2)), 
+                    dc = min(sqrt(pow(xt - (2. * symm.xsym - xc), 2) + pow(yt - yc, 2)), 
                         sqrt(pow(xt0 - (2. * symm.xsym - xc), 2) + pow(yt0 - yc, 2)));
 
                     if (dc <= tol1 * max(be.a, z))
@@ -822,8 +820,8 @@ void input_tip_check()
                 //if (std::fabs(xt - x1) <= 1e-5 && std::fabs(yt - y1) <= 1e-5)
                 
                 
-                if (std::abs((xt - x2)) <= (1e-5) &&
-                    std::abs((yt - y2)) <= (1e-5)) {
+                if (std::abs((xt - x1)) <= (1e-5) &&
+                    std::abs((yt - y1)) <= (1e-5)) {
                     t.ityp = 0;
                 }                
                 if (std::abs(xt - x2) <= 1e-5 && std::abs(yt - y2) <= 1e-5) {

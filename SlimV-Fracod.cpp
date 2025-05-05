@@ -149,7 +149,8 @@ int main()
         std::wcout << "\nThe input model: " << selectedFile << std::endl;
     }
     else {
-        std::cout << "No file was selected or an error occurred." << std::endl;
+        std::cout << "No file was selected." << std::endl;
+        exit(0);
     }
     filepath = std::filesystem::path{ selectedFile }.parent_path();
     wstring filename = std::filesystem::path{ selectedFile }.filename();    
@@ -194,7 +195,7 @@ int main()
     else {
         std::cout << "Failed to create BE directory.\n";
     }
-    fd_dir = dir + L"\\" + L"Frc_defo";
+    fd_dir = dir + L"\\" + L"Frac_deform";
     if (std::filesystem::create_directory(fd_dir) || ERROR_ALREADY_EXISTS == GetLastError()) {
     }
     else {
