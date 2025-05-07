@@ -8,8 +8,7 @@
 class Borehole:public GeologicalForm
 {
 //define a tunnel
-public:
-	
+public:	
 	float diameter[10];
 	float x_cent[10];
 	float y_cent[10];	
@@ -17,11 +16,9 @@ public:
 	float ypp[10];
 	float dd[10];
 	
-	Borehole();	
-	
+	Borehole();		
 	void save_to_file(ofstream& f);
-	
-
+	void read_from_file(ifstream& f);
 
 };
 

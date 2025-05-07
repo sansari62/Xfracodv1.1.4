@@ -13,6 +13,19 @@ dd{ 0.0 } {}
 
 
 
+
+void Borehole::read_from_file(ifstream& f)
+{
+	for (int m = 0; m < ntunnel; ++m)
+	{
+		f >> diameter[m] >> x_cent[m] >> y_cent[m];
+	}
+}
+
+
+
+
+
 void  Borehole::save_to_file(ofstream& f)
 {
 	f<< ntunnel << std::endl;

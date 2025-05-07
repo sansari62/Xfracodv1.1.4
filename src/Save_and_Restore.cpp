@@ -10,8 +10,8 @@ void save(ofstream& file10)
     const char* File_ID = "FRACOD SAVED FILE";
     
     file10 << File_ID << std::endl;
-    file10 << numbe << " " << no << " " << numbe_old << std::endl;
-    file10 << title << std::endl;
+    file10 << numbe << " " << no << " " << numbe_old << " " 
+        << title<< std::endl;
 
     for (int mm = 0; mm < 10; mm++)
     {
@@ -87,127 +87,128 @@ void save(ofstream& file10)
     return;
 }
 
-//void restore()
-//{
-//    std::ifstream inputFile("filename.txt");
-//    if (!inputFile.is_open()) {
-//        std::cerr << "Error opening file!" << std::endl;
-//        return;
-//    }
-//
-//    inputFile >> numbe >> no >> numbe_old >> title;
-//
-//    for (int mm = 0; mm < 10; ++mm)
-//    {
-//        rock1[mm].read_from_file(inputFile);
-//    }
-//
-//    s2us.read_from_file(inputFile);
-//    symm.read_from_file(inputFile);
-//
-//
-//    int newmem = numbe * 2 + 200;
-//    //arraysize(newmem);
-//
-//    s4.read_from_file(inputFile);
-//
-//    s5u.read_from_file(inputFile);
-//
-//    for (int m = 0; m < numbe; ++m)
-//    {
-//        elm_list[m].read_from_file(inputFile, m);
-//    }
-//
-//    for (int m = 0; m < no; ++m) {
-//        tips[m].read_from_file(inputFile);
-//    }
-//
-//    for (int m = 1; m <= 20; ++m) {
-//        s8[m].read_from_file(inputFile);
-//    }
-//
-//    inputFile >> numbe >> no >> delta >> w0 >> w1 >> ni >> nc >> numbe_old;
-//    dispwin.read_from_file(inputFile);
-//
-//    tunnl.read_from_file(inputFile);
-//
-//    /*int ntunnel;
-//    inputFile >> ntunnel;
-//    tunnl_list.resize(ntunnel);
-//    for (int m = 0; m < ntunnel; ++m)
-//        {
-//             tunnl_list[m].read_from_file1(inputFile);
-//        }*/
-//
-//
-//        //int nellipse;
-//    inputFile >> nellipse;
-//    ellip_list.resize(nellipse); //size or resize? Sara!
-//    for (int m = 0; m < nellipse; ++m) {
-//        ellip_list[m].read_from_file(inputFile);
-//    }
-//
-//    /*for (int m = 1; m <= 20; ++m) {     //should think more  in tunnel
-//        inputFile >> xpp[m] >> ypp[m] >> dd[m];
-//    }*/
-//
-//    insituS.read_from_file(inputFile);
-//
-//    inputFile >> w0 >> w1 >> ni;
-//    inputFile >> mcyc0 >> mcyc;
-//
-//    inputFile >> lastinput >> ktipgrow >> StopReturn >> line >> ID_dtip;
-//
-//    s15.read_from_file(inputFile);
-//
-//    watercm.read_from_file1(inputFile);
-//
-//    inputFile >> mat_lining;
-//
-//    inputFile >> n_it;
-//
-//    inputFile >> k_num >> d_max;
-//
-//    for (int m = 0; m < 10; ++m) {       //ihist and lhist are not included here , should  think about
-//        mpoint_list[m].read_from_file(inputFile);
-//    }
-//
-//    for (int m = 0; m < 10; ++m) {
-//        mline_list[m].read_from_file(inputFile);
-//    }
-//
-//    creep.read_from_file(inputFile);
-//
-//    inputFile >> mf;
-//    for (int m = 0; m < 500; ++m)
-//        init_point[m].read_from_file(inputFile);
-//
-//    //for (int m = 0; m < m0; ++m) {
-//    //    inputFile >> joint[m].aperture0 >> joint[m].aperture_r;   //joint should think more about Sara!
-//    //}
-//
-//
-//    inputFile >> perm.viscosity >> perm.density >> perm.perm0;
-//
-//    inputFile >> factors.factor_f >> factors.factor_e >> factors.tolerance;
-//
-//    inputFile >> exca.ID_Exca >> exca.d_wall >> exca.rand_e;
-//
-//    //call SendWindowText('Save file reading error, file might be saved by earlier version'//CHAR(0))
-//    //    StopReturn = .true.
-//    //    return
-//    //    !stop
-//    //    GOTO 800
-//
-//    //    600 call SendWindowText('File saved by earlier version, no crack initiation assumed'//CHAR(0))
-//    //        StopReturn = .true.
-//    //        return
-//    //        !stop
-//
-//    lastinput = "endf";
-//
-//    return;
-//}
+
+
+
+void restore()
+{
+    std::ifstream inputFile("filename.dat");
+    if (!inputFile.is_open()) {
+        std::cerr << "Error opening file!" << std::endl;
+        return;
+    }
+
+    inputFile >> numbe >> no >> numbe_old >> title;
+
+    for (int mm = 0; mm < 10; ++mm)
+    {
+        rock1[mm].read_from_file(inputFile);
+    }
+
+    s2us.read_from_file(inputFile);
+    symm.read_from_file(inputFile);
+    
+    s4.read_from_file(inputFile);
+
+    s5u.read_from_file(inputFile);
+
+    for (int m = 0; m < numbe; ++m)
+    {
+        elm_list[m].read_from_file(inputFile, m);
+    }
+
+    for (int m = 0; m < no; ++m) {
+        tips[m].read_from_file(inputFile);
+    }
+
+    for (int m = 1; m <= 20; ++m) {
+        s8[m].read_from_file(inputFile);
+    }
+
+    inputFile >> numbe >> no >> delta >> w0 >> w1 >> ni >> nc >> numbe_old;
+    dispwin.read_from_file(inputFile);
+
+    tunnl.read_from_file(inputFile);
+
+    /*int ntunnel;
+    inputFile >> ntunnel;
+    tunnl_list.resize(ntunnel);
+    for (int m = 0; m < ntunnel; ++m)
+        {
+             tunnl_list[m].read_from_file1(inputFile);
+        }*/
+
+
+        //int nellipse;
+    inputFile >> nellipse;
+    ellip_list.resize(nellipse); //size or resize? Sara!
+    for (int m = 0; m < nellipse; ++m) {
+        ellip_list[m].read_from_file(inputFile);
+    }
+
+    /*for (int m = 1; m <= 20; ++m) {     //should think more  in tunnel
+        inputFile >> xpp[m] >> ypp[m] >> dd[m];
+    }*/
+
+    insituS.read_from_file(inputFile);
+
+    inputFile >> w0 >> w1 >> ni;
+    inputFile >> mcyc0 >> mcyc;
+
+    inputFile >> lastinput >> ktipgrow >> StopReturn >> line >> ID_dtip;
+
+    s15.read_from_file(inputFile);
+
+    watercm.read_from_file1(inputFile);
+
+    inputFile >> mat_lining;
+
+    inputFile >> n_it;
+
+    inputFile >> k_num >> d_max;
+
+    for (int m = 0; m < 10; ++m) {       //ihist and lhist are not included here , should  think about
+              
+        inputFile >> mpoint_list[m].xmon >> mpoint_list[m].ymon;      
+
+    }
+
+    for (int m = 0; m < 10; ++m) {        
+        inputFile >> mline_list[m].x1l >> mline_list[m].y1l >> mline_list[m].x2l >> 
+            mline_list[m].y2l >> mline_list[m].npl;
+    }
+
+    creep.read_from_file(inputFile);
+
+    inputFile >> mf;
+    for (int m = 0; m < 500; ++m)
+        init_point[m].read_from_file(inputFile);
+
+    for (int m = 0; m < numbe; ++m) {
+        inputFile >> joint[m].aperture0 >> joint[m].aperture_r;  
+    }
+
+    inputFile >> perm.viscosity >> perm.density >> perm.perm0;
+
+    inputFile >> factors.factor_f >> factors.factor_e >> factors.tolerance;
+
+    inputFile >> exca.ID_Exca >> exca.d_wall >> exca.rand_e;
+
+    //call SendWindowText('Save file reading error, file might be saved by earlier version'//CHAR(0))
+    //    StopReturn = .true.
+    //    return
+    //    !stop
+    //    GOTO 800
+
+    //    600 call SendWindowText('File saved by earlier version, no crack initiation assumed'//CHAR(0))
+    //        StopReturn = .true.
+    //        return
+    //        !stop
+
+    lastinput = "endf";
+
+    return;
+}
 
 
 

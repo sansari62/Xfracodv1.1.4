@@ -48,6 +48,16 @@ void Tip::save_to_file(ofstream& f)
 
 
 
+void Tip::read_from_file(ifstream& f)
+{
+    f >> dt >> dl >> ifail >> nu >> xbe >> ybe >>
+        xen >> yen >> ityp >> imode >>
+        mpointer >> kindtip >> angl >> mat_no >> f_value;
+}
+
+
+
+
 
 void set_frac_mech_properties(int index, float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb,
     float& phid_bb, float& ap_bb, float& apr_bb, int mm)

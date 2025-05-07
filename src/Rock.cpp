@@ -21,3 +21,8 @@ void Rock::save_to_file(ofstream& f)
 
     }
 
+    void Rock::read_from_file(ifstream& f)
+    {
+        f >> pi >> e >>  pr >> akic >>
+             akiic >> irock >> rphi >> rcoh>>rst;
+    }

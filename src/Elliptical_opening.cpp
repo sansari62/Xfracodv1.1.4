@@ -18,3 +18,9 @@ void Elliptical_opening::save_to_file(ofstream& f)
 		<< " " << y_cent << std::endl;
 }
 
+void Elliptical_opening::read_from_file(ifstream& f)
+{
+	f >> diameter1 >> diameter2 >> x_cent >> y_cent;
+}
+
+
