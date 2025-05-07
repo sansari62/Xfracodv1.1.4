@@ -323,11 +323,7 @@ void failure(float xp, float yp, float r, float alpha, int im)
 
     int m = 0;   
     float xb, yb, xn, yn;
-    int legal, material;
-    /*if (fos > 1.0) 
-    {
-        fos = 1.0;
-    } */   
+    int legal, material;      
     if (numbe >= m0-1)
     {
         MessageBox(nullptr, L"Maximum BE limit exceeded!", L"Message!", MB_OK);
@@ -335,18 +331,14 @@ void failure(float xp, float yp, float r, float alpha, int im)
         return;   
     }
     int n = no;
-    xb = xp - 1 / 2.0 * r * cosf(alpha);     // xbe(?) etc are potential (additional) element, not actual  instead of 1/2r, dl used here
+    xb = xp - 1 / 2.0 * r * cosf(alpha);     // xbe(?) etc are potential (additional) element
     yb = yp - 1 / 2.0 * r * sinf(alpha);
     xn = xp;
-    yn = yp;
-    material = j_material;
-    if (multi_region)
-        material = check_material_id(0.5 * (xb + xn), 0.5 * (yb + yn));
-    //material = check_material_id(0.5 * (xb + xn), 0.5 * (yb + yn));    
+    yn = yp;    
+    int  material = (multi_region)?check_material_id(0.5 * (xb + xn), 0.5 * (yb + yn)): j_material;
     float dl = sqrtf(std::powf(xn - xb,2) + std::powf(yn - yb,2));
     tips[n].assign_val(xb, yb, xn, yn, dl, cosf(alpha), sinf(alpha), -1, material);  
-    no++;
-    
+    no++;    
     //-------------------------------add new element------------
     m = numbe;  
     elm_list[m].xm= 0.5 * (xb + xn);
@@ -358,10 +350,7 @@ void failure(float xp, float yp, float r, float alpha, int im)
     elm_list[m].mat_no = material;
 
     legal = CheckNewElement(elm_list[m].a, elm_list[m].xm, elm_list[m].ym,
-        elm_list[m].cosbet, elm_list[m].sinbet, 0);
-
-    //float a = elm_list[m].a; float xm = elm_list[m].xm; float ym = elm_list[m].ym;
-    //legal = CheckNewElement(a, xm, ym, elm_list[m].cosbet, elm_list[m].sinbet, 0);
+        elm_list[m].cosbet, elm_list[m].sinbet, 0);    
     m += 1;
     if (legal == 0)
     {
@@ -462,11 +451,7 @@ void failureB(float xp, float yp, float r, float alpha, int im)
     //IM = 1, tensile, IM = 2, shear
    
     int m = numbe;    
-    float xb, yb, xe, ye;
-    /*if (fos > 1.0) 
-    {
-        fos = 1.0;
-    }  */ 
+    float xb, yb, xe, ye;    
     if (numbe >= m0-1)
     {
         MessageBox(nullptr, L"Maximum BE limit exceeded!", L"Message!", MB_OK);
@@ -480,15 +465,13 @@ void failureB(float xp, float yp, float r, float alpha, int im)
     xb = xp + 0.5 * r * cosb;     
     yb = yp + 0.5 * r * sinb;
     xe = xp + 1.0 * r * cosb;
-    ye = yp + 1.0 * r * sinb;
-    int material = j_material;
-    if (multi_region)
-        material = check_material_id(0.5 * (xb + xe), 0.5 * (yb + ye));
-   // int material = check_material_id(0.5 * (xb + xe), 0.5 * (yb + ye)); 
+    ye = yp + 1.0 * r * sinb;    
+    
+    int material = (multi_region)? check_material_id(0.5 * (xb + xe), 0.5 * (yb + ye)):
+        j_material;
     float dl = sqrt(pow(xe - xb,2) + pow(ye - yb,2));
     tips[n].assign_val(xb, yb, xe, ye, dl, cosb, sinb, 4, material);
     no++; 
-
     //---------------Add new element-------------------------------
     float x = 0.5 * (xb + xp);
     float y = 0.5 * (yb + yp);    
@@ -503,7 +486,7 @@ void failureB(float xp, float yp, float r, float alpha, int im)
     int legal = CheckNewElement(elm_list[m].a, elm_list[m].xm, elm_list[m].ym, 
         elm_list[m].cosbet, elm_list[m].sinbet, 1);
       
-    m = numbe + 1;    //no of new elements     
+    m = numbe + 1;     
     if (legal == 0)
     {
         m -= 1;
@@ -513,7 +496,6 @@ void failureB(float xp, float yp, float r, float alpha, int im)
     {
         setting_elem_and_tipn_failure(m-1, im);
         // -----------------------------------------------       
-        //material = check_material_id(0.5 * (xb + xe), 0.5 * (yb + ye));        
         if (multi_region)
             material = check_material_id(0.5 * (xb + xe), 0.5 * (yb + ye));
              
@@ -542,7 +524,6 @@ void failureB(float xp, float yp, float r, float alpha, int im)
             ktipgrow = true;           
         }
     }
-
      tips[n].xbe = xe;
      tips[n].ybe = ye;
      tips[n].xen = tips[n].xbe + 0.5 * r * cosf(alpha);  
@@ -608,7 +589,7 @@ void Choose_Failure()
                 if (legal == 1)
                     failureB(xp, yp, r, alpha, im);
             }
-            else //if (init_point[np].Locationf == 2)
+            else
             {
                 legal = CheckNewElement( r, xp, yp, cosf(alpha), sinf(alpha),0);
                 if (legal == 1)

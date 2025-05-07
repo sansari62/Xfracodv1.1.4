@@ -14,7 +14,7 @@ Elliptical_opening::Elliptical_opening(float x, float y, float r1, float r2) :
 
 void Elliptical_opening::save_to_file(ofstream& f) 
 {
-	f << " " << diameter1 << " " << diameter2 << " " << x_cent
+	f << diameter1 << " " << diameter2 << " " << x_cent
 		<< " " << y_cent << std::endl;
 }
 

@@ -125,22 +125,7 @@ void GeologicalForm::cross_current_or_save_element(float xb1, float yb1, float x
     newelement.a = 0.5 * sqrt(pow(xe1 - xcross, 2) + pow(ye1 - ycross, 2));
 
     newelement.sinbet = elm_list[m].sinbet;
-    newelement.cosbet = elm_list[m].cosbet;
-   /* b_elm[ii].force1 = b_elm[m].force1 * elm_list[ii].a / a0;
-    b_elm[ii].force2 = b_elm[m].force2 * elm_list[ii].a / a0;
-    elm_list[ii].kod = elm_list[m].kod;
-
-    elm_list[ii].mat_no = elm_list[m].mat_no;
-    b_elm[ii].aks = b_elm[m].aks;
-    b_elm[ii].akn = b_elm[m].akn;
-    b_elm[ii].phi = b_elm[m].phi;
-    b_elm[ii].phid = b_elm[m].phid;
-
-    b_elm[ii].coh = b_elm[m].coh;
-    joint[ii].aperture0 = joint[m].aperture0;
-    joint[ii].aperture_r = joint[m].aperture_r;
-    s4.b0[2 * ii] = s4.b0[2 * m];
-    s4.b0[2 * ii + 1] = s4.b0[2 * m + 1];*/
+    newelement.cosbet = elm_list[m].cosbet;   
     bool unique = isNewElementUnique(newelement);
     if (!unique)
     {
@@ -353,7 +338,7 @@ int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float
     if(numbe >= m0 - 1)
         MessageBox(nullptr, L"Maximum BE limit exceeded!", L"Message!", MB_OK);
     chk_potential_crack_growth(xbeg, ybeg, xend, yend, numbe0,itype);
-    numbe_old = numbe;      // the old number of elements
+    numbe_old = numbe;      
     return numbe;
 }
 

@@ -1,7 +1,7 @@
 #include<stdafx.h>
-
 #include "DispWindow.h"
 #include <CommonPara.h>
+
 using namespace CommonPara_h::comvar;
 
 

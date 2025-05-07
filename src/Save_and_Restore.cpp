@@ -27,8 +27,7 @@ void save(ofstream& file10)
     for (int m = 0; m < numbe; ++m)
     {
         elm_list[m].save_to_file(file10,m);
-    }
-   
+    }   
 
     for (int m = 0; m < no; ++m) {
         tips[m].save_to_file(file10);
@@ -37,7 +36,6 @@ void save(ofstream& file10)
     for (int m = 0; m < 20; ++m) {
         s8[m].save_to_file(file10);
     }
-
     file10 << numbe << no << delta << w0 << w1 << ni << nc << numbe_old << std::endl;
     dispwin.save_to_file(file10);
     
@@ -62,26 +60,26 @@ void save(ofstream& file10)
     file10 << mat_lining << std::endl;
 
     file10 << n_it << std::endl;
-
     file10 << k_num << " " << d_max << std::endl;
+    file10 << ihist << std::endl;
 
     for (int m = 0; m < 10; ++m) {       //ihist and lhist are not included here , should  think about Sara!
         mpoint_list[m].save_to_file(file10);
     }
-
+    file10 << lhist << std::endl;
     for (int m = 0; m < 10; ++m) {
         mline_list[m].save_to_file(file10);
     }
-
     creep.save_to_file(file10);
-
     file10 << mf << std::endl;
     for (int m = 0; m < 500; ++m)
     {
         init_point[m].save_to_file(file10);
+    }  
+    for (int m = 0; m < m0; ++m)
+    {
+        file10<< joint[m].aperture0 <<" "<< joint[m].aperture_r<<endl;
     }
-        
-
     file10 << perm.viscosity << " " << perm.density << " " << perm.perm0 << std::endl;
 
     file10 << factors.factor_f << " " << factors.factor_e << " " << factors.tolerance << std::endl;

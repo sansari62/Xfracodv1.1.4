@@ -1,8 +1,6 @@
 #include<stdafx.h>
-
 #include "BoundaryElement.h"
 #include <CommonPara.h>
-
 
 using namespace comvar;
 
