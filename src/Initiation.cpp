@@ -95,14 +95,11 @@ void point(float xp, float yp, float& sig1, float& sig2, float& bet, float& sig1
     }
 
     bet = (sigxx == sigyy) ? pi / 2.0 : 0.5 * atan2f(2.0 * sigxy, (sigxx - sigyy));
-
-    //if (mcyc == 5 && bet == 0) exit;
     sig1 = sigxx * cosf(bet) * cosf(bet) + 2 * sigxy * sinf(bet) * cosf(bet) + sigyy * sinf(bet) * sinf(bet);
     sig2 = sigxx * sinf(bet) * sinf(bet) - 2 * sigxy * sinf(bet) * cosf(bet) + sigyy * cosf(bet) * cosf(bet);
     sig12 = (sig1 - sig2) / 2.0;
 
     set = (sig12 > 0) ? bet + pi / 4.0 : bet - pi / 4.0;
-
     if (sig2 < sig1)
     {
         float tem = sig1;
@@ -295,7 +292,7 @@ void reassigning_boundary_values(int ID,int m,int j,int k, float beta, float x, 
         ss = (ss_n + ss_m) / 2.0 + (sn_n - sn_m) / 2.0 * tanf(beta/2);
         sn = (sn_n + sn_m) / 2.0 + (-ss_n + ss_m) / 2.0 * tanf(beta/2);
 
-        st = rock1[mm].e / (1 - rock1[mm].pr * rock1[mm].pr) * ((us_m * cos(beta / 2) - un_m *
+        st = rock1[mm].e / (1 - rock1[mm].pr * rock1[mm].pr) * ((us_m * cosf(beta / 2) - un_m *
             sinf(beta/2)) - (us_n * cosf(beta/2) + un_n *
                 sinf(beta/2))) / ((be.a + elm_list[j].a) * cosf(beta/2));
     }
@@ -307,12 +304,10 @@ void reassigning_boundary_values(int ID,int m,int j,int k, float beta, float x, 
     float sig1 = st * cosf(bet) * cosf(bet) + 2 * ss * sinf(bet) * cosf(bet) + sn * sinf(bet) * sinf(bet);
     float sig2 = st * sinf(bet) * sinf(bet) - 2 * ss * sinf(bet) * cosf(bet) + sn * cosf(bet) * cosf(bet);
     float sig12 = (sig1 - sig2) / 2.0;
-
     
     bet = (k == 1) ? atan2f(be.sinbet, be.cosbet) + beta / 2.0 + bet : 
         atan2f(be.sinbet, be.cosbet) - beta / 2.0 + bet;   
    
-
     if (sig1 > sig2)
     {
         bet = bet + pi / 2.0;
@@ -320,9 +315,7 @@ void reassigning_boundary_values(int ID,int m,int j,int k, float beta, float x, 
         sig1 = sig2;
         sig2 = temp;
     }
-
     ///////final part 
-
     float r;
     //Use deault fracture initiation element size if it was not given
     if (s15.a_ini == 0) 
@@ -377,9 +370,7 @@ void reassigning_boundary_values(int ID,int m,int j,int k, float beta, float x, 
         failt = 0;
         fails = 0;        
     }
-
     //label 205
-
     int seed = int((1 + x + y) * 1000);          //random failure
     std::mt19937 gen(seed);        
     
@@ -429,7 +420,6 @@ void reassigning_boundary_values(int ID,int m,int j,int k, float beta, float x, 
             Sum_Failure(x, y, r, alphas2, 2, fails, 1); 
         return;
     }
-
     return;
 }
 
@@ -495,7 +485,7 @@ std::pair<bool, bool> for_symm_similarity(int j, int m, float xt, float yt, floa
                 jmp_1500 = true;
                 return make_pair(jmp_1500, jmp_250);
             }               
-        }      
+        }     
         
         jmp_250 = true;
         return make_pair(jmp_1500, jmp_250);
@@ -843,10 +833,7 @@ void InitiationR()
         if (n_valid == 0) {
             it = valid1.erase(it);
             continue;
-        }
-
-        /*int material = check_material_id(xp, yp);
-        mm = material;*/
+        }        
         mm = j_material;
         if(multi_region)
             mm = check_material_id(xp, yp);
@@ -887,7 +874,6 @@ void InitiationR()
             ++it;
             continue;
         }
-
         sig_sum1 = call_point_and_cal_sig_sum(1, xp, yp, alphas1, mm, r);
         sig_sum1 += call_point_and_cal_sig_sum(2, xp, yp, alphas1, mm, r);
         sig_sum2 = call_point_and_cal_sig_sum(1, xp, yp, alphas2, mm, r);

@@ -53,8 +53,7 @@ void finding_in_rock_iniR()
             {
 
                 continue;
-            }        
-
+            }
 
             if ((symm.ksym == 1 || symm.ksym == 4) && xp < (symm.xsym + s5u.dtol)) {
 
@@ -213,13 +212,7 @@ void Central_control()
             }
             if (insituS.incres != 0)   
                 n_it = 20;    //iteration process
-            work0(0);         //First calculation in every cycle - mode = 0. In work0(), only - 1 or 0 is allowed
-            if (numbe >= m0 - 1)
-            {
-                MessageBox(nullptr, L"Maximum BE limit exceeded!", L"Message!", MB_OK);
-                exit(0);
-                return;
-            }            
+            work0(0);         //First calculation in every cycle - mode = 0. In work0(), only - 1 or 0 is allowed                      
             check_crack_growth();              //include instant and creep
             geoplot();
             if (StopReturn == true) return;

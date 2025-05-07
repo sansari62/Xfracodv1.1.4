@@ -119,10 +119,8 @@ int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, 
 
 int  check_material_id(float xp, float yp)
 {
-
     float dist0 = 10e8;
     int mm = 1, mclosest = 0;
-
     int k = 0;
     float xc = 0, yc = 0, xt = 0, yt = 0, dist = 0;
     float ypprime, xpprime;
@@ -131,7 +129,6 @@ int  check_material_id(float xp, float yp)
     for (int m = 0; m < numbe; ++m)
     {
         dist = std::sqrt(std::pow(xp - elm_list[m].xm, 2) + std::pow(yp - elm_list[m].ym, 2));
-
         if (dist <= dist0)
         {
             mclosest = m;
@@ -324,15 +321,13 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
 {
     //IM = 1, tensile, IM = 2, shear
 
-    int m = 0;
-   
+    int m = 0;   
     float xb, yb, xn, yn;
     int legal, material;
     if (fos > 1.0) 
     {
         fos = 1.0;
-    }
-    
+    }    
     if (numbe >= m0-1)
     {
         MessageBox(nullptr, L"Maximum BE limit exceeded!", L"Message!", MB_OK);
@@ -362,12 +357,11 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
     elm_list[m].kod = 5;
     elm_list[m].mat_no = material;
 
-    //legal = CheckNewElement(elm_list[m].a, elm_list[m].xm, elm_list[m].ym,
-     //   elm_list[m].cosbet, elm_list[m].sinbet, 0);
+    legal = CheckNewElement(elm_list[m].a, elm_list[m].xm, elm_list[m].ym,
+        elm_list[m].cosbet, elm_list[m].sinbet, 0);
 
-    float a = elm_list[m].a; float xm = elm_list[m].xm; float ym = elm_list[m].ym;
-    legal = CheckNewElement(a, xm, ym, elm_list[m].cosbet, elm_list[m].sinbet, 0);
-
+    //float a = elm_list[m].a; float xm = elm_list[m].xm; float ym = elm_list[m].ym;
+    //legal = CheckNewElement(a, xm, ym, elm_list[m].cosbet, elm_list[m].sinbet, 0);
     m += 1;
     if (legal == 0)
     {
@@ -384,8 +378,7 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
         tips[n].yen = yp - 1 / 2. * r * sinf(alpha);
         tips[n].xbe = tips[n].xen - 1 / 2. * r * cosf(alpha);     
         tips[n].ybe = tips[n].yen - 1 / 2. * r * sinf(alpha);
-        tips[n].imode = im;
-       
+        tips[n].imode = im;       
         // -----------------------------------------------
         // avoid repeating element at symmetry locations
 
@@ -421,7 +414,6 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
         if(multi_region)
              material = check_material_id(0.5 * (xb + xn), 0.5 * (yb + yn));  
         dl = std::sqrt(std::pow(xn - xb,2) + std::pow(yn - yb, 2));
-
         tips[n].assign_val(xb, yb, xn, yn, dl, cosf(alpha), sinf(alpha), 1, material);
         no++;     //new tip added
         
@@ -436,10 +428,7 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
         elm_list[m].kod = 5;
         elm_list[m].mat_no = material;
 
-
-
         float a = elm_list[m].a; float xm = elm_list[m].xm; float ym = elm_list[m].ym;
-
         legal = CheckNewElement(a,xm, ym, cosb, sinb, 0);
         m += 1;      //new element added
         if (legal == 0)
@@ -460,7 +449,7 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
             tips[n].imode = im;
         }
     }
-    numbe = m;
+    numbe = m;    
     return;
 }
 
@@ -472,22 +461,18 @@ void failureB(float xp, float yp, float r, float alpha, int im, float& fos)
 {
     //IM = 1, tensile, IM = 2, shear
    
-    int m = numbe;
-    
+    int m = numbe;    
     float xb, yb, xe, ye;
-
     if (fos > 1.0) 
     {
         fos = 1.0;
     }   
-
     if (numbe >= m0-1)
     {
         MessageBox(nullptr, L"Maximum BE limit exceeded!", L"Message!", MB_OK);
         exit(0);          
         return;  
-    } 
-
+    }
     int n = no;
     float sinb = sinf(alpha);
     float cosb = cosf(alpha);
@@ -506,8 +491,7 @@ void failureB(float xp, float yp, float r, float alpha, int im, float& fos)
 
     //---------------Add new element-------------------------------
     float x = 0.5 * (xb + xp);
-    float y = 0.5 * (yb + yp);
-    
+    float y = 0.5 * (yb + yp);    
     elm_list[m].xm= 0.5 * (xb + xp);
     elm_list[m].ym = 0.5 * (yb + yp);
     elm_list[m].a = dl / 2;
@@ -515,12 +499,11 @@ void failureB(float xp, float yp, float r, float alpha, int im, float& fos)
     elm_list[m].cosbet = cosb;
     elm_list[m].kod = 5;
     elm_list[m].mat_no = material;
-
      
     int legal = CheckNewElement(elm_list[m].a, elm_list[m].xm, elm_list[m].ym, 
         elm_list[m].cosbet, elm_list[m].sinbet, 1);
       
-    m = numbe + 1;    //no of new elements 
+    m = numbe + 1;    //no of new elements     
     if (legal == 0)
     {
         m -= 1;
@@ -541,7 +524,6 @@ void failureB(float xp, float yp, float r, float alpha, int im, float& fos)
         elm_list[m].cosbet = cosb;
         elm_list[m].kod = 5;
         elm_list[m].mat_no = material;
-
 
         legal = CheckNewElement(elm_list[m].a, elm_list[m].xm, elm_list[m].ym, 
             elm_list[m].cosbet, elm_list[m].sinbet, 1);
@@ -566,7 +548,7 @@ void failureB(float xp, float yp, float r, float alpha, int im, float& fos)
      tips[n].xen = tips[n].xbe + 0.5 * r * cosf(alpha);  
      tips[n].yen = tips[n].ybe + 0.5 * r * sinf(alpha);
      tips[n].imode = im;
-     numbe = m;    
+     numbe = m;     
     return;
 }
 

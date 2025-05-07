@@ -1239,17 +1239,13 @@ void inputcheck()
     
    /*---------------------------------------------------------------------- -
          check crossing of fracturs, boundaries and arcs
-    ---------------------------------------------------------------------- -*/
-   
+    ---------------------------------------------------------------------- -*/   
 
     std::fstream file25("temp001.dat", std::ios::in | std::ios::out | std::ios::trunc);
-
     if (!file25.is_open()) {
         std::cerr << "Error opening file temp001!" << std::endl;
         return;
     }
-
-
     check_fracture_cross();
     reorder_fractures(file25);
     check_cross_boundaries();

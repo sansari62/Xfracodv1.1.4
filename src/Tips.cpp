@@ -123,13 +123,19 @@ void label400_new_coordin_for_tip(int n, int mm, int mergtip, float xt, float yt
     }
     t.dl = sqrt(pow(t.xen - t.xbe, 2) + pow(t.yen - t.ybe, 2));
     //-------------------------Add new element--------------------------
-    int m = numbe; 
+    int m = numbe;     
     elm_list[m].kod = 5;
     elm_list[m].a = t.dl / 2.0;
     elm_list[m].xm = 0.5 * (t.xen + t.xbe);
     elm_list[m].ym = 0.5 * (t.yen + t.ybe);
     elm_list[m].mat_no = mm;
     numbe++;
+    if (numbe >= m0 - 1)
+    {
+        MessageBox(nullptr, L"Maximum BE limit exceeded!", L"Message!", MB_OK);
+        exit(0);
+        return;
+    }
     BoundaryElement& be = elm_list[m];
    
     be.cosbet = (t.xen - t.xbe) / t.dl;
