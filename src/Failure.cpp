@@ -317,17 +317,17 @@ void setting_elem_and_tipn_failure(int m, int im)
 
 
 
-void failure(float xp, float yp, float r, float alpha, int im, float& fos)
+void failure(float xp, float yp, float r, float alpha, int im)
 {
     //IM = 1, tensile, IM = 2, shear
 
     int m = 0;   
     float xb, yb, xn, yn;
     int legal, material;
-    if (fos > 1.0) 
+    /*if (fos > 1.0) 
     {
         fos = 1.0;
-    }    
+    } */   
     if (numbe >= m0-1)
     {
         MessageBox(nullptr, L"Maximum BE limit exceeded!", L"Message!", MB_OK);
@@ -457,16 +457,16 @@ void failure(float xp, float yp, float r, float alpha, int im, float& fos)
 
 
 
-void failureB(float xp, float yp, float r, float alpha, int im, float& fos)
+void failureB(float xp, float yp, float r, float alpha, int im)
 {
     //IM = 1, tensile, IM = 2, shear
    
     int m = numbe;    
     float xb, yb, xe, ye;
-    if (fos > 1.0) 
+    /*if (fos > 1.0) 
     {
         fos = 1.0;
-    }   
+    }  */ 
     if (numbe >= m0-1)
     {
         MessageBox(nullptr, L"Maximum BE limit exceeded!", L"Message!", MB_OK);
@@ -578,10 +578,13 @@ void Choose_Failure()
             alpha = init_point[np].alphaf;
 
             if (init_point[np].Locationf == 1)
-                 legal = CheckNewElement(r, xp, yp, cosf(alpha), sinf(alpha), 1);
-
+            {
+                legal = CheckNewElement(r, xp, yp, cosf(alpha), sinf(alpha), 1);
+            }
             else //if (init_point[np].Locationf == 2)
-                    legal = CheckNewElement(r, xp, yp, cosf(alpha), sinf(alpha), 0);
+            {
+                legal = CheckNewElement(r, xp, yp, cosf(alpha), sinf(alpha), 0);
+            }
             if (legal == 1)
                     fos_max = init_point[np].fosf;
         }
@@ -603,13 +606,13 @@ void Choose_Failure()
             {
                 legal = CheckNewElement( r, xp, yp, cosf(alpha), sinf(alpha),1);
                 if (legal == 1)
-                    failureB(xp, yp, r, alpha, im, fos);
+                    failureB(xp, yp, r, alpha, im);
             }
             else //if (init_point[np].Locationf == 2)
             {
                 legal = CheckNewElement( r, xp, yp, cosf(alpha), sinf(alpha),0);
                 if (legal == 1)
-                    failure(xp, yp, r, alpha, im, fos);
+                    failure(xp, yp, r, alpha, im);
             }
         }
     }

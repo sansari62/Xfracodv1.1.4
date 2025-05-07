@@ -2,9 +2,9 @@
 #define Failure_h
 #include <utility>
 
-void failureB(float xp, float yp, float r, float alpha, int im, float& fos);
+void failureB(float xp, float yp, float r, float alpha, int im);
 
-void failure(float xp, float yp, float r, float alpha, int im, float &fos);
+void failure(float xp, float yp, float r, float alpha, int im);
 
 void setting_elem_and_tipn_failure( int m, int im);
 
