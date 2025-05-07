@@ -6,8 +6,7 @@ using namespace CommonPara_h::comvar;
 
 
 void save(ofstream& file10)
-{
-       
+{       
     const char* File_ID = "FRACOD SAVED FILE";
     
     file10 << File_ID << std::endl;
@@ -16,8 +15,7 @@ void save(ofstream& file10)
 
     for (int mm = 0; mm < 10; mm++)
     {
-        rock1[mm].save_to_file(file10);
-        
+        rock1[mm].save_to_file(file10);        
     }
     s2us.save_to_file(file10);
     symm.save_to_file(file10);
@@ -38,10 +36,10 @@ void save(ofstream& file10)
     }
     file10 << numbe << no << delta << w0 << w1 << ni << nc << numbe_old << std::endl;
     dispwin.save_to_file(file10);
-    
-    tunnl.save_to_file(file10);
-        
-    file10 << nellipse << std::endl;
+    if(ntunnel>0)
+     tunnl.save_to_file(file10);
+    if(nellipse>0)
+        file10 << nellipse << std::endl;
     for (int m = 0; m < nellipse; ++m) {
         ellip_list[m].save_to_file(file10);
     }
@@ -50,7 +48,6 @@ void save(ofstream& file10)
 
     file10 << w0 << " " << w1 << " " << ni << std::endl;
     file10 << mcyc0 << " " << mcyc<< std::endl;
-
     file10 << lastinput << " " << ktipgrow << " " << StopReturn << " " << line << " " << ID_dtip << std::endl;
 
     s15.save_to_file(file10);
@@ -63,20 +60,20 @@ void save(ofstream& file10)
     file10 << k_num << " " << d_max << std::endl;
     file10 << ihist << std::endl;
 
-    for (int m = 0; m < 10; ++m) {       //ihist and lhist are not included here , should  think about Sara!
+    for (int m = 0; m < ihist; ++m) {       //ihist and lhist are not included here , should  think about Sara!
         mpoint_list[m].save_to_file(file10);
     }
     file10 << lhist << std::endl;
-    for (int m = 0; m < 10; ++m) {
+    for (int m = 0; m < lhist; ++m) {
         mline_list[m].save_to_file(file10);
     }
     creep.save_to_file(file10);
     file10 << mf << std::endl;
-    for (int m = 0; m < 500; ++m)
+    for (int m = 0; m < mf; ++m)
     {
         init_point[m].save_to_file(file10);
     }  
-    for (int m = 0; m < m0; ++m)
+    for (int m = 0; m < numbe; ++m)
     {
         file10<< joint[m].aperture0 <<" "<< joint[m].aperture_r<<endl;
     }

@@ -513,9 +513,7 @@ void processFracture()
 
    void saveData()
    {   
-       string lineData;
-       
-       //string id ;
+       string lineData;       
        string tem = "  ";
        try
        {
@@ -528,7 +526,9 @@ void processFracture()
            }
            else
            {
-               ofstream file10(tem, ios::binary);
+               ofstream file10;
+               std::wstring fname(tem.begin(), tem.end());
+               file10.open(dir + L"/" + fname + L".dat");
                save(file10);
                file10.close();
            }

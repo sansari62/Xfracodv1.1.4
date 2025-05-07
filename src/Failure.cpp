@@ -335,7 +335,7 @@ void failure(float xp, float yp, float r, float alpha, int im)
     yb = yp - 1 / 2.0 * r * sinf(alpha);
     xn = xp;
     yn = yp;    
-    int  material = (multi_region)?check_material_id(0.5 * (xb + xn), 0.5 * (yb + yn)): j_material;
+    material = (multi_region)?check_material_id(0.5 * (xb + xn), 0.5 * (yb + yn)): j_material;
     float dl = sqrtf(std::powf(xn - xb,2) + std::powf(yn - yb,2));
     tips[n].assign_val(xb, yb, xn, yn, dl, cosf(alpha), sinf(alpha), -1, material);  
     no++;    
