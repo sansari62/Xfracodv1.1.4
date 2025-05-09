@@ -7,12 +7,12 @@ using namespace CommonPara_h::comvar;
 
 void save(ofstream& file10)
 {       
-    const char* File_ID = "FRACOD SAVED FILE";
+    const char* File_ID = "FRACOD_SAVED_FILE";
     
     file10 << File_ID << std::endl;
     file10 << numbe << " " << no << " " << numbe_old << " " 
         << title<< std::endl;
-
+    file10 << pi << " " << irock<< std::endl;
     for (int mm = 0; mm < 10; mm++)
     {
         rock1[mm].save_to_file(file10);        
@@ -31,18 +31,23 @@ void save(ofstream& file10)
         tips[m].save_to_file(file10);
     }
 
-    for (int m = 0; m < 20; ++m) {
+    for (int m = 1; m <= 20; ++m) {
         s8[m].save_to_file(file10);
     }
-    file10 << numbe << no << delta << w0 << w1 << ni << nc << numbe_old << std::endl;
+    file10 << numbe << " " << no << delta << " " << w0 <<
+        " " << w1 << " " << ni << " " << nc << " " <<
+        numbe_old << std::endl;
     dispwin.save_to_file(file10);
+    file10 << ntunnel<< std::endl;
     if(ntunnel>0)
      tunnl.save_to_file(file10);
+    file10 << nellipse << std::endl;
     if(nellipse>0)
-        file10 << nellipse << std::endl;
-    for (int m = 0; m < nellipse; ++m) {
-        ellip_list[m].save_to_file(file10);
-    }
+    {
+        for (int m = 0; m < nellipse; ++m) {
+            ellip_list[m].save_to_file(file10);
+        }
+    }   
    
     insituS.save_to_file(file10);
 
@@ -73,10 +78,10 @@ void save(ofstream& file10)
     {
         init_point[m].save_to_file(file10);
     }  
-    for (int m = 0; m < numbe; ++m)
+    /*for (int m = 0; m < numbe; ++m)
     {
         file10<< joint[m].aperture0 <<" "<< joint[m].aperture_r<<endl;
-    }
+    }*/
     file10 << perm.viscosity << " " << perm.density << " " << perm.perm0 << std::endl;
 
     file10 << factors.factor_f << " " << factors.factor_e << " " << factors.tolerance << std::endl;
@@ -90,26 +95,33 @@ void save(ofstream& file10)
 
 
 
-void restore()
+void restore(string filename)
 {
-    std::ifstream inputFile("filename.dat");
+    std::ifstream inputFile(filename);
     if (!inputFile.is_open()) {
-        std::cerr << "Error opening file!" << std::endl;
+        std::cerr << "Error in opening save_file!" << std::endl;
         return;
     }
-
-    inputFile >> numbe >> no >> numbe_old >> title;
-
+    string lineData;
+    getline(inputFile, lineData);
+    if (lineData != "FRACOD_SAVED_FILE")
+    {
+        MessageBox(nullptr, L"File is not a FRACOD saved file!press OK to quit.",
+            L"Message!", MB_OK);
+        exit(0);
+    } 
+    getline(inputFile, lineData);
+    std::stringstream ss(lineData);
+    ss >> numbe >> no >> numbe_old >> title;
+    inputFile >> pi>> irock;
     for (int mm = 0; mm < 10; ++mm)
     {
         rock1[mm].read_from_file(inputFile);
     }
 
     s2us.read_from_file(inputFile);
-    symm.read_from_file(inputFile);
-    
+    symm.read_from_file(inputFile);    
     s4.read_from_file(inputFile);
-
     s5u.read_from_file(inputFile);
 
     for (int m = 0; m < numbe; ++m)
@@ -121,92 +133,62 @@ void restore()
         tips[m].read_from_file(inputFile);
     }
 
-    for (int m = 1; m <= 20; ++m) {
+    for (int m = 0; m < 20; ++m) {
         s8[m].read_from_file(inputFile);
     }
 
-    inputFile >> numbe >> no >> delta >> w0 >> w1 >> ni >> nc >> numbe_old;
+    inputFile >> numbe >> no >> delta >> w0 >> w1 >> ni >> nc >> 
+        numbe_old;
     dispwin.read_from_file(inputFile);
-
-    tunnl.read_from_file(inputFile);
-
-    /*int ntunnel;
     inputFile >> ntunnel;
-    tunnl_list.resize(ntunnel);
-    for (int m = 0; m < ntunnel; ++m)
-        {
-             tunnl_list[m].read_from_file1(inputFile);
-        }*/
-
-
-        //int nellipse;
+    if (ntunnel>0)
+    {
+        tunnl.read_from_file(inputFile);
+    }    
     inputFile >> nellipse;
-    ellip_list.resize(nellipse); //size or resize? Sara!
-    for (int m = 0; m < nellipse; ++m) {
-        ellip_list[m].read_from_file(inputFile);
+    if (nellipse > 0)
+    {
+        for (int m = 0; m < nellipse; ++m) {
+            ellip_list[m].read_from_file(inputFile);
+        }
     }
-
-    /*for (int m = 1; m <= 20; ++m) {     //should think more  in tunnel
-        inputFile >> xpp[m] >> ypp[m] >> dd[m];
-    }*/
-
     insituS.read_from_file(inputFile);
-
     inputFile >> w0 >> w1 >> ni;
     inputFile >> mcyc0 >> mcyc;
-
     inputFile >> lastinput >> ktipgrow >> StopReturn >> line >> ID_dtip;
 
     s15.read_from_file(inputFile);
-
     watercm.read_from_file1(inputFile);
 
-    inputFile >> mat_lining;
-
-    inputFile >> n_it;
-
+    inputFile >> mat_lining >> n_it;//instead of seprate reaading  
     inputFile >> k_num >> d_max;
-
-    for (int m = 0; m < 10; ++m) {       //ihist and lhist are not included here , should  think about
+    inputFile >> ihist;
+    for (int m = 0; m < ihist; ++m) { 
               
-        inputFile >> mpoint_list[m].xmon >> mpoint_list[m].ymon;      
-
+        inputFile >> mpoint_list[m].xmon >> mpoint_list[m].ymon; 
     }
-
-    for (int m = 0; m < 10; ++m) {        
+    inputFile >> lhist;
+    for (int m = 0; m < lhist; ++m) {        
         inputFile >> mline_list[m].x1l >> mline_list[m].y1l >> mline_list[m].x2l >> 
             mline_list[m].y2l >> mline_list[m].npl;
     }
 
     creep.read_from_file(inputFile);
-
     inputFile >> mf;
-    for (int m = 0; m < 500; ++m)
+    for (int m = 0; m < mf; ++m)
         init_point[m].read_from_file(inputFile);
 
-    for (int m = 0; m < numbe; ++m) {
+    /*for (int m = 0; m < numbe; ++m) {
         inputFile >> joint[m].aperture0 >> joint[m].aperture_r;  
-    }
+    }*/
 
     inputFile >> perm.viscosity >> perm.density >> perm.perm0;
 
     inputFile >> factors.factor_f >> factors.factor_e >> factors.tolerance;
 
     inputFile >> exca.ID_Exca >> exca.d_wall >> exca.rand_e;
-
-    //call SendWindowText('Save file reading error, file might be saved by earlier version'//CHAR(0))
-    //    StopReturn = .true.
-    //    return
-    //    !stop
-    //    GOTO 800
-
-    //    600 call SendWindowText('File saved by earlier version, no crack initiation assumed'//CHAR(0))
-    //        StopReturn = .true.
-    //        return
-    //        !stop
-
+    
     lastinput = "endf";
-
     return;
 }
 

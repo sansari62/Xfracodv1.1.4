@@ -106,7 +106,7 @@ namespace comvar {
 	S15 s15;
 	matrix matx;
 
-	std::vector<S8> s8(20);		
+	std::vector<S8> s8(21);		
 	Creep creep;
 
 	waterCommon watercm;

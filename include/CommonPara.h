@@ -168,6 +168,7 @@ namespace comvar {
 		{
 			f >> ksym >> ysym >> xsym >> pxx1 >> pxy1 >> pyy1;
 		}
+
 		void save_to_file(ofstream& f)
 		{
 			f << ksym << " " << ysym << " " << xsym << " " << pxx1 << " " << pxy1 << " " 
@@ -216,18 +217,14 @@ namespace comvar {
 		}
 		void read_from_file(ifstream & f)
 		{
-
 			f >> sxxs >> sxxn >> syys >> syyn >> sxys >> 
 				sxyn >> uxs >> uxn >> uys >> uyn;		
-		
 		}
 		void save_to_file(ofstream& f)
 		{
-
 			f << sxxs << " " << sxxn << " " << syys << " " << syyn << 
 				" " << sxys << " " << sxyn << " " << uxs << " " << uxn << " "
 				<< uys << " " << uyn << std::endl;
-
 		}
 
 	} s2us;			 // I''m not sure yet what this is
@@ -246,9 +243,9 @@ namespace comvar {
 
 		void read_from_file(ifstream& f)
 		{
-
 			f >> xmax >> ymax >> xmin >> ymin >> dtol;
 		}
+
 		void save_to_file(ofstream& f)
 		{
 			f << xmax << " " << ymax << " " << xmin << " " << 
@@ -282,9 +279,9 @@ namespace comvar {
 
 		void read_from_file(ifstream& f)
 		{
-
 			f >> aks0 >> akn0 >> phi0 >> phid0 >> coh0 >> phid0 >> apert0 >> apert_r ;;
 		}
+
 		void save_to_file(ofstream& f)
 		{
 			f << aks0 << " " << akn0 << " " << phi0 << " " << phid0 << " " << coh0 << " " 

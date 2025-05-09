@@ -1203,7 +1203,7 @@ void check_cross_arcs(fstream& file25)
 {
 
     //because of this location diff in test12 need to keep it
-    pi = 4.0 * atanf(1.0); //3.14159      
+    pi = 4.0 * atan(1.0); //3.14159      
     for (int i = 0; i < na; ++i)
     {
         Arch& arc = arc_list[i];        //alias for arc

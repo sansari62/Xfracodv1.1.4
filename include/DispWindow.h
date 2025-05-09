@@ -21,10 +21,9 @@ public:
 	int numa;
 	int ID_win;
 	
-	DispWindow();
-	
+	DispWindow();	
 	void save_to_file(ofstream& f);
-
+	void read_from_file(ifstream & f);
 };
 
 void CheckRange();

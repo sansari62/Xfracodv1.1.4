@@ -51,7 +51,6 @@ void finding_in_rock_iniR()
 
             if (xp > s5u.xmax || xp < s5u.xmin || yp > s5u.ymax || yp < s5u.ymin)
             {
-
                 continue;
             }
 
@@ -165,7 +164,8 @@ void Central_control()
 
     input();
     CheckRange();
-    logfile << "The initial number of boundary elements:"<< numbe <<", fractures:" << nf << ", Archs: " <<  na << "edges: "<<nb<<endl;
+    logfile << "The initial number of boundary elements:"<< numbe <<", fractures:" << nf <<
+        ", Archs: " <<  na << "edges: "<<nb<<endl;
     if (StopReturn == true) return;
     file2 << " Tip No.    xc       yc         Angle            W0             Wi              Wii              F\n";
     compute_n_vlaid_all_points();
@@ -180,7 +180,6 @@ void Central_control()
         prenumbe = numbe;
     }
     If_No_tip();    //Check possibility of fracture initiation if no tip
-
     //--------------------------Creep functions---------------    
     file50 << "   time     time step    Tip no.    Creep growth length    growth angle      K/Kc      Crack velocity\n";       
     creep.time = 0;
