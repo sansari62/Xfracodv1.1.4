@@ -15,9 +15,14 @@ Rock::Rock():
 
 void Rock::save_to_file(ofstream& f)
 {
-    f << pi << " " << e << " " << pr << " " << akic <<
-        " " << akiic << " " << irock << " " << rphi << " "
+    f << e << " " << pr << " " << akic <<
+        " " << akiic << " " << rphi << " "
         << rcoh << " " << rst << std::endl;
 
     }
 
+void Rock::read_from_file(ifstream& f)
+{
+    f>> e >> pr >> akic >>
+            akiic >> rphi >> rcoh>>rst;
+}

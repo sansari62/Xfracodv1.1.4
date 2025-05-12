@@ -16,8 +16,8 @@ public:
 	int incres;
 
 	BoundaryStress();
-
 	void save_to_file(ofstream& f);
+	void read_from_file(ifstream& f);
 
 };
 
@@ -29,5 +29,10 @@ dss(0.0),dnn(0.0),incres(0) {}
 inline void BoundaryStress::save_to_file(ofstream& f)
 {
 	f << incres << " " << dsxx << " " << dsyy << " " << dsxy << " " << dss << " " << dnn <<std::endl;
+}
+
+inline void BoundaryStress::read_from_file(ifstream& f)
+{
+	f >> incres >>  dsxx >>  dsyy >> dsxy >>  dss >>  dnn;
 }
 #endif

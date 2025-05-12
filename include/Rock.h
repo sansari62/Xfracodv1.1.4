@@ -21,6 +21,7 @@ public:
 	
 	Rock();
 	void save_to_file(ofstream & f);
+	void read_from_file(ifstream& f);
 
 };
 

@@ -7,6 +7,7 @@
 
 
 void save(ofstream& file10);
+void restore(string fname);
 
 #endif
 

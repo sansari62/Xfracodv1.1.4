@@ -7,17 +7,10 @@
 #include <cctype>
 #include <regex>
 
-
-
 #define VERSION "v1.0.2"
-
 
 using namespace CommonPara_h::comvar;
 using namespace std;
-
-
-
-
 
 
 
@@ -133,8 +126,6 @@ void  file_preprocesing(const std::wstring& filename)
 
 
 
-
-
 int main()
 {
     cout <<
@@ -157,14 +148,7 @@ int main()
 
     wcout << L"The simulation is running...\n";  
     float dr = 0;
-    /*cout << std::setprecision(15)<<"tanf(30.0 / 180.0 * pi) = "<<tanf(30.0 / 180.0 * pi) << ",tanf(0.524)=  " << std::setprecision(15)<<tanf(0.524) << "pi/180.0= " << pi / 180.0 << endl;
-    cout << "sinf(85 * pi / 180)= " << std::setprecision(15)<<sinf(85 * pi / 180) << "cosf(5 * pi / 180)= " << std::setprecision(15) << cosf(5 * pi / 180) <<endl;
-    cout<<"180. / pi="<< std::setprecision(15) << 180. / pi <<"  cosf(dr)= "<< std::setprecision(15) << cosf(dr)<<"sinf(dr)= "<< sinf(dr)<<endl;
-    cout << "180. / pi=" << std::setprecision(15) << 180. / pi << "  cosf(0)= " << std::setprecision(15) << cosf(0) << "sinf(0)= " << std::setprecision(15) << sinf(0) << endl;
-    cout << "4.0 * atan(1.0) = "<< std::setprecision(15) << 4.0 * atan(1.0) <<endl;*/
-
-    wstring filename1 = std::filesystem::path{ selectedFile }.stem();     
-
+    wstring filename1 = std::filesystem::path{ selectedFile }.stem();
     dir = filepath + L"\\" + filename1 + L"_Results";
     
     if (std::filesystem::create_directory(dir) || ERROR_ALREADY_EXISTS == GetLastError()) {
@@ -217,7 +201,6 @@ int main()
         MessageBox(nullptr, L"File path is wrong!", L"Error", MB_OK);
         exit(EXIT_FAILURE);
     }
-
     Central_control();
     file2.close();   
     inFile.close();

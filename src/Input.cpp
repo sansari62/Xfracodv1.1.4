@@ -513,9 +513,7 @@ void processFracture()
 
    void saveData()
    {   
-       string lineData;
-       
-       //string id ;
+       string lineData;       
        string tem = "  ";
        try
        {
@@ -528,7 +526,9 @@ void processFracture()
            }
            else
            {
-               ofstream file10(tem, ios::binary);
+               ofstream file10;
+               std::wstring fname(tem.begin(), tem.end());
+               file10.open(dir + L"/" + fname + L".dat");
                save(file10);
                file10.close();
            }
@@ -895,7 +895,7 @@ void processFracture()
            std::stringstream ss(lineData); 
            ss >> creep.v1 >> creep.nn1 >> creep.v2 >> creep.nn2 >>
            creep.totalT >> creep.deltaT_min >> creep.deltaT_max;
-           int ID_creep = 1;   //not sure Sara!
+           creep.ID_creep = 1;
            if (creep.totalT < 20.0)
            {
                creep.totalT = 20;
@@ -1394,9 +1394,9 @@ void processFracture()
        }
    }
    inline void titl_Process() {
-       string tem;
-       getline(inFile, tem);
-       file2 << tem << std::endl;
+       //string tem;
+       getline(inFile, title);
+       file2 << title << std::endl;
    }
 
    inline void boundProcess()
@@ -1488,7 +1488,23 @@ void processFracture()
    }
 
 
+   void restoreProcess()
+   {
+       string lineData;
+       string filename;
+       try
+       {
+           getline(inFile, lineData);
+           std::stringstream ss(lineData);
+           ss >> filename;
+           restore(filename);
+       }
+       catch (std::ifstream::failure e)
+       {
+           std::cerr << "Exception opening/reading/closing file in dstr\n";
 
+       }
+   }
 
 
 
@@ -1535,6 +1551,7 @@ void processFracture()
         {"cree",processCreepParameters},
         {"setf",setfProcess},
         {"sete",seteProcess},
+        {"rest",restoreProcess},
         {"sett",settProcess},
         {"boun",boundProcess},
         {"isiz",isizProcess},

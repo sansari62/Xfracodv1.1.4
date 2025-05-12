@@ -9,6 +9,18 @@ vel_creep_max(0), ID_creep(0), ID_fast_crack(0){}
 
 
 
+void Creep::read_from_file(ifstream& f)
+{
+	for (int m = 0; m < 500; ++m) {
+		f >> creep_x[m] >> creep_y[m] >> creep_l[m] >> creep_a[m] >> growth_length[m];
+	}
+	f >> time >> time0 >> deltaT >> deltaT_min >> deltaT_max >> totalT >> v1 >> nn1 >> v2
+		>> nn2 >> vel_creep_max >> ID_creep >> ID_fast_crack;
+	return;
+}
+
+
+
 
 
 

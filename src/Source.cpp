@@ -51,10 +51,8 @@ void finding_in_rock_iniR()
 
             if (xp > s5u.xmax || xp < s5u.xmin || yp > s5u.ymax || yp < s5u.ymin)
             {
-
                 continue;
-            }        
-
+            }
 
             if ((symm.ksym == 1 || symm.ksym == 4) && xp < (symm.xsym + s5u.dtol)) {
 
@@ -89,7 +87,6 @@ void finding_in_rock_iniR()
         }
     }  
 }
-
 
 
 
@@ -151,6 +148,52 @@ void compute_n_vlaid_all_points() {
 
 
 
+void main_computing_part()
+{
+    if (insituS.incres != 0 && ktipgrow == true)     //special treatment th final grownth element in cycle
+    {
+        int incres_tem = insituS.incres;
+        insituS.incres = 0;
+        work0(-1);              //mode = -1 is back step
+        insituS.incres = incres_tem;
+    }
+    if (insituS.incres != 0)
+        n_it = 20;    //iteration process
+    work0(0);         //First calculation in every cycle - mode = 0.                      
+    check_crack_growth();              //include instant and creep
+    geoplot();
+    if (StopReturn == true) return;
+    prenumbe = numbe;
+    add_crack_growth();
+    cout << " finished!!!\n";
+}
+
+
+
+
+void creep_problem()
+{
+    do     //Creep iteration
+    {
+        if (creep.ID_creep == 1 && creep.ID_fast_crack == 0)
+        {
+            if ((creep.time + creep.deltaT) > creep.totalT)
+            {
+                creep.deltaT = creep.totalT - creep.time;
+                creep.time = creep.totalT;
+            }
+            else
+                creep.time += creep.deltaT;
+        }
+        main_computing_part();
+    } while (creep.time != creep.totalT && creep.ID_creep != 0 && creep.ID_fast_crack != 1);
+}
+
+
+
+
+
+
 void Central_control()
 {    
     auto start = std::chrono::high_resolution_clock::now();
@@ -166,7 +209,8 @@ void Central_control()
 
     input();
     CheckRange();
-    logfile << "The initial number of boundary elements:"<< numbe <<", fractures:" << nf << ", Archs: " <<  na << "edges: "<<nb<<endl;
+    logfile << "The initial number of boundary elements:"<< numbe <<", fractures:" << nf <<
+        ", Archs: " <<  na << "edges: "<<nb<<endl;
     if (StopReturn == true) return;
     file2 << " Tip No.    xc       yc         Angle            W0             Wi              Wii              F\n";
     compute_n_vlaid_all_points();
@@ -181,7 +225,6 @@ void Central_control()
         prenumbe = numbe;
     }
     If_No_tip();    //Check possibility of fracture initiation if no tip
-
     //--------------------------Creep functions---------------    
     file50 << "   time     time step    Tip no.    Creep growth length    growth angle      K/Kc      Crack velocity\n";       
     creep.time = 0;
@@ -191,60 +234,30 @@ void Central_control()
         cout << " cycle " << comvar::mcyc << " of " <<mcyc0<<"  is running.... ";
         creep.deltaT = creep.deltaT_min;         //Creep iteration
         creep.ID_creep = (creep.time < creep.totalT) ? 1 : 0;
-       
-        do     //Creep iteration
-        {
-            if (creep.ID_creep == 1 && creep.ID_fast_crack == 0)
-            {
-                if ((creep.time + creep.deltaT) > creep.totalT)
-                {
-                    creep.deltaT = creep.totalT - creep.time;
-                    creep.time = creep.totalT;
-                }
-                else
-                    creep.time += creep.deltaT;
-            }
-            if (insituS.incres != 0 && ktipgrow == true)     //special treatment th final grownth element in cycle
-            {
-                int incres_tem = insituS.incres;
-                insituS.incres = 0;
-                work0(-1);              //mode = -1 is back step
-                insituS.incres = incres_tem;
-            }
-            if (insituS.incres != 0)   
-                n_it = 20;    //iteration process
-            work0(0);         //First calculation in every cycle - mode = 0. In work0(), only - 1 or 0 is allowed
-            if (numbe >= m0 - 1)
-            {
-                MessageBox(nullptr, L"Maximum BE limit exceeded!", L"Message!", MB_OK);
-                exit(0);
-                return;
-            }            
-            check_crack_growth();              //include instant and creep
-            geoplot();
-            if (StopReturn == true) return;
-            prenumbe = numbe;
-            add_crack_growth(); 
-            cout << " finished!!!\n";           
-        } while (creep.time != creep.totalT && creep.ID_creep != 0 && creep.ID_fast_crack != 1); 
-        //END creep time cycle
 
-                    // Pause if defined cycle finishes
-                    if (mcyc >= mcyc0)
-                    {
-                        if (lastinput != "endf")
-                        {
-                            input();
-                        }
-                        if (lastinput == "endf")
-                            { 
-                                auto end1 = std::chrono::high_resolution_clock::now();                                  
-                                std::cout << "Run time: " << std::chrono::duration<double>(end1 - start).count() << " seconds\n";
-                                logfile << "Run time=  " << std::chrono::duration<double>(end1 - start).count() << " seconds\n";
-                                MessageBox(nullptr, L"End of cycle & input file! press OK to quit.", L"Message!", MB_OK);  
-                                return;                             
-                            }
-                    }                    
+        if (creep.ID_creep == 1)
+            creep_problem();
+        else
+        {           
+            main_computing_part();
+        } 
+       
+        // Pause if defined cycle finishes
+        if (mcyc >= mcyc0)
+        {
+            if (lastinput != "endf")
+            {
+                input();
+            }
+            if (lastinput == "endf")
+                { 
+                    auto end1 = std::chrono::high_resolution_clock::now();                                  
+                    std::cout << "Run time: " << std::chrono::duration<double>(end1 - start).count() << " seconds\n";
+                    logfile << "Run time=  " << std::chrono::duration<double>(end1 - start).count() << " seconds\n";
+                    MessageBox(nullptr, L"End of cycle & input file! press OK to quit.", L"Message!", MB_OK);  
+                    return;                             
+                }
+        }                    
     }     
    
 return;   

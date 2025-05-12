@@ -1,7 +1,7 @@
 #include<stdafx.h>
-
 #include "DispWindow.h"
 #include <CommonPara.h>
+
 using namespace CommonPara_h::comvar;
 
 
@@ -15,10 +15,17 @@ radium(0), numr(0), numa(0), ID_win(0) {}
 void DispWindow::save_to_file(ofstream & f)
 {
     f << xll << " " << xur << " " << yll << " " << yur << " " << numx << " " << numy <<
-        " " << xc0 << " " << yc0 << radium << " " << numr << " " << numa << " " <<
+        " " << xc0 << " " << " " << yc0 << " " << radium << " " << numr << " " << numa << " " <<
         ID_win<< std::endl;
 }
 
+
+
+void DispWindow::read_from_file(ifstream& f)
+{
+    f >> xll >> xur >> yll >> yur >> numx >> numy >> xc0 >> yc0 >>
+        radium >> numr >> numa >> ID_win;
+}
 
 
 

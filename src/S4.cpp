@@ -1,5 +1,4 @@
 #include<stdafx.h>
-
 #include "S4.h"
 #include<CommonPara.h>
 
@@ -67,19 +66,30 @@ void S4::limit_d()
 
 
 
-
 void S4::save_to_file(ofstream& f)
 {
     for (int m = 0; m < numbe * 2; ++m)
     {
-        f << b[m] << " " << d[m] << " " << b0[m] << " " << b1[m] << " " << d0[m] 
+        f << b[m] << " " << d[m] << " " << b0[m] << " " << b1[m] << " " << d0[m]
             << " " << df0[m] << " " << df[m] << std::endl;
         for (int n = 0; n < numbe * 2; ++n)
         {
             f << c[m][n] << " " << c_s[m][n] << " " << c_d[m][n] << std::endl;
         }
     }
-    return;
 }
+
+
+void S4::read_from_file(ifstream & f)
+    {
+        for (int m = 0; m < numbe * 2; ++m)
+        {
+            f >> b[m] >> d[m] >> b0[m] >> b1[m] >> d0[m] >> df0[m] >> df[m];
+            for (int n = 0; n < numbe * 2; ++n)
+            {
+                f >> c[m][n] >> c_s[m][n] >> c_d[m][n];
+            }
+        }       
+    }
 
 
