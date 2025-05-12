@@ -20,6 +20,7 @@ void save(ofstream& file10)
     s2us.save_to_file(file10);
     symm.save_to_file(file10);
     s4.save_to_file(file10);
+    file10 << "ends4ishere" << endl;
     s5u.save_to_file(file10);
 
     for (int m = 0; m < numbe; ++m)
@@ -34,7 +35,7 @@ void save(ofstream& file10)
     for (int m = 1; m <= 20; ++m) {
         s8[m].save_to_file(file10);
     }
-    file10 << numbe << " " << no << delta << " " << w0 <<
+    file10 << numbe << " " << no << " " << delta << " " << w0 <<
         " " << w1 << " " << ni << " " << nc << " " <<
         numbe_old << std::endl;
     dispwin.save_to_file(file10);
@@ -53,35 +54,38 @@ void save(ofstream& file10)
 
     file10 << w0 << " " << w1 << " " << ni << std::endl;
     file10 << mcyc0 << " " << mcyc<< std::endl;
-    file10 << lastinput << " " << ktipgrow << " " << StopReturn << " " << line << " " << ID_dtip << std::endl;
+    file10 << lastinput << " " << ktipgrow << " " << StopReturn << " " << line << 
+        " " << ID_dtip << std::endl;
 
     s15.save_to_file(file10);
-
-    watercm.save_to_file(file10);
+    file10 << water_mod<<endl;
+    if (water_mod)
+        watercm.save_to_file(file10);
 
     file10 << mat_lining << std::endl;
-
     file10 << n_it << std::endl;
     file10 << k_num << " " << d_max << std::endl;
     file10 << ihist << std::endl;
 
-    for (int m = 0; m < ihist; ++m) {       //ihist and lhist are not included here , should  think about Sara!
+    for (int m = 0; m < ihist; ++m) { 
         mpoint_list[m].save_to_file(file10);
     }
     file10 << lhist << std::endl;
     for (int m = 0; m < lhist; ++m) {
         mline_list[m].save_to_file(file10);
     }
-    creep.save_to_file(file10);
+    file10 << creep.ID_creep<<endl;
+    if(creep.ID_creep!=0)
+        creep.save_to_file(file10);
     file10 << mf << std::endl;
-    for (int m = 0; m < mf; ++m)
+    if(mf>0)
     {
-        init_point[m].save_to_file(file10);
-    }  
-    /*for (int m = 0; m < numbe; ++m)
-    {
-        file10<< joint[m].aperture0 <<" "<< joint[m].aperture_r<<endl;
-    }*/
+        for (int m = 0; m < mf; ++m)
+        {
+            init_point[m].save_to_file(file10);
+        }
+    }
+    
     file10 << perm.viscosity << " " << perm.density << " " << perm.perm0 << std::endl;
 
     file10 << factors.factor_f << " " << factors.factor_e << " " << factors.tolerance << std::endl;
@@ -122,6 +126,8 @@ void restore(string filename)
     s2us.read_from_file(inputFile);
     symm.read_from_file(inputFile);    
     s4.read_from_file(inputFile);
+    string key;
+    inputFile >> key;
     s5u.read_from_file(inputFile);
 
     for (int m = 0; m < numbe; ++m)
@@ -133,7 +139,7 @@ void restore(string filename)
         tips[m].read_from_file(inputFile);
     }
 
-    for (int m = 0; m < 20; ++m) {
+    for (int m = 1; m <= 20; ++m) {
         s8[m].read_from_file(inputFile);
     }
 
@@ -158,7 +164,9 @@ void restore(string filename)
     inputFile >> lastinput >> ktipgrow >> StopReturn >> line >> ID_dtip;
 
     s15.read_from_file(inputFile);
-    watercm.read_from_file1(inputFile);
+    inputFile >> water_mod;
+    if(water_mod)
+        watercm.read_from_file1(inputFile);
 
     inputFile >> mat_lining >> n_it;//instead of seprate reaading  
     inputFile >> k_num >> d_max;
@@ -172,15 +180,15 @@ void restore(string filename)
         inputFile >> mline_list[m].x1l >> mline_list[m].y1l >> mline_list[m].x2l >> 
             mline_list[m].y2l >> mline_list[m].npl;
     }
-
-    creep.read_from_file(inputFile);
+    inputFile >> creep.ID_creep;
+    if (creep.ID_creep != 0)
+        creep.read_from_file(inputFile);
     inputFile >> mf;
-    for (int m = 0; m < mf; ++m)
-        init_point[m].read_from_file(inputFile);
-
-    /*for (int m = 0; m < numbe; ++m) {
-        inputFile >> joint[m].aperture0 >> joint[m].aperture_r;  
-    }*/
+    if (mf > 0)
+    {
+        for (int m = 0; m < mf; ++m)
+            init_point[m].read_from_file(inputFile);
+    }    
 
     inputFile >> perm.viscosity >> perm.density >> perm.perm0;
 

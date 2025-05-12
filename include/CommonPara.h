@@ -79,21 +79,17 @@ namespace comvar {
 	extern std::wstring selectedFile;
 	extern wstring dir;
 
-
 	extern float k_num;            //stiffness for boundary element;    struct in origincode
 	extern float  d_max;		     //d_max - max joint disp in each step
 
-	extern int mcyc;            //S13 defined here ,// cycle number
-	extern int mcyc0;
-	
+	extern int mcyc;            //S13 defined here // cycle number
+	extern int mcyc0;	
 
 	extern int lhist;		// no of monitoring lines
-	extern int ihist;		// no of monitoring points
-	
+	extern int ihist;		// no of monitoring points	
 
 	extern std::vector<std::pair<float, float>> valid;
 	extern std::vector<std::pair<float, float>> valid1;
-
 
 	extern bool ktipgrow;		
 	extern int ID_dtip;
@@ -379,7 +375,6 @@ namespace comvar {
 		float w_y2[10];
 		float wph[10];
 		float wpr[10];
-
 
 
 		waterCommon() : jwater{0}, pwater{0}, w_d{0}, w_x1{0}, w_x2{0}, w_y1{0}, w_y2{0}, wph{0}, wpr{0}, w_xc{0},

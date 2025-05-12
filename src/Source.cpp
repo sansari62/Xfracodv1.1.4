@@ -92,7 +92,6 @@ void finding_in_rock_iniR()
 
 
 
-
 void compute_n_vlaid_all_points() {
 
     int num1 = 0, num2 = 0;
