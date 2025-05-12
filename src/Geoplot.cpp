@@ -1,5 +1,4 @@
 ﻿#include<stdafx.h>
-
 #include "Geoplot.h"
 #include "CommonPara.h" 
 #include <WinInterface.h>
@@ -18,19 +17,9 @@ using namespace CommonPara_h::comvar;
 
 void geoplot() 
 {
-    int numbe_real = 0;             // Exclude the ghost elements
-
+    int numbe_real = 0;  
     wstring filename = BE_dir + L"/BE" + std::to_wstring(mcyc) + L".csv";
     std::ofstream BEfile(filename);
-
-    //std::wstring filename = BE_dir + L"/BE" + std::to_wstring(mcyc) + L".dat";
-    //std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-    //std::string filename = converter.to_bytes(filename_w);
-    //std::ofstream BEfile(filename, std::ios::binary);
-    /*if (!BEfile) {
-        std::cerr << "Failed to open BEfile for writing.\n";
-        return;
-    }*/
     int n1 = 0;
     int n2 = n1 + numbe;
     int l = 0;
@@ -130,8 +119,6 @@ void geoplot()
         geom[l].w_jwater << "," << geom[l].w_mat << endl;
 
     BEfile << buffer.str();
-
-    //BEfile.write(reinterpret_cast<const char*>(geom.data()), geom.size() * sizeof(Geom));
     BEfile.close();
     win_exchange.w_numbe = numbe_real;
     int npoint, jpoint, npointp;

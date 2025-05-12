@@ -79,21 +79,17 @@ namespace comvar {
 	extern std::wstring selectedFile;
 	extern wstring dir;
 
-
 	extern float k_num;            //stiffness for boundary element;    struct in origincode
 	extern float  d_max;		     //d_max - max joint disp in each step
 
-	extern int mcyc;            //S13 defined here ,// cycle number
-	extern int mcyc0;
-	
+	extern int mcyc;            //S13 defined here // cycle number
+	extern int mcyc0;	
 
 	extern int lhist;		// no of monitoring lines
-	extern int ihist;		// no of monitoring points
-	
+	extern int ihist;		// no of monitoring points	
 
 	extern std::vector<std::pair<float, float>> valid;
 	extern std::vector<std::pair<float, float>> valid1;
-
 
 	extern bool ktipgrow;		
 	extern int ID_dtip;
@@ -168,6 +164,7 @@ namespace comvar {
 		{
 			f >> ksym >> ysym >> xsym >> pxx1 >> pxy1 >> pyy1;
 		}
+
 		void save_to_file(ofstream& f)
 		{
 			f << ksym << " " << ysym << " " << xsym << " " << pxx1 << " " << pxy1 << " " 
@@ -216,18 +213,14 @@ namespace comvar {
 		}
 		void read_from_file(ifstream & f)
 		{
-
 			f >> sxxs >> sxxn >> syys >> syyn >> sxys >> 
 				sxyn >> uxs >> uxn >> uys >> uyn;		
-		
 		}
 		void save_to_file(ofstream& f)
 		{
-
 			f << sxxs << " " << sxxn << " " << syys << " " << syyn << 
 				" " << sxys << " " << sxyn << " " << uxs << " " << uxn << " "
 				<< uys << " " << uyn << std::endl;
-
 		}
 
 	} s2us;			 // I''m not sure yet what this is
@@ -246,9 +239,9 @@ namespace comvar {
 
 		void read_from_file(ifstream& f)
 		{
-
 			f >> xmax >> ymax >> xmin >> ymin >> dtol;
 		}
+
 		void save_to_file(ofstream& f)
 		{
 			f << xmax << " " << ymax << " " << xmin << " " << 
@@ -282,9 +275,9 @@ namespace comvar {
 
 		void read_from_file(ifstream& f)
 		{
-
 			f >> aks0 >> akn0 >> phi0 >> phid0 >> coh0 >> phid0 >> apert0 >> apert_r ;;
 		}
+
 		void save_to_file(ofstream& f)
 		{
 			f << aks0 << " " << akn0 << " " << phi0 << " " << phid0 << " " << coh0 << " " 
@@ -382,7 +375,6 @@ namespace comvar {
 		float w_y2[10];
 		float wph[10];
 		float wpr[10];
-
 
 
 		waterCommon() : jwater{0}, pwater{0}, w_d{0}, w_x1{0}, w_x2{0}, w_y1{0}, w_y2{0}, wph{0}, wpr{0}, w_xc{0},

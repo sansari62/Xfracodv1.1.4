@@ -9,64 +9,8 @@
 #include<Failure.h>
 
 
-
 using namespace comvar;
 using namespace winvar;
-
-
-
-
-
-//
-//void write_data_to_file(float xp, float yp, float sig1, float sig2, float bet, float sig12, float set,
-//    float disp, float zet, int mm, stringstream& buffer)
-//{
-//
-//    int perc = 2;
-//    buffer.precision(perc + 1);  // Set precision for floats
-//    buffer << fixed << setprecision(perc + 1)
-//        << setw(7) << xp << "  "
-//        << setw(7) << yp << "  "
-//        << setw(10) << scientific << sig1 << "  "
-//        << setw(10) << scientific << sig2 << "  "
-//        << setprecision(3) << bet << "   "
-//        << setw(10) << scientific << sig12 << "  "
-//        << setprecision(perc) << set << "  "
-//        << setprecision(perc) << scientific << disp << "   "
-//        << setprecision(perc) << scientific << zet << "    "
-//        << mm << endl;
-//}
-//
-//
-//
-//
-//
-//void write_data_to_file2(int index, int npoint, stringstream& buffer)
-//{
-//    int perc = 2;
-//    buffer.precision(perc + 1);       // Set precision for floats
-//
-//    while (index < npoint)
-//    {
-//        Stress& st = stress[index];  
-//        
-//        buffer << fixed << setprecision(perc + 1)<<setw(7) << st.w_xp << "  "
-//            << setw(7) << st.w_yp << "  "
-//            << setw(10) << scientific << setprecision(perc) << st.w_sig1 << "  "
-//            << setw(10) << scientific << setprecision(perc) << st.w_sig2 << "  "
-//            << setprecision(3) << st.w_bet << "   "
-//            << setw(10) << scientific << setprecision(perc) << st.w_sig12 << "  "
-//            << setprecision(perc + 1) << st.w_set << "  "
-//            << scientific << setprecision(perc) << st.w_disp << "   "
-//            << scientific << setprecision(perc) << st.w_zet << "    "
-//            << st.w_mat << endl;
-//
-//        
-//        index++;
-//    }
-//
-//}
-
 
 
 

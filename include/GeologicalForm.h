@@ -21,8 +21,7 @@ public:
 	 int getBoundtype();
 	
 
-	void cross_current_or_save_element(float xb1, float yb1, float xe1, float ye1, float xcross, float ycross, int m,int ii);
-
+	void cross_current_or_save_element(float xb1, float yb1, float xe1, float ye1, float xcross, float ycross, int m,int ii, int &);
 
 	void ctl_cross_elements(int& k,int m, int numbe0,int num);
 	void chk_potential_crack_growth(float xbeg, float ybeg, float xend, float yend, int numbe0, int itype);

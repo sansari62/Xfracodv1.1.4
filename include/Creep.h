@@ -27,7 +27,7 @@ public:
 	int ID_fast_crack;
 
 	Creep();
-
+	void read_from_file(ifstream& f);
 	void save_to_file(std::ofstream& f);
 
 };

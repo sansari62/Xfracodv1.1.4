@@ -9,7 +9,6 @@
 using namespace CommonPara_h::comvar;
 
 
-
    
 
 
@@ -315,7 +314,6 @@ void ExcavationCracks()
     float dist = 0;
     float  xb = 0, yb = 0, xe = 0, ye = 0, xp = 0, yp = 0;       
     int  n_valid;
-
     for (auto it = valid.begin(); it != valid.end(); ) {
              
         xp = (*it).first;
@@ -326,7 +324,7 @@ void ExcavationCracks()
         {
             it = valid.erase(it);
             continue;
-        }           
+        }         
 
         dist = 1e6;
         for (int m = 0; m < numbe; ++m)
@@ -348,7 +346,6 @@ void ExcavationCracks()
         srand(time(nullptr));      
         randn = static_cast<float>(std::rand()) / RAND_MAX;
         if (randn > exca.rand_e) continue;
-
            
         srand(time(nullptr)); // Seed for random_comvar::number
         randn = static_cast<float>(std::rand()) / RAND_MAX;
@@ -361,8 +358,7 @@ void ExcavationCracks()
         float fos = 1;
         int im = 4;  // fracture initiation mode 0 - elastic, 1 - tensile; 2 - shear; 4 - blast
         if (legal == 1) 
-            failure(xp, yp, r, alpha, im, fos);
-        
+            failure(xp, yp, r, alpha, im);        
         ++it;      
     }
 }

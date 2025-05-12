@@ -1,8 +1,6 @@
 #include<stdafx.h>
-
 #include "BoundaryElement.h"
 #include <CommonPara.h>
-
 
 using namespace comvar;
 
@@ -25,6 +23,21 @@ BoundaryElement::BoundaryElement(float x, float y, float am, float cos, float si
 
 }
 
+
+
+
+
+void BoundaryElement::read_from_file(ifstream& f,int m)
+{
+    f >> xm >> ym >> cosbet>> sinbet>>a >> kod >> b_elm[m].ipair >> 
+        b_elm[m].jstate>> b_elm[m].jslipd >>b_elm[m].jmode >>
+        b_elm[m].force1>> b_elm[m].force2 >> tips[m].costem >> tips[m].sintem >> 
+        b_elm[m].us>> b_elm[m].un >> b_elm[m].forces >> b_elm[m].forcen >>
+        b_elm[m].aks>> b_elm[m].akn >> b_elm[m].phi >> b_elm[m].phid >> 
+        b_elm[m].coh>>mat_no >> joint[m].aperture0 >> joint[m].aperture_r >>
+        b_elm[m].sigma_s>> b_elm[m].sigma_n >> b_elm[m].us_neg >> 
+        b_elm[m].un_neg>> b_elm[m].ss_old >> b_elm[m].sn_old;
+}
 
 
 

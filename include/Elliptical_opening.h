@@ -17,10 +17,9 @@ public:
 		
 
 		Elliptical_opening();
-		Elliptical_opening(float x, float y, float r1, float r2);
-		
+		Elliptical_opening(float x, float y, float r1, float r2);		
 		void save_to_file(ofstream & f);
-
+		void read_from_file(ifstream& f);
 
 };
 #endif

@@ -1203,7 +1203,7 @@ void check_cross_arcs(fstream& file25)
 {
 
     //because of this location diff in test12 need to keep it
-    pi = 4.0 * atanf(1.0); //3.14159      
+    pi = 4.0 * atan(1.0); //3.14159      
     for (int i = 0; i < na; ++i)
     {
         Arch& arc = arc_list[i];        //alias for arc
@@ -1239,17 +1239,13 @@ void inputcheck()
     
    /*---------------------------------------------------------------------- -
          check crossing of fracturs, boundaries and arcs
-    ---------------------------------------------------------------------- -*/
-   
+    ---------------------------------------------------------------------- -*/   
 
     std::fstream file25("temp001.dat", std::ios::in | std::ios::out | std::ios::trunc);
-
     if (!file25.is_open()) {
         std::cerr << "Error opening file temp001!" << std::endl;
         return;
     }
-
-
     check_fracture_cross();
     reorder_fractures(file25);
     check_cross_boundaries();

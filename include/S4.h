@@ -21,7 +21,8 @@ public:
 	void limit_d();     // limit the d() value for stability
 	
 	void save_to_file(ofstream& f);
-	
+	void read_from_file(ifstream& f);
+
 };
 
 
