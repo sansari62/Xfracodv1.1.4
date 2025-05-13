@@ -208,6 +208,7 @@ exit /b
     <ClCompile Include="src\Internal.cpp" />
     <ClCompile Include="src\Mainb.cpp" />
     <ClCompile Include="src\Rock.cpp" />
+    <ClCompile Include="src\rstor_chek.cpp" />
     <ClCompile Include="src\S4.cpp" />
     <ClCompile Include="src\Save_and_Restore.cpp" />
     <ClCompile Include="src\Source.cpp" />
@@ -252,6 +253,7 @@ exit /b
     <ClInclude Include="include\Tip.h" />
     <ClInclude Include="include\WinInterface.h" />
     <ClInclude Include="include\Work.h" />
+    <ClInclude Include="rstor_chek.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

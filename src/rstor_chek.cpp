@@ -1,0 +1,130 @@
+﻿//#include <stdafx.h>
+#include <CommonPara.h>
+using namespace CommonPara_h::comvar;
+
+void remove_elements_inside_borehole(
+     float xc, float yc, float R)
+{
+    int new_numbe = 0;
+    for (int i = 0; i < numbe; ++i) {
+        BoundaryElement elm = comvar::elm_list[i];
+        float dx = elm.xm - xc;
+        float dy = elm.ym - yc;
+        float dist2 = dx * dx + dy * dy;
+
+        if (dist2 >= R * R) {
+            // Keep the element
+            elm_list[new_numbe++] = elm_list[i];
+        }
+        // else: skip the element (it is "removed")
+    }
+    numbe = new_numbe;  // Update number of active elements
+}
+
+
+//#include <optional>
+//
+//struct Point {
+//    float x, y;
+//};
+//
+//std::optional<Point> computeIntersectionWithCircle(
+//    const Point& p1, const Point& p2, float xc, float yc, float R)
+//{
+//    float dx = p2.x - p1.x;
+//    float dy = p2.y - p1.y;
+//    float fx = p1.x - xc;
+//    float fy = p1.y - yc;
+//
+//    float a = dx * dx + dy * dy;
+//    float b = 2 * (fx * dx + fy * dy);
+//    float c = fx * fx + fy * fy - R * R;
+//
+//    float discriminant = b * b - 4 * a * c;
+//    if (discriminant < 0) return std::nullopt;
+//
+//    discriminant = std::sqrt(discriminant);
+//    float t1 = (-b - discriminant) / (2 * a);
+//    float t2 = (-b + discriminant) / (2 * a);
+//
+//    float t = -1;
+//    if (t1 >= 0 && t1 <= 1) t = t1;
+//    else if (t2 >= 0 && t2 <= 1) t = t2;
+//
+//    if (t < 0) return std::nullopt;
+//
+//    return Point{ p1.x + t * dx, p1.y + t * dy };
+//}
+//
+//bool pointInCircle(const Point& p, float xc, float yc, float R) {
+//    float dx = p.x - xc, dy = p.y - yc;
+//    return dx * dx + dy * dy < R * R;
+//}
+//
+//void clipBoundaryElements(
+//    BoundaryElement* boundaryElements,
+//    int& numbe,
+//    float elementLength,
+//    float xc, float yc, float R)
+//{
+//    int new_numbe = 0;
+//    for (int i = 0; i < numbe; ++i) {
+//        auto& elem = elm_list[i];
+//
+//        // Reconstruct endpoints
+//        float dx = (elementLength / 2.0f) * elem.cosbet;
+//        float dy = (elementLength / 2.0f) * elem.sinbet;
+//
+//        Point p1{ elem.xm - dx, elem.ym - dy };
+//        Point p2{ elem.xm + dx, elem.ym + dy };
+//
+//        bool p1_in = pointInCircle(p1, xc, yc, R);
+//        bool p2_in = pointInCircle(p2, xc, yc, R);
+//
+//        if (p1_in && p2_in) {
+//            // Entire element is inside → skip
+//            continue;
+//        }
+//        else if (!p1_in && !p2_in) {
+//            // Entirely outside → keep as-is
+//            elm_list[new_numbe++] = elem;
+//        }
+//        else {
+//            // Partially inside → clip and recompute center
+//            auto intersection = computeIntersectionWithCircle(p1, p2, xc, yc, R);
+//            if (!intersection) continue; // edge case: no intersection
+//
+//            Point new_p = intersection.value();
+//
+//            if (p1_in) p1 = new_p;
+//            else       p2 = new_p;
+//
+//            // Recompute center and direction
+//            float cx = 0.5f * (p1.x + p2.x);
+//            float cy = 0.5f * (p1.y + p2.y);
+//            float dx = p2.x - p1.x;
+//            float dy = p2.y - p1.y;
+//            float len = std::sqrt(dx * dx + dy * dy);
+//            if (len == 0) continue; // degenerate element
+//
+//            /*elm_list[new_numbe++] = {
+//                cx, cy,
+//                dx / len, dy / len
+//            };*/
+//        }
+//    }
+//    numbe = new_numbe;
+//}
+
+
+void check_boreholes()
+{
+    for (int i = 0; i < na; ++i)
+    {
+        Arch& arc = arc_list[i];
+        float xc = arc.get_arcx();
+        float yc = arc.get_arcy();
+        float r = arc.get_arcr();
+        remove_elements_inside_borehole(xc, yc, r);
+    }
+}
