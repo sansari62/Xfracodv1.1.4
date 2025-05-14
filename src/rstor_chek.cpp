@@ -2,6 +2,7 @@
 #include <CommonPara.h>
 #include<GeologicalForm.h>
 #include <optional>
+#include<Tip.h>
 
 using namespace CommonPara_h::comvar;
 
@@ -26,6 +27,17 @@ void remove_elements_inside_borehole(
 }
 
 
+
+void fix_tip_pointer(int m,int new_numbe)
+{
+    for (int k = 0; k < no; ++k)
+    {
+        Tip& t = tips[k];
+        if (t.mpointer == m)
+            t.mpointer = new_numbe;
+    }
+    return;
+}
 
 
 struct Point {
@@ -86,10 +98,13 @@ void clipBoundaryElements(
 
         if (p1_in && p2_in) {
             // Entire element is inside → skip
+            int merge = 0;
+            specialLabel_200(merge,m);
             continue;
         }
         else if (!p1_in && !p2_in) {
             // Entirely outside → keep as-is
+            fix_tip_pointer(m, new_numbe);
             elm_list[new_numbe++] = elem;
         }
         else {
@@ -126,13 +141,12 @@ void clipBoundaryElements(
             {
                 new_numbe--;
                 continue;
-            }            
+            }    
+            newelement.kod= elm_list[m].kod;
+            newelement.mat_no= elm_list[m].mat_no;
             elm_list[new_numbe] = newelement;
             b_elm[new_numbe].force1 = b_elm[m].force1 * elm_list[new_numbe].a / elem.a;
             b_elm[new_numbe].force2 = b_elm[m].force2 * elm_list[new_numbe].a / elem.a;
-            elm_list[new_numbe].kod = elm_list[m].kod;
-
-            elm_list[new_numbe].mat_no = elm_list[m].mat_no;
             b_elm[new_numbe].aks = b_elm[m].aks;
             b_elm[new_numbe].akn = b_elm[m].akn;
             b_elm[new_numbe].phi = b_elm[m].phi;
@@ -147,6 +161,8 @@ void clipBoundaryElements(
         }
     }
     numbe = new_numbe;
+    arrangetip();
+    return;
 }
 
 
