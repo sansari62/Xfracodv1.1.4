@@ -433,15 +433,12 @@ void processFracture()
             if (!isValidNumber(tem)) {
                 MessageBox(nullptr, L"Expected a number after 'cycle'.Please add the number of cycles on the next line in the input file!", L"Error", MB_OK | MB_ICONERROR);
                 exit(EXIT_FAILURE);
-            }
-            
-            //file2 << tem << endl;              
+            }            
             mcyc0 += stoi(tem);               
         }
         //----------------------------
         if (mcyc != 0) return;            
         s5u.dtol = 0.0001;            
-           
         if (nc == 1)
         {
             inputcheck();
@@ -1497,7 +1494,12 @@ void processFracture()
            getline(inFile, lineData);
            std::stringstream ss(lineData);
            ss >> filename;
+           restor_flg = true;
+           
            restore(filename);
+           mcyc = 0;
+           mcyc0 = 0;
+           nc = 0;
        }
        catch (std::ifstream::failure e)
        {

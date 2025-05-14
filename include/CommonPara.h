@@ -73,6 +73,7 @@ namespace comvar {
 	extern int j_material;
 	extern float pi;
 
+	extern bool restor_flg;
 	extern const float zerof;
 	extern float dist_thr;
 

@@ -1,4 +1,6 @@
 #pragma once
+#include<stdafx.h>
+
 #ifndef BoundaryElement_h
 #define BoundaryElement_h
 

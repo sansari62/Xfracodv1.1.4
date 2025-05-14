@@ -88,7 +88,7 @@ bool approximatelyEqual(float a1, float a2) {
 
 
 //check dupliction of newly added element
-bool  GeologicalForm::isNewElementUnique(const BoundaryElement& newelem)
+bool  isNewElementUnique(const BoundaryElement& newelem)
 {
     for (int ii = 0; ii < numbe ; ii++)
     {
@@ -249,11 +249,11 @@ int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float
     ieven is for uneven distribution of elements, not used
     */
 
-    float x1=0, y1=0, xb1=0, xe1=0, yb1=0, ye1=0, xb2=0, xe2=0 , x2=0, y2=0,yb2=0,ye2=0, xcross = 0,ycross = 0;
+    float x1=0, y1=0, xb1=0, xe1=0, yb1=0, ye1=0, xb2=0, xe2=0, x2=0, y2=0,yb2=0,ye2=0, xcross = 0,ycross = 0;
     int mm = mat_no;
     float st = sqrt(pow((xend - xbeg), 2) + pow((yend - ybeg), 2));// an estimation of length of fracture 
     
-    float angd = comvar::pi / num;  // here elementno insead of num  //new change elem_no to num because of archs
+    float angd = comvar::pi / num;  
     float ang0 = 0.5 * angd;
     float xs = xbeg;
     float ys = ybeg;
@@ -307,7 +307,6 @@ int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float
         if (bound_type == 5) 
         {
             BE newelm(s8[jmat].aks0, s8[jmat].akn0, s8[jmat].phi0, s8[jmat].phid0, s8[jmat].coh0);
-            
             b_elm[m] = newelm;            
             joint[m].aperture0 = s8[jmat].apert0;
             joint[m].aperture_r = s8[jmat].apert_r;
