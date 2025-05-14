@@ -196,9 +196,8 @@ void restore(string filename)
 
     inputFile >> exca.ID_Exca >> exca.d_wall >> exca.rand_e;
     
-    lastinput = "endf";
+    //lastinput = "endf";
     return;
 }
-
 
 

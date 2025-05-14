@@ -111,6 +111,9 @@
     <ClCompile Include="src\Save_and_Restore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\rstor_chek.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Acoustic.h">
@@ -219,6 +222,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Save_and_Restore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rstor_chek.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

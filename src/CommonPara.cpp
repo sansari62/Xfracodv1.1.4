@@ -52,7 +52,8 @@ namespace comvar {
 
 	int nelement = 0;
 	int mcyc = 0;
-	int mcyc0 = 0;	
+	int mcyc0 = 0;
+	bool restor_flg = false;
 
 	int ihist = 0;
 	int lhist = 0;

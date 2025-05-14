@@ -1,10 +1,10 @@
 #include <stdafx.h>
 #include <CommonPara.h>
 #include<Source.h>
+#include<rstor_chek.h>
 
 
 using namespace CommonPara_h::comvar;
-
 
 
 
@@ -1251,6 +1251,8 @@ void inputcheck()
     check_cross_boundaries();
     reorder_boundaries(file25);
     check_cross_arcs(file25);
+    if (restor_flg)
+        check_boreholes();
     final_wrap_up();
     return;
 }
