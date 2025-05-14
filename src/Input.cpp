@@ -439,7 +439,6 @@ void processFracture()
         //----------------------------
         if (mcyc != 0) return;            
         s5u.dtol = 0.0001;            
-           
         if (nc == 1)
         {
             inputcheck();

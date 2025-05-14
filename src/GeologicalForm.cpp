@@ -88,7 +88,7 @@ bool approximatelyEqual(float a1, float a2) {
 
 
 //check dupliction of newly added element
-bool  GeologicalForm::isNewElementUnique(const BoundaryElement& newelem)
+bool  isNewElementUnique(const BoundaryElement& newelem)
 {
     for (int ii = 0; ii < numbe ; ii++)
     {
