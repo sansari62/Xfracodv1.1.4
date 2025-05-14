@@ -47,6 +47,7 @@ void add_crack_growth();
 void input_tip_check();
 void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, float& phid_bb,
 	float& ap_bb, float& apr_bb, int im, int mm);
+void specialLabel_200(int& mergtip, int i);
 
 #endif
 
