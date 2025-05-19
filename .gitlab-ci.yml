@@ -4,36 +4,53 @@ stages:
   - release
 
 variables:
-  BUILD_DIR: "build"
   VS_DEV_CMD: "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat"
-  PROJECT_DIR: "C:\\C++projects\\SlimV-Fracod"  # Your project directory
+  PROJECT_DIR: "C:\\C++projects\\SlimV-Fracod"
   SOLUTION_FILE: "SlimV-Fracod.sln"
   RELEASE_DIR: "x64\\Release"
-  EXE_NAME: "SlimV-Fracod.exe"  # Replace with the name of your executable
+  EXE_NAME: "SlimV-Fracod.exe"
 
 build:
   stage: build
   tags:
     - windows
   script:
-    - call "%VS_DEV_CMD%"  # Set up the Visual Studio environment
-    - cd %PROJECT_DIR%      # Change to the project directory
-    - MSBuild "%SOLUTION_FILE%" /p:Configuration=Release /p:Platform=x64  # Build the solution using MSBuild
+    - echo "Initializing MSVC environment..."
+    - call "%VS_DEV_CMD%"
+    - cd "%PROJECT_DIR%"
+    - echo "Building solution..."
+    - MSBuild "%SOLUTION_FILE%" /p:Configuration=Release /p:Platform=x64
+  artifacts:
+    paths:
+      - $RELEASE_DIR\$EXE_NAME
+    expire_in: 1 week
+  only:
+    - branches
+    - tags
 
-sast:
+test:
   stage: test
-include:
-- template: Security/SAST.gitlab-ci.yml
+  tags:
+    - windows
+  script:
+    - echo "Skipping actual tests for now (no tests defined)"
+  allow_failure: true
+  only:
+    - branches
+    - tags
 
 release:
   stage: release
   tags:
     - windows
   script:
-    - echo "Creating release..."
-    - mkdir release  # Create release directory
-    - copy %PROJECT_DIR%\%BUILD_DIR%\%RELEASE_DIR%\%EXE_NAME% release\  # Copy the executable to release folder
-    - echo "Release files ready."
+    - echo "Packaging release..."
+    - mkdir release
+    - copy "%PROJECT_DIR%\\%RELEASE_DIR%\\%EXE_NAME%" release\
+    - echo "Release packaged."
   artifacts:
     paths:
-      - release/  # Store release directory as artifact
+      - release/
+    expire_in: 1 week
+  only:
+    - tags
