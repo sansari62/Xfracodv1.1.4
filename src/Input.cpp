@@ -1495,7 +1495,7 @@ void processFracture()
            std::stringstream ss(lineData);
            ss >> filename;
            restor_flg = true;
-           
+           filename += ".dat";
            restore(filename);
            mcyc = 0;
            mcyc0 = 0;

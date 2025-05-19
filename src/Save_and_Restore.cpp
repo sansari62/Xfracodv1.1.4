@@ -7,7 +7,7 @@ using namespace CommonPara_h::comvar;
 
 void save(ofstream& file10)
 {       
-    const char* File_ID = "FRACOD_SAVED_FILE";
+    const char* File_ID = "XFRACOD_SAVED_FILE";
     
     file10 << File_ID << std::endl;
     file10 << numbe << " " << no << " " << numbe_old << " " 
@@ -104,11 +104,11 @@ void restore(string filename)
     std::ifstream inputFile(filename);
     if (!inputFile.is_open()) {
         std::cerr << "Error in opening save_file!" << std::endl;
-        return;
+        exit(1);
     }
     string lineData;
     getline(inputFile, lineData);
-    if (lineData != "FRACOD_SAVED_FILE")
+    if (lineData != "XFRACOD_SAVED_FILE")
     {
         MessageBox(nullptr, L"File is not a FRACOD saved file!press OK to quit.",
             L"Message!", MB_OK);

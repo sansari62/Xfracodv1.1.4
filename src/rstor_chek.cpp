@@ -1,10 +1,12 @@
-﻿//#include <stdafx.h>
+﻿#include<stdafx.h>
+
 #include <CommonPara.h>
 #include<GeologicalForm.h>
 #include <optional>
 #include<Tip.h>
 
 using namespace CommonPara_h::comvar;
+
 
 void remove_elements_inside_borehole(
      float xc, float yc, float R)
@@ -84,8 +86,6 @@ void clipBoundaryElements(
     int new_numbe = 0;
     for (int m = 0; m < numbe; ++m) {
         auto& elem = elm_list[m];
-        //float elementLength = elem.a;
-
         // Reconstruct endpoints
         float dx = elem.a * elem.cosbet;
         float dy = elem.a * elem.sinbet;
@@ -124,11 +124,6 @@ void clipBoundaryElements(
             float dy = p2.y - p1.y;
             float len = std::sqrt(dx * dx + dy * dy);
             if (len == 0) continue; // degenerate element
-
-            /*elm_list[new_numbe++] = {
-                cx, cy,
-                dx / len, dy / len
-            };*/
             //add new element
             BoundaryElement newelement;
             newelement.xm =cx;
