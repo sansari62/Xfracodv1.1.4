@@ -4,7 +4,7 @@ stages:
   - release
 
 variables:
-  VS_DEV_CMD: "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat"
+  VS_DEV_CMD: "C:\\Programme\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat"
   PROJECT_DIR: "C:\\C++projects\\SlimV-Fracod"
   SOLUTION_FILE: "SlimV-Fracod.sln"
   RELEASE_DIR: "x64\\Release"
