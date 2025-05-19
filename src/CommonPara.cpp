@@ -111,7 +111,7 @@ namespace comvar {
 
 	waterCommon watercm;
 	std::vector< Rock>  rock1(10, Rock());
-	std::vector<Tip> tips(m0/3);// 500 in v2.3
+	std::vector<Tip> tips(m0);// 500 in v2.3
 	DispWindow dispwin;
 
 

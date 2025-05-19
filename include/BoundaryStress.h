@@ -1,4 +1,3 @@
-
 #pragma once
 #ifndef BoundaryStress_h
 #define BoundaryStress_h

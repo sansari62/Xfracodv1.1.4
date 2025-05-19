@@ -38,10 +38,8 @@ public:
 
 void newtips(float dr);
 void arrangetip();
-
 void check_crack_growth();
 void If_No_tip();
-
 void add_crack_growth();
 void input_tip_check();
 void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, float& phid_bb,
