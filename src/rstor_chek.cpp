@@ -1,5 +1,4 @@
 ﻿#include<stdafx.h>
-
 #include <CommonPara.h>
 #include<GeologicalForm.h>
 #include <optional>
@@ -169,7 +168,6 @@ void check_boreholes()
         float xc = arc.get_arcx();
         float yc = arc.get_arcy();
         float r = arc.get_arcr();
-        //remove_elements_inside_borehole(xc, yc, r);
         clipBoundaryElements(xc, yc, r);
     }
 }

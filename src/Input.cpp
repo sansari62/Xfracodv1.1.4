@@ -1517,10 +1517,7 @@ void processFracture()
        string id;
        string tem;
        string message;
-       string lineData;
-      
-      
-       //auto start = std::chrono::high_resolution_clock::now();
+       string lineData;         
        using func = function<void()>;     
 
        unordered_map<string, func> mp{
