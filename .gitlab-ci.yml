@@ -16,7 +16,7 @@ build:
     - windows
   script:
     - echo "Initializing MSVC environment..."
-    - call "%VS_DEV_CMD%"
+    - cmd /c "%VS_DEV_CMD%"
     - cd "%PROJECT_DIR%"
     - echo "Building solution..."
     - MSBuild "%SOLUTION_FILE%" /p:Configuration=Release /p:Platform=x64
