@@ -114,6 +114,9 @@
     <ClCompile Include="src\rstor_chek.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Rectangle_excavation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Acoustic.h">
@@ -225,6 +228,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rstor_chek.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Rectangle_check.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

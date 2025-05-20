@@ -1,7 +1,8 @@
 #include <stdafx.h>
 #include <CommonPara.h>
 #include<Source.h>
-#include<rstor_chek.h>
+//#include<rstor_chek.h>
+#include<Rectangle_check.h>
 
 
 using namespace CommonPara_h::comvar;
@@ -1252,7 +1253,8 @@ void inputcheck()
     reorder_boundaries(file25);
     check_cross_arcs(file25);
     if (restor_flg)
-        check_boreholes();
+        //check_boreholes();
+        check_rectangle();
     final_wrap_up();
     return;
 }
