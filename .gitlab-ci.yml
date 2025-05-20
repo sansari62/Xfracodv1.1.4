@@ -31,9 +31,8 @@ release:
     - windows
   script:
     - echo "Creating release..."
-    - mkdir release  # Create release directory
-    - copy %PROJECT_DIR%\%BUILD_DIR%\%RELEASE_DIR%\%EXE_NAME% release\  # Copy the executable to release folder
-    - echo "Release files ready."
+    - cmd /c "mkdir release && copy %PROJECT_DIR%\%BUILD_DIR%\%RELEASE_DIR%\%EXE_NAME% release\\"
+
   artifacts:
     paths:
       - release/  # Store release directory as artifact
