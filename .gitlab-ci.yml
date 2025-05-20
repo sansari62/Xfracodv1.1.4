@@ -16,8 +16,8 @@ build:
   tags:
     - windows
   script:
-    - echo VS_DEV_CMD=%VS_DEV_CMD%
-    - cmd /c "%VS_DEV_CMD%"  # Set up the Visual Studio environment
+    - echo "Initializing MSVC environment..."
+    - cmd /c "C:\\Programme\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat"  # Set up the Visual Studio environment
     - cd %PROJECT_DIR%      # Change to the project directory
     - MSBuild "%SOLUTION_FILE%" /p:Configuration=Release /p:Platform=x64  # Build the solution using MSBuild
 
