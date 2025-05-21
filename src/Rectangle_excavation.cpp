@@ -190,7 +190,9 @@ void process_elements(const Rectangle1& rect) {
         if (intersections.empty()) {
             //updated.push_back(elem); // Fully outside
             fix_tip_pointer1(m, new_numbe);
-            elm_list[new_numbe++] = elem;
+            elm_list[new_numbe] = elem;
+            b_elm[new_numbe] = b_elm[m];
+            new_numbe++;
         }
         else if (intersections.size() == 1) {
             Point clipped = intersections[0];
@@ -249,6 +251,9 @@ void process_elements(const Rectangle1& rect) {
 void check_rectangle()
 {
     Rectangle1 rect1;
-    validate_and_extract_rectangle(rect1);
-    process_elements(rect1);
+   if( validate_and_extract_rectangle(rect1))
+        process_elements(rect1);
+   else
+       MessageBox(nullptr, L"Check edge definition in input!", L"Error!", MB_OK);
+
 }

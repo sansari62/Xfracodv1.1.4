@@ -83,8 +83,10 @@ void clipBoundaryElements(
         }
         else if (!p1_in && !p2_in) {
             // Entirely outside → keep as-is
-            fix_tip_pointer(m, new_numbe);
-            elm_list[new_numbe++] = elem;
+            fix_tip_pointer(m, new_numbe);           
+            elm_list[new_numbe] = elem;
+            b_elm[new_numbe] = b_elm[m];
+            new_numbe++;
         }
         else {
             // Partially inside → clip and recompute center
@@ -92,7 +94,6 @@ void clipBoundaryElements(
             if (!intersection) continue; // edge case: no intersection
 
             Point new_p = intersection.value();
-
             if (p1_in) p1 = new_p;
             else       p2 = new_p;
 
