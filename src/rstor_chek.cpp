@@ -1,4 +1,4 @@
-﻿//#include <stdafx.h>
+﻿#include<stdafx.h>
 #include <CommonPara.h>
 #include<GeologicalForm.h>
 #include <optional>
@@ -6,25 +6,6 @@
 
 using namespace CommonPara_h::comvar;
 
-void remove_elements_inside_borehole(
-     float xc, float yc, float R)
-{
-    int new_numbe = 0;
-    for (int i = 0; i < numbe; ++i) {
-        BoundaryElement elm = comvar::elm_list[i];
-        float dx = elm.xm - xc;
-        float dy = elm.ym - yc;
-        float dist2 = dx * dx + dy * dy;
-
-        if (dist2 >= R * R) {
-            // Keep the element
-            elm_list[new_numbe++] = elm_list[i];
-        }
-        // else: skip the element (it is "removed")
-    }
-    numbe = new_numbe;  // Update number of active elements
-    numbe_old = numbe;
-}
 
 
 
@@ -84,8 +65,6 @@ void clipBoundaryElements(
     int new_numbe = 0;
     for (int m = 0; m < numbe; ++m) {
         auto& elem = elm_list[m];
-        //float elementLength = elem.a;
-
         // Reconstruct endpoints
         float dx = elem.a * elem.cosbet;
         float dy = elem.a * elem.sinbet;
@@ -124,11 +103,6 @@ void clipBoundaryElements(
             float dy = p2.y - p1.y;
             float len = std::sqrt(dx * dx + dy * dy);
             if (len == 0) continue; // degenerate element
-
-            /*elm_list[new_numbe++] = {
-                cx, cy,
-                dx / len, dy / len
-            };*/
             //add new element
             BoundaryElement newelement;
             newelement.xm =cx;
@@ -174,7 +148,6 @@ void check_boreholes()
         float xc = arc.get_arcx();
         float yc = arc.get_arcy();
         float r = arc.get_arcr();
-        //remove_elements_inside_borehole(xc, yc, r);
         clipBoundaryElements(xc, yc, r);
     }
 }
