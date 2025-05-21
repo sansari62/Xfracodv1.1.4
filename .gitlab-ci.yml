@@ -31,7 +31,7 @@ release:
     - windows
   script:
     - echo "Creating release..."
-    - cmd /c "echo %PROJECT_DIR%\%BUILD_DIR%\%RELEASE_DIR%\%EXE_NAME%"
+    - cmd /c "echo %PROJECT_DIR%\%RELEASE_DIR%\%EXE_NAME%"
     - cmd /c "dir %PROJECT_DIR%\%RELEASE_DIR%"
     - cmd /c "mkdir release && copy %PROJECT_DIR%\%RELEASE_DIR%\%EXE_NAME% release\\"
 
