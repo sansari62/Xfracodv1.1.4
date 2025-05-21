@@ -34,7 +34,7 @@ release:
     - cmd /c "echo %PROJECT_DIR%\%RELEASE_DIR%\%EXE_NAME%"
     - cmd /c "dir %PROJECT_DIR%\%RELEASE_DIR%"
     #- cmd /c "mkdir release && copy %PROJECT_DIR%\%RELEASE_DIR%\%EXE_NAME% release\\"
-    - cmd /c "mkdir release && copy C:\C++projects\SlimV-Fracod\x64\Release\SlimV-Fracod.exe release"
+    - cmd /c '"mkdir release && copy "C:\C++projects\SlimV-Fracod\x64\Release\SlimV-Fracod.exe" release"'
 
   artifacts:
     paths:
