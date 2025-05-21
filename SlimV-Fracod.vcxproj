@@ -207,6 +207,7 @@ exit /b
     <ClCompile Include="src\InputCheck.cpp" />
     <ClCompile Include="src\Internal.cpp" />
     <ClCompile Include="src\Mainb.cpp" />
+    <ClCompile Include="src\Rectangle_excavation.cpp" />
     <ClCompile Include="src\Rock.cpp" />
     <ClCompile Include="src\rstor_chek.cpp" />
     <ClCompile Include="src\S4.cpp" />
@@ -224,6 +225,7 @@ exit /b
     <ClInclude Include="include\Borehole.h" />
     <ClInclude Include="include\BoundaryElement.h" />
     <ClInclude Include="include\BoundaryStress.h" />
+    <ClInclude Include="include\Rectangle_check.h" />
     <ClInclude Include="include\stdafx.h" />
     <ClInclude Include="include\CommonPara.h" />
     <ClInclude Include="include\Creep.h" />

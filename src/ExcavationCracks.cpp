@@ -341,11 +341,17 @@ void ExcavationCracks()
            
         }
 
-        if (dist > exca.d_wall) continue;            
+        if (dist > exca.d_wall) {
+            ++it; 
+            continue;
+        }
         float randn;
         srand(time(nullptr));      
         randn = static_cast<float>(std::rand()) / RAND_MAX;
-        if (randn > exca.rand_e) continue;
+        if (randn > exca.rand_e) {
+            ++it;
+            continue;
+        }
            
         srand(time(nullptr)); // Seed for random_comvar::number
         randn = static_cast<float>(std::rand()) / RAND_MAX;

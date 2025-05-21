@@ -20,8 +20,10 @@ void safety_check()
         if (elm_list[m].kod == 5)
         {
             if (b_elm[m].aks == 0.0 || b_elm[m].akn == 0.0)
-                MessageBox(nullptr, L"Element stiffness is zero", L"Warning!", MB_OK);
-
+                MessageBox(nullptr,
+                    L"Stiffness is zero.Element stiffness is zero.\n"
+                    L"Please check jmat in the input file.",
+                    L"Warning!",MB_OK);
             if (joint[m].aperture0 == 0.0 || joint[m].aperture_r == 0.0)
                 MessageBox(nullptr, L"Joint aperture is zero", L"Warning!", MB_OK);
 

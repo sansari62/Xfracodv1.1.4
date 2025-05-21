@@ -999,8 +999,7 @@ void processFracture()
           s8[jmat].apert0 = 1e-6;
 
       if (s8[jmat].apert_r == 0)
-          s8[jmat].apert_r = 1e-6;
-      
+          s8[jmat].apert_r = 1e-6;      
 
            file2 << "   joint material = " << jmat << std::endl
             << "               ks = " << std::scientific << std::setprecision(4) << s8[jmat].aks0 << std::endl
@@ -1495,7 +1494,7 @@ void processFracture()
            std::stringstream ss(lineData);
            ss >> filename;
            restor_flg = true;
-           
+           filename += ".dat";
            restore(filename);
            mcyc = 0;
            mcyc0 = 0;
@@ -1517,10 +1516,7 @@ void processFracture()
        string id;
        string tem;
        string message;
-       string lineData;
-      
-      
-       //auto start = std::chrono::high_resolution_clock::now();
+       string lineData;         
        using func = function<void()>;     
 
        unordered_map<string, func> mp{
