@@ -4,11 +4,12 @@ stages:
   - release
 
 variables:
+  BUILD_DIR: "build"
   VS_DEV_CMD: "C:\\Programme\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat"
-  PROJECT_DIR: "C:\\C++projects\\SlimV-Fracod"
+  PROJECT_DIR: "C:\\C++projects\\SlimV-Fracod"  # Your project directory
   SOLUTION_FILE: "SlimV-Fracod.sln"
   RELEASE_DIR: "x64\\Release"
-  EXE_NAME: "SlimV-Fracod.exe"
+  EXE_NAME: "SlimV-Fracod.exe"  # Replace with the name of your executable
 
 build:
   stage: build
@@ -16,41 +17,25 @@ build:
     - windows
   script:
     - echo "Initializing MSVC environment..."
-    - cmd /c "%VS_DEV_CMD%"
-    - cd "%PROJECT_DIR%"
-    - echo "Building solution..."
-    - MSBuild "%SOLUTION_FILE%" /p:Configuration=Release /p:Platform=x64
-  artifacts:
-    paths:
-      - $RELEASE_DIR\$EXE_NAME
-    expire_in: 1 week
-  only:
-    - branches
-    - tags
+    - cmd /c '"C:\\Programme\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat" && cd %PROJECT_DIR% && msbuild "%SOLUTION_FILE%" /p:Configuration=Release /p:Platform=x64'
 
-test:
+
+sast:
   stage: test
-  tags:
-    - windows
-  script:
-    - echo "Skipping actual tests for now (no tests defined)"
-  allow_failure: true
-  only:
-    - branches
-    - tags
+include:
+- template: Security/SAST.gitlab-ci.yml
 
 release:
   stage: release
   tags:
     - windows
   script:
-    - echo "Packaging release..."
-    - mkdir release
-    - copy "%PROJECT_DIR%\\%RELEASE_DIR%\\%EXE_NAME%" release\
-    - echo "Release packaged."
+    - echo "Creating release..."
+    - cmd /c "echo %PROJECT_DIR%\%RELEASE_DIR%\%EXE_NAME%"
+    - cmd /c "dir %PROJECT_DIR%\%RELEASE_DIR%"
+    #- cmd /c "mkdir release && copy %PROJECT_DIR%\%RELEASE_DIR%\%EXE_NAME% release\\"
+    - cmd /c '"mkdir release && copy "C:\C++projects\SlimV-Fracod\x64\Release\SlimV-Fracod.exe" release"'
+
   artifacts:
     paths:
-      - release/
-    expire_in: 1 week
-  only:
-    - tags
+      - release/  # Store release directory as artifact
