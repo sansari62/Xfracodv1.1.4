@@ -24,7 +24,7 @@
 #include<map>
 #include<BE.h>
 
-#define m0 500 //2000
+#define m0 2000
 
 
 

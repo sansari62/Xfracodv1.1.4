@@ -36,8 +36,8 @@ int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, 
             if (be.kod != 5) continue;
         }
 
-        float dist1 = sqrt(powf(x1 - be.xm, 2) + powf(y1 - be.ym, 2));
-        float dist2 = sqrt(powf(x2 - be.xm, 2) + powf(y2 - be.ym, 2));
+        float dist1 = sqrt(pow(x1 - be.xm, 2) + pow(y1 - be.ym, 2));
+        float dist2 = sqrt(pow(x2 - be.xm, 2) + pow(y2 - be.ym, 2));
 
 
         if (min(dist1, dist2) - thr <= factors.tolerance * max(ac, be.a))
@@ -48,9 +48,9 @@ int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, 
 
         if (symm.ksym == 1 || symm.ksym == 4)
         {
-            dist1 = sqrt(powf(x1 - (2.0 * symm.xsym - be.xm), 2) +
+            dist1 = sqrt(pow(x1 - (2.0 * symm.xsym - be.xm), 2) +
                 powf(y1 - be.ym, 2));
-            dist2 = sqrtf(powf(x2 - (2.0 * symm.xsym - be.xm), 2) +
+            dist2 = sqrt(pow(x2 - (2.0 * symm.xsym - be.xm), 2) +
                 powf(y2 - be.ym, 2));
             if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a))
             {
@@ -62,8 +62,8 @@ int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, 
 
         if (symm.ksym == 2 || symm.ksym == 4)
         {
-            dist1 = sqrt(powf(x1 - be.xm, 2) + powf(y1 - (2.0 * symm.ysym - be.ym), 2));
-            dist2 = sqrt(pow(x2 - be.xm, 2) + powf(y2 - (2.0 * symm.ysym - be.ym), 2));
+            dist1 = sqrt(pow(x1 - be.xm, 2) + pow(y1 - (2.0 * symm.ysym - be.ym), 2));
+            dist2 = sqrt(pow(x2 - be.xm, 2) + pow(y2 - (2.0 * symm.ysym - be.ym), 2));
             if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a))
             {
 
@@ -73,8 +73,8 @@ int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, 
 
         if (symm.ksym == 3 || symm.ksym == 4)
         {
-            dist1 = sqrt(powf(x1 - (2.0 * symm.xsym - be.xm), 2) + powf(y1 - (2.0 * symm.ysym - be.ym), 2));
-            dist2 = sqrt(powf(x2 - (2.0 * symm.xsym - be.xm), 2) + powf(y2 - (2.0 * symm.ysym - be.ym), 2));
+            dist1 = sqrt(pow(x1 - (2.0 * symm.xsym - be.xm), 2) + pow(y1 - (2.0 * symm.ysym - be.ym), 2));
+            dist2 = sqrt(pow(x2 - (2.0 * symm.xsym - be.xm), 2) + pow(y2 - (2.0 * symm.ysym - be.ym), 2));
             if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a))
             {
 
