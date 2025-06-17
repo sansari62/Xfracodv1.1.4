@@ -1129,7 +1129,7 @@ void cross_arc_with_boundaries(int i, float  xc, float yc, float angb, float ang
         }
 
         //label750:
-        float de = sqrt(powf(xc - xe, 2) + powf(yc - ye, 2));
+        float de = sqrt(pow(xc - xe, 2) + pow(yc - ye, 2));
         if (de > 1.05 * r || de < 0.95 * r)
             continue;
 
@@ -1204,7 +1204,7 @@ void check_cross_arcs(fstream& file25)
 {
 
     //because of this location diff in test12 need to keep it
-    pi = 4.0 * atan(1.0); //3.14159      
+    pi = 4.0 * atanf(1.0); //3.14159      
     for (int i = 0; i < na; ++i)
     {
         Arch& arc = arc_list[i];        //alias for arc
@@ -1256,9 +1256,10 @@ void inputcheck()
     {
         if (na>0)
             check_boreholes();
-        if(nb>3)
+        if(nb>=3)
             check_rectangle();
     }       
     final_wrap_up();
+   
     return;
 }

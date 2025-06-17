@@ -24,6 +24,7 @@ int check_elastic_growth(int m)
 
     int ms = 2 * m; //Sara because of index error in d0[2m-1 in line64 add this indexs,make sure it works correctly
     int mn = ms + 1;
+    //const float epsilon = 1e-4f;
 
     if (s4.d0[mn] > 0)
     {

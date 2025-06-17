@@ -717,31 +717,31 @@ void If_No_tip()
             {
                // geoplot();
                 //------ - Initialising the seed elements for growth---------
-                for (ni = 0; ni < no; ni++)
+                /*for (ni = 0; ni < no; ni++)
                 {
                     if (tips[ni].ityp == 0) break;
                     nelement = tips[ni].mpointer;
                   
-                }
+                }*/
                 return;
             }
             if (lastinput == "endf")
             {
-                StopReturn = false;
-                return;  
+                MessageBox(nullptr, L"NO CRACK GROWTH AND CRACK INITIATION FOUND", L"Message!", MB_OK);
+                StopReturn = false;                
             }
             else
                 input(); //first time to call input()  
+            
             return;
-
         }
             //------ - Initialising the seed elements for growth----
-            for (ni = 0; ni < no; ni++)
+            /*for (ni = 0; ni < no; ni++)
             {
                 if (tips[ni].ityp == 0) break;
                 nelement = tips[ni].mpointer;
               
-            }
+            }*/
 
             return;
     }

@@ -21,7 +21,7 @@ int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, 
     float y2 = yc + ac * sinbeta;
     int  en;
     float thr = 0.0003; //6e-4;
-    //const float epsilon = 1e-6;
+    const float epsilon = 1e-6f;
 
     if (flagB == 0)
         en = numbe - 1;
@@ -40,19 +40,21 @@ int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, 
         float dist2 = sqrt(pow(x2 - be.xm, 2) + pow(y2 - be.ym, 2));
 
 
-        if (min(dist1, dist2) - thr <= factors.tolerance * max(ac, be.a))
+       // if (min(dist1, dist2) -thr <= factors.tolerance * max(ac, be.a))
+        if (min(dist1, dist2)  <= factors.tolerance * max(ac, be.a) )
         {
-
             return(0);
         }
 
         if (symm.ksym == 1 || symm.ksym == 4)
         {
             dist1 = sqrt(pow(x1 - (2.0 * symm.xsym - be.xm), 2) +
-                powf(y1 - be.ym, 2));
+                pow(y1 - be.ym, 2));
             dist2 = sqrt(pow(x2 - (2.0 * symm.xsym - be.xm), 2) +
-                powf(y2 - be.ym, 2));
-            if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a))
+                pow(y2 - be.ym, 2));
+            //if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a))
+            if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a) + epsilon)
+
             {
 
                 return(0);
@@ -336,7 +338,7 @@ void failure(float xp, float yp, float r, float alpha, int im)
     xn = xp;
     yn = yp;    
     material = (multi_region)?check_material_id(0.5 * (xb + xn), 0.5 * (yb + yn)): j_material;
-    float dl = sqrtf(std::powf(xn - xb,2) + std::powf(yn - yb,2));
+    float dl = sqrt(std::pow(xn - xb,2) + std::pow(yn - yb,2));
     tips[n].assign_val(xb, yb, xn, yn, dl, cosf(alpha), sinf(alpha), -1, material);  
     no++;    
     //-------------------------------add new element------------

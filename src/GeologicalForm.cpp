@@ -334,8 +334,12 @@ int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float
         }
     }
     numbe = numbe + k;  // k new elements added 
-    if(numbe >= m0 - 1)
+    if (numbe >= m0 - 1)
+    {
         MessageBox(nullptr, L"Maximum BE limit exceeded!", L"Message!", MB_OK);
+        exit(0);
+        return 1;
+    }
     chk_potential_crack_growth(xbeg, ybeg, xend, yend, numbe0,itype);
     numbe_old = numbe;      
     return numbe;

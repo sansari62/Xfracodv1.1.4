@@ -164,8 +164,7 @@ void main_computing_part()
     geoplot();
     if (StopReturn == true) return;
     prenumbe = numbe;
-    add_crack_growth();
-    cout << " finished!!!\n";
+      add_crack_growth();   
 }
 
 
@@ -232,6 +231,7 @@ void Central_control()
     {
         mcyc++;  
         cout << " cycle " << comvar::mcyc << " of " <<mcyc0<<"  is running.... ";
+        auto starti = std::chrono::high_resolution_clock::now();
         creep.deltaT = creep.deltaT_min;         //Creep iteration
         creep.ID_creep = (creep.time < creep.totalT) ? 1 : 0;
 
@@ -241,7 +241,10 @@ void Central_control()
         {           
             main_computing_part();
         } 
-       
+        auto endi = std::chrono::high_resolution_clock::now();
+        std::cout <<" finished! (" << 
+            std::chrono::duration<double>(endi - starti).count() << " sec)\n";
+
         // Pause if defined cycle finishes
         if (mcyc >= mcyc0)
         {

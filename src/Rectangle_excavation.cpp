@@ -116,7 +116,7 @@ std::vector<Point> get_all_intersections(const Point& p1, const Point& p2, const
 // ---------- Rectangle Validation ----------
 
 bool validate_and_extract_rectangle( Rectangle1& out_rect) {
-    if (nb != 4) return false;
+    if (nb < 3) return false;
 
     std::set<Point> unique_points;
     std::map<Point, int> point_count;
@@ -136,9 +136,9 @@ bool validate_and_extract_rectangle( Rectangle1& out_rect) {
 
     if (unique_points.size() != 4) return false;
 
-    for (const auto& [pt, count] : point_count) {
+    /*for (const auto& [pt, count] : point_count) {
         if (count != 2) return false;
-    }
+    }*/
 
     // Sort corners clockwise
     float cx = 0, cy = 0;
@@ -188,7 +188,7 @@ void process_elements(const Rectangle1& rect) {
         auto intersections = get_all_intersections(p1, p2, rect);
 
         if (intersections.empty()) {
-            //updated.push_back(elem); // Fully outside
+             // Fully outside
             fix_tip_pointer1(m, new_numbe);
             elm_list[new_numbe] = elem;
             b_elm[new_numbe] = b_elm[m];
@@ -201,8 +201,13 @@ void process_elements(const Rectangle1& rect) {
             float dx = outside_pt.x - clipped.x;
             float dy = outside_pt.y - clipped.y;
             float len = std::sqrt(dx * dx + dy * dy);
-            if (len == 0) continue; // degenerate element
-
+            //if (len == 0) continue; // degenerate element
+            if (len < 1e-6f) {
+                // Entire element is inside → skip
+                int merge = 0;
+                specialLabel_200(merge, m);
+                continue;
+            }  // skip degenerate or tiny element
             float new_xm = 0.5f * (outside_pt.x + clipped.x);
             float new_ym = 0.5f * (outside_pt.y + clipped.y);
             
@@ -234,6 +239,7 @@ void process_elements(const Rectangle1& rect) {
             joint[new_numbe].aperture_r = joint[m].aperture_r;
             s4.b0[2 * new_numbe] = s4.b0[2 * m];
             s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
+            fix_tip_pointer1(m, new_numbe);
             new_numbe++;
         }
         //else {
@@ -253,7 +259,10 @@ void check_rectangle()
     Rectangle1 rect1;
    if( validate_and_extract_rectangle(rect1))
         process_elements(rect1);
-   else
+   /*else
+   {
        MessageBox(nullptr, L"Check edge definition in input!", L"Error!", MB_OK);
+       exit(0);
+   }*/
 
 }

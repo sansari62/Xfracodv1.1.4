@@ -1,6 +1,4 @@
-
 #include<stdafx.h>
-
 #include <CommonPara.h>
 #include <fracture_defo.h>
 #include <Failure.h>
@@ -62,11 +60,9 @@ Wjoint compute_join_attr_and_add_them(int m, int& jpoint, int round)
     if (aperture < joint[m].aperture_r)
         aperture = joint[m].aperture_r;
 
-    zet1 = bet + pi/2;
-           
+    zet1 = bet + pi/2;           
     Wjoint jointex;
-    jointex.assign_val(xp, yp, ds/2, bet1, dn/2, set1, aperture/2, zet1);
-   
+    jointex.assign_val(xp, yp, ds/2, bet1, dn/2, set1, aperture/2, zet1);   
     wjoint[jpoint] = jointex;
     jpoint++;
            
@@ -185,8 +181,7 @@ void frac_defo_Rec_win(int& jpoint) {
                     pi - joint1.w_set, joint1.w_aperture, pi - joint1.w_zet);
 
                 wjoint[jpoint] = jointex;
-                jpoint++;               
-
+                jpoint++;    
 
                 jointex.assign_val(2. * symm.xsym - joint2.w_xp, joint2.w_yp, joint2.w_ds, pi - joint2.w_bet,
                     joint2.w_dn, pi - joint2.w_set, joint2.w_aperture, pi - joint2.w_zet);
