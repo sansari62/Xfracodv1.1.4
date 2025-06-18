@@ -1,7 +1,6 @@
 ﻿#define NOMINMAX        // must go before windows.h
 
 #include<stdafx.h>
-
 #include "CommonPara.h"
 #include <set>
 #include <map>
@@ -9,22 +8,10 @@
 #include <algorithm>
 #include<Tip.h>
 #include<GeologicalForm.h>
+#include<rstor_chek.h>
 
 
 using namespace CommonPara_h::comvar;
-
-
-struct Point {
-    float x, y;
-
-    bool operator<(const Point& other) const {
-        return (x < other.x) || (x == other.x && y < other.y);
-    }
-};
-
-//struct Edge {
-//    Point p1, p2;
-//};
 
 
 bool are_floats_equal(float a, float b, float tol = 1e-6f) {
@@ -48,30 +35,24 @@ void fix_tip_pointer1(int m, int new_numbe)
 }
 
 
-bool point_inside_rectangle(const Point& p, const Rectangle1& rect) {
-    float min_x = std::min(
-        std::min(rect.corners[0].x, rect.corners[1].x),
-        std::min(rect.corners[2].x, rect.corners[3].x)
-    );
 
-    float max_x = std::max(
-        std::max(rect.corners[0].x, rect.corners[1].x),
-        std::max(rect.corners[2].x, rect.corners[3].x)
-    );
+int point_inside_rectangle(const Point& point, const Rectangle1& rect, float eps = 1e-6f) {
+    float min_x = std::min(rect.corners[0].x, rect.corners[2].x);
+    float max_x = std::max(rect.corners[0].x, rect.corners[2].x);
+    float min_y = std::min(rect.corners[0].y, rect.corners[2].y);
+    float max_y = std::max(rect.corners[0].y, rect.corners[2].y);
 
-    float min_y = std::min(
-        std::min(rect.corners[0].y, rect.corners[1].y),
-        std::min(rect.corners[2].y, rect.corners[3].y)
-    );
+    bool inside_x = (point.x > min_x + eps && point.x < max_x - eps);
+    bool inside_y = (point.y > min_y + eps && point.y < max_y - eps);
+    bool on_x = (point.x >= min_x - eps && point.x <= max_x + eps);
+    bool on_y = (point.y >= min_y - eps && point.y <= max_y + eps);
 
-    float max_y = std::max(
-        std::max(rect.corners[0].y, rect.corners[1].y),
-        std::max(rect.corners[2].y, rect.corners[3].y)
-    );
-    return (p.x >= min_x && p.x <= max_x && p.y >= min_y && p.y <= max_y);
+    if (inside_x && inside_y)
+        return 0;  // strictly inside
+    if (on_x && on_y)
+        return 2;  // on the border
+    return 1;      // outside
 }
-
-
 
 std::optional<Point> get_intersection(Point A, Point B, Point C, Point D) {
     
@@ -90,7 +71,8 @@ std::optional<Point> get_intersection(Point A, Point B, Point C, Point D) {
     float y = (a1 * c2 - a2 * c1) / det;
 
     auto between = [](float a, float b, float c) {
-        return (std::min(a, b) - 1e-6f <= c && c <= std::max(a, b) + 1e-6f);
+        const float EPS = 1e-5f;
+        return (std::min(a, b) - EPS <= c && c <= std::max(a, b) + EPS);
         };
 
     if (between(A.x, B.x, x) && between(A.y, B.y, y) &&
@@ -99,6 +81,7 @@ std::optional<Point> get_intersection(Point A, Point B, Point C, Point D) {
     }
     return std::nullopt;
 }
+
 
 std::vector<Point> get_all_intersections(const Point& p1, const Point& p2, const Rectangle1& rect) {
     std::vector<Point> intersections;
@@ -134,11 +117,7 @@ bool validate_and_extract_rectangle( Rectangle1& out_rect) {
         point_count[p2]++;
     }
 
-    if (unique_points.size() != 4) return false;
-
-    /*for (const auto& [pt, count] : point_count) {
-        if (count != 2) return false;
-    }*/
+    if (unique_points.size() != 4) return false;    
 
     // Sort corners clockwise
     float cx = 0, cy = 0;
@@ -160,58 +139,86 @@ bool validate_and_extract_rectangle( Rectangle1& out_rect) {
     return true;
 }
 
+
+
+
+void setting_newelement(BoundaryElement& newelement, int m, int new_numbe)
+{
+    newelement.kod = elm_list[m].kod;
+    newelement.mat_no = elm_list[m].mat_no;
+    elm_list[new_numbe] = newelement;
+    b_elm[new_numbe].force1 = b_elm[m].force1 * elm_list[new_numbe].a / elm_list[m].a;
+    b_elm[new_numbe].force2 = b_elm[m].force2 * elm_list[new_numbe].a / elm_list[m].a;
+    b_elm[new_numbe].aks = b_elm[m].aks;
+    b_elm[new_numbe].akn = b_elm[m].akn;
+    b_elm[new_numbe].phi = b_elm[m].phi;
+    b_elm[new_numbe].phid = b_elm[m].phid;
+
+    b_elm[new_numbe].coh = b_elm[m].coh;
+    joint[new_numbe].aperture0 = joint[m].aperture0;
+    joint[new_numbe].aperture_r = joint[m].aperture_r;
+    s4.b0[2 * new_numbe] = s4.b0[2 * m];
+    s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
+    fix_tip_pointer1(m, new_numbe);
+}
 // ---------- Main Clipping Logic ----------
 
 void process_elements(const Rectangle1& rect) {
-
-    std::vector<BoundaryElement> updated;
 
     int new_numbe = 0;
     for (int m = 0; m < numbe; ++m) {
         auto& elem = elm_list[m]; 
         Point p1, p2;
-        p1.x = elem.xm - 0.5f * elem.a * elem.cosbet;
-        p1.y = elem.ym - 0.5f * elem.a * elem.sinbet;
-        p2.x = elem.xm + 0.5f * elem.a * elem.cosbet;
-        p2.y = elem.ym + 0.5f * elem.a * elem.sinbet;
+        p1.x = elem.xm - 0.5 * elem.a * elem.cosbet;
+        p1.y = elem.ym - 0.5 * elem.a * elem.sinbet;
+        p2.x = elem.xm + 0.5 * elem.a * elem.cosbet;
+        p2.y = elem.ym + 0.5 * elem.a * elem.sinbet;
 
-        bool p1_inside = point_inside_rectangle(p1, rect);
-        bool p2_inside = point_inside_rectangle(p2, rect);
+        int p1_state = point_inside_rectangle(p1, rect);
+        int p2_state = point_inside_rectangle(p2, rect);
 
-        if (p1_inside && p2_inside) {
-            // Entire element is inside → skip
+        if ((p1_state == 0 && p2_state == 0) ||
+            (p1_state == 2 && p2_state == 2) ||
+            (p1_state == 0 && p2_state == 2) ||
+            (p1_state == 2 && p2_state == 0)) {
             int merge = 0;
-            specialLabel_200(merge, m);
+            specialLabel_200(merge, m);            
             continue;
-        } 
+        }
 
         auto intersections = get_all_intersections(p1, p2, rect);
 
         if (intersections.empty()) {
-             // Fully outside
+             // Fully outside            
             fix_tip_pointer1(m, new_numbe);
             elm_list[new_numbe] = elem;
             b_elm[new_numbe] = b_elm[m];
+            //probablu true
+            joint[new_numbe].aperture0 = joint[m].aperture0;
+            joint[new_numbe].aperture_r = joint[m].aperture_r;
+            s4.b0[2 * new_numbe] = s4.b0[2 * m];
+            s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
             new_numbe++;
         }
         else if (intersections.size() == 1) {
+            if (p1_state == 1 && p2_state == 1)
+            {
+                cout << "new condit";
+            }
             Point clipped = intersections[0];
-            Point outside_pt = p1_inside ? p2 : p1;
+            Point outside_pt = (p1_state == 1) ? p1 : p2;
 
             float dx = outside_pt.x - clipped.x;
             float dy = outside_pt.y - clipped.y;
             float len = std::sqrt(dx * dx + dy * dy);
-            //if (len == 0) continue; // degenerate element
             if (len < 1e-6f) {
-                // Entire element is inside → skip
                 int merge = 0;
                 specialLabel_200(merge, m);
                 continue;
             }  // skip degenerate or tiny element
-            float new_xm = 0.5f * (outside_pt.x + clipped.x);
-            float new_ym = 0.5f * (outside_pt.y + clipped.y);
+            float new_xm = 0.5 * (outside_pt.x + clipped.x);
+            float new_ym = 0.5 * (outside_pt.y + clipped.y);
             
-           // updated.push_back({ new_xm, new_ym, new_a, new_sinbet, new_cosbet });
             BoundaryElement newelement;
             newelement.xm = new_xm;
             newelement.ym = new_ym;
@@ -221,31 +228,98 @@ void process_elements(const Rectangle1& rect) {
             bool unique = isNewElementUnique(newelement);
             if (!unique)
             {
-                new_numbe--;
+                //new_numbe--;
                 continue;
             }
-            newelement.kod = elm_list[m].kod;
-            newelement.mat_no = elm_list[m].mat_no;
-            elm_list[new_numbe] = newelement;
-            b_elm[new_numbe].force1 = b_elm[m].force1 * elm_list[new_numbe].a / elem.a;
-            b_elm[new_numbe].force2 = b_elm[m].force2 * elm_list[new_numbe].a / elem.a;
-            b_elm[new_numbe].aks = b_elm[m].aks;
-            b_elm[new_numbe].akn = b_elm[m].akn;
-            b_elm[new_numbe].phi = b_elm[m].phi;
-            b_elm[new_numbe].phid = b_elm[m].phid;
-
-            b_elm[new_numbe].coh = b_elm[m].coh;
-            joint[new_numbe].aperture0 = joint[m].aperture0;
-            joint[new_numbe].aperture_r = joint[m].aperture_r;
-            s4.b0[2 * new_numbe] = s4.b0[2 * m];
-            s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
-            fix_tip_pointer1(m, new_numbe);
+            setting_newelement(newelement, m, new_numbe);
             new_numbe++;
         }
-        //else {
-        //    // In rare case of two intersections: skip or clip both ends
-        //    // Optional: could be split into two new elements if needed
-        //}
+        else if (intersections.size() == 2 && p1_state == 1 && p2_state == 1) {
+             Point ip1, ip2;
+             ip1 = intersections[0];
+             ip2 = intersections[1];
+
+            if ((ip1.x - p1.x) * (p2.x - p1.x) + (ip1.y - p1.y) * (p2.y - p1.y) >
+                (ip2.x - p1.x) * (p2.x - p1.x) + (ip2.y - p1.y) * (p2.y - p1.y)) {
+                std::swap(ip1, ip2);
+            }
+            addClippedElement(p1, ip1, m, new_numbe);
+            // Create [ip2, p2]
+            addClippedElement(ip2, p2, m, new_numbe);
+
+
+
+
+
+
+            //float d1 = std::hypot(p1.x - clip1.x, p1.y - clip1.y);
+            //float d2 = std::hypot(p2.x - clip2.x, p2.y - clip2.y);
+
+            //// Determine order based on proximity
+            //Point out1_start = (d1 < d2) ? p1 : p2;
+            //Point out1_end = (d1 < d2) ? clip1 : clip2;
+
+            //Point out2_start = (d1 < d2) ? clip2 : clip1;
+            //Point out2_end = (d1 < d2) ? p2 : p1;
+
+            //auto try_add_segment = [&](const Point& start, const Point& end) {
+            //    float dx = end.x - start.x;
+            //    float dy = end.y - start.y;
+            //    float len = std::sqrt(dx * dx + dy * dy);
+            //    if (len < 1e-6f) {
+            //        // Entire element is inside → skip
+            //        int merge = 0;
+            //        specialLabel_200(merge, m);
+            //        return;
+            //    }
+
+            //    float new_xm = 0.5 * (start.x + end.x);
+            //    float new_ym = 0.5 * (start.y + end.y);
+
+            //    BoundaryElement newelement;
+            //    newelement.xm = new_xm;
+            //    newelement.ym = new_ym;
+            //    newelement.a = len / 2;
+            //    newelement.sinbet = dy / len;
+            //    newelement.cosbet = dx / len;
+
+            //    bool unique = isNewElementUnique(newelement);
+            //    if (!unique) return;
+            //    setting_newelement(newelement, m, new_numbe);
+
+            //    /*newelement.kod = elem.kod;
+            //    newelement.mat_no = elem.mat_no;
+
+            //    elm_list[new_numbe] = newelement;
+
+            //    float scale = newelement.a / elem.a;
+            //    b_elm[new_numbe].force1 = b_elm[m].force1 * scale;
+            //    b_elm[new_numbe].force2 = b_elm[m].force2 * scale;
+            //    b_elm[new_numbe].aks = b_elm[m].aks;
+            //    b_elm[new_numbe].akn = b_elm[m].akn;
+            //    b_elm[new_numbe].phi = b_elm[m].phi;
+            //    b_elm[new_numbe].phid = b_elm[m].phid;
+            //    b_elm[new_numbe].coh = b_elm[m].coh;
+
+            //    joint[new_numbe].aperture0 = joint[m].aperture0;
+            //    joint[new_numbe].aperture_r = joint[m].aperture_r;
+
+            //    s4.b0[2 * new_numbe] = s4.b0[2 * m];
+            //    s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];*/
+
+            //    //fix_tip_pointer1(m, new_numbe);
+            //    new_numbe++;
+            //    };
+
+            //// Try adding two outside segments
+            //try_add_segment(out1_start, out1_end);
+            //try_add_segment(out2_start, out2_end);
+        }
+        else
+        {
+            cout << "new condition needed";
+        }
+
     }
     numbe = new_numbe;
     arrangetip();

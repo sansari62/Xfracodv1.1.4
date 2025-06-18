@@ -905,11 +905,11 @@ void initiation()
           InitiationR();
      
       Choose_Failure();    
-      if (restor_flg && numbe>numbe_old)
+     /* if (restor_flg && numbe>numbe_old)
       {
           if (na > 0)
               check_boreholes();
           if (nb >= 3)
               check_rectangle();
-      }
+      }*/
   }

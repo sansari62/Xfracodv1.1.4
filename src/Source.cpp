@@ -164,7 +164,7 @@ void main_computing_part()
     geoplot();
     if (StopReturn == true) return;
     prenumbe = numbe;
-      add_crack_growth();   
+    add_crack_growth();   
 }
 
 

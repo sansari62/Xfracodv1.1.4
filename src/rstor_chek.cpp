@@ -220,6 +220,10 @@ void clipBoundaryElements(
                 fix_tip_pointer(m, new_numbe);
                 elm_list[new_numbe] = elem;
                 b_elm[new_numbe] = b_elm[m];
+                joint[new_numbe].aperture0 = joint[m].aperture0;
+                joint[new_numbe].aperture_r = joint[m].aperture_r;
+                s4.b0[2 * new_numbe] = s4.b0[2 * m];
+                s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
                 new_numbe++;
             }
         }
@@ -229,6 +233,10 @@ void clipBoundaryElements(
                 fix_tip_pointer(m, new_numbe);
                 elm_list[new_numbe] = elem;
                 b_elm[new_numbe] = b_elm[m];
+                joint[new_numbe].aperture0 = joint[m].aperture0;
+                joint[new_numbe].aperture_r = joint[m].aperture_r;
+                s4.b0[2 * new_numbe] = s4.b0[2 * m];
+                s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
                 new_numbe++;
             }
             else
@@ -241,6 +249,10 @@ void clipBoundaryElements(
                     fix_tip_pointer(m, new_numbe);
                     elm_list[new_numbe] = elem;
                     b_elm[new_numbe] = b_elm[m];
+                    joint[new_numbe].aperture0 = joint[m].aperture0;
+                    joint[new_numbe].aperture_r = joint[m].aperture_r;
+                    s4.b0[2 * new_numbe] = s4.b0[2 * m];
+                    s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
                     new_numbe++;
                     continue;
                 }
@@ -273,7 +285,7 @@ void clipBoundaryElements(
                 bool unique = isNewElementUnique(newelement);
                 if (!unique)
                 {
-                    new_numbe--;
+                    //new_numbe--;
                     continue;
                 }
                 newelement.kod = elm_list[m].kod;

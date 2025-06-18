@@ -226,6 +226,7 @@ exit /b
     <ClInclude Include="include\BoundaryElement.h" />
     <ClInclude Include="include\BoundaryStress.h" />
     <ClInclude Include="include\Rectangle_check.h" />
+    <ClInclude Include="include\rstor_chek.h" />
     <ClInclude Include="include\stdafx.h" />
     <ClInclude Include="include\CommonPara.h" />
     <ClInclude Include="include\Creep.h" />
@@ -255,7 +256,6 @@ exit /b
     <ClInclude Include="include\Tip.h" />
     <ClInclude Include="include\WinInterface.h" />
     <ClInclude Include="include\Work.h" />
-    <ClInclude Include="rstor_chek.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -227,10 +227,10 @@
     <ClInclude Include="include\Save_and_Restore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rstor_chek.h">
+    <ClInclude Include="include\Rectangle_check.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Rectangle_check.h">
+    <ClInclude Include="include\rstor_chek.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
