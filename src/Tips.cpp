@@ -7,6 +7,7 @@
 #include<Fmax.h>
 #include<Initiation.h>
 #include<DX.h>
+#include<Rectangle_check.h>
 
 using namespace CommonPara_h::comvar;
 
@@ -139,6 +140,14 @@ void label400_new_coordin_for_tip(int n, int mm, int mergtip, float xt, float yt
     elm_list[m].xm = 0.5 * (t.xen + t.xbe);
     elm_list[m].ym = 0.5 * (t.yen + t.ybe);
     elm_list[m].mat_no = mm;
+    /*if (restor_flg)
+    {
+        if (check_new_crack_in_exca(t.xen, t.yen, t.xbe, t.ybe))
+        {
+            no -= 1;
+            return;
+        }
+    }*/
     numbe++;
     if (numbe >= m0 - 1)
     {
@@ -765,8 +774,7 @@ void add_crack_growth()
             creep.creep_y[ni] = 0;          //reset the creep growth to zero
             ktipgrow = true;            
         }
-        arrangetip();
-        geoplot();
+        arrangetip();       
         if (irock == 1)       
         {  
             if (s15.i_bound == 0 && s15.i_intern == 0)

@@ -14,6 +14,7 @@
 
 using namespace CommonPara_h::comvar;
 
+std::vector<new_element_para>  new_elements1;
 
 
 void fix_tip_pointer1(int m, int new_numbe,int p1_stat, int p2_stat)
@@ -21,7 +22,7 @@ void fix_tip_pointer1(int m, int new_numbe,int p1_stat, int p2_stat)
     for (int k = 0; k < no; ++k)
     {
         Tip& t = tips[k];
-        if (t.mpointer == m)
+        if (t.mpointer == m) 
         {
             t.mpointer = new_numbe;
             if (t.ityp == -1 )
@@ -194,6 +195,49 @@ void setting_newelement(BoundaryElement& newelement, int m, int new_numbe,int p1
     s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
     fix_tip_pointer1(m, new_numbe,p1_stat,p2_stat);
 }
+
+
+bool check_segmnt_valid(const Point& a, const Point& b,
+    int m, BoundaryElement & newelem)
+{
+    const BoundaryElement& orig_elem = elm_list[m];
+    float dx = b.x - a.x;
+    float dy = b.y - a.y;
+    float len = std::sqrt(dx * dx + dy * dy);
+    bool valid = true;
+    if (len < 1e-5f)
+    {
+        //int merge = 0;
+        //specialLabel_200(merge, m);
+        valid = false; // skip degenerate
+    }
+    else
+    {
+        // BoundaryElement newelem;
+        newelem.xm = 0.5f * (a.x + b.x);
+        newelem.ym = 0.5f * (a.y + b.y);
+        newelem.a = len / 2.0f;
+        newelem.cosbet = dx / len;
+        newelem.sinbet = dy / len;
+        newelem.kod = orig_elem.kod;
+        newelem.mat_no = orig_elem.mat_no;
+        if (!isNewElementUnique(newelem)) valid = false;
+    }
+    return valid;
+}
+
+
+
+bool isALeftOfB(const Point& A, const Point& B) {
+    if (A.x < B.x)
+        return true;
+    if (A.x > B.x)
+        return false;
+    // If X equal, compare Y
+    return A.y < B.y;
+}
+
+
 // ---------- Main Clipping Logic ----------
 
 void process_elements(const Rectangle1& rect) {
@@ -220,15 +264,14 @@ void process_elements(const Rectangle1& rect) {
         }
 
         auto intersections = get_all_intersections(p1, p2, rect);
-
+        int tip_index = if_tip_element(m);
         if (intersections.empty()) {
              // Fully outside            
-            fix_tip_pointer1(m, new_numbe);
+            if (tip_index != -1)
+                tips[tip_index].mpointer = new_numbe;
             elm_list[new_numbe] = elem;
             b_elm[new_numbe] = b_elm[m];
-            //probablu true
-            joint[new_numbe].aperture0 = joint[m].aperture0;
-            joint[new_numbe].aperture_r = joint[m].aperture_r;
+            joint[new_numbe]= joint[m];           
             s4.b0[2 * new_numbe] = s4.b0[2 * m];
             s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
             new_numbe++;
@@ -241,33 +284,44 @@ void process_elements(const Rectangle1& rect) {
             Point clipped = intersections[0];
             Point outside_pt = (p1_state == 1) ? p1 : p2;
 
-            float dx = outside_pt.x - clipped.x;
-            float dy = outside_pt.y - clipped.y;
-            float len = std::sqrt(dx * dx + dy * dy);
-            if (len < 1e-5f) {
-                int merge = 0;
-                specialLabel_200(merge, m);
-                continue;
-            }  // skip degenerate or tiny element
-            float new_xm = 0.5 * (outside_pt.x + clipped.x);
-            float new_ym = 0.5 * (outside_pt.y + clipped.y);
-            
-            BoundaryElement newelement;
-            newelement.xm = new_xm;
-            newelement.ym = new_ym;
-            newelement.a = len / 2;
-            newelement.sinbet = dy / len;
-            newelement.cosbet = dx / len;
-            bool unique = isNewElementUnique(newelement);
-            if (!unique)
+            BoundaryElement new_elem;
+            bool segm = false;
+            bool direct;
+            if (isALeftOfB(clipped, outside_pt))
             {
-                //new_numbe--;
-                continue;
+                bool segm = check_segmnt_valid(clipped, outside_pt, m, new_elem);
+                direct = 1;//right
             }
-            setting_newelement(newelement, m, new_numbe,p1_state,p2_state);
-            new_numbe++;
+            else
+            {
+                bool segm = check_segmnt_valid(outside_pt, clipped, m, new_elem);
+                direct = 0; //left
+            }
+            //one segment remained
+            if (segm) {
+                addClippedElement2(m,new_numbe, new_elem, 1);
+                if (tip_index != -1)
+                {
+                    if (direct == 0 && tips[tip_index].ityp == -1)
+                        tips[tip_index].mpointer = new_numbe;
+                    else if (direct == 1 && tips[tip_index].ityp == 1)
+                        tips[tip_index].mpointer = new_numbe;
+                    else
+                        tips[tip_index].ityp = 0;
+                }
+                new_numbe++;
+            }
+            else
+            {
+                //the remaining segment after cross in not eligible
+                if (tip_index != -1)
+                {
+                    tips[tip_index].ityp = 0;
+                }
+            }
         }
-        else if (intersections.size() == 2 && p1_state == 1 && p2_state == 1) {
+        //&&p1_state == 1 && p2_state == 1
+        else if (intersections.size() == 2 ) {
              Point ip1, ip2;
              ip1 = intersections[0];
              ip2 = intersections[1];
@@ -276,16 +330,75 @@ void process_elements(const Rectangle1& rect) {
                 (ip2.x - p1.x) * (p2.x - p1.x) + (ip2.y - p1.y) * (p2.y - p1.y)) {
                 std::swap(ip1, ip2);
             }
-            addClippedElement(p1, ip1, m, new_numbe,1);
-            // Create [ip2, p2]
-            second_clipped = true;
-            addClippedElement(ip2, p2, m, new_numbe,2);
+           
+           BoundaryElement new_elem1, new_elem2;
+           bool segm1 = check_segmnt_valid(p1, ip1, m, new_elem1);
+           bool segm2 = check_segmnt_valid(ip2, p2, m, new_elem2);
+           if(segm1&& segm2)          
+           {
+               float a = elm_list[m].a;
+               addClippedElement2( m, new_numbe, new_elem1, 1);               
+               // Create [ip2, p2]
+               second_clipped = true;
+               addClippedElement2(m, new_numbe, new_elem2, 2);
+               new_element_para& last = new_elements1.back();
+               last.ratio = new_elem2.a / a;
+               new_numbe++;               
+               if (tip_index != -1)
+               {
+                   if (tips[tip_index].ityp == -1)
+                       tips[tip_index].mpointer = new_numbe;
+                   else if (tips[tip_index].ityp == 1)
+                               last.tip_indx = tip_index;                          
+                   
+               }               
+           }
+           else if (segm1){
+               addClippedElement(p1, ip1, m, new_numbe, 1);    
+               if (tip_index != -1)
+               {
+                   if (tips[tip_index].ityp == -1)
+                       tips[tip_index].mpointer = new_numbe;
+               }
+                          
+           }
+           else  if (segm2) {
+               addClippedElement(ip2, p2, m, new_numbe, 1);
+               if (tip_index != -1)
+               {
+                   if (tips[tip_index].ityp == 1)
+                       tips[tip_index].mpointer = new_numbe;
+               }
+           }
+           else
+           {
+               if (tip_index != -1)
+               {
+                   tips[tip_index].ityp = 0;
+               }
+           }
         }
         else
         {
             cout << "new condition needed";
         }
 
+    }
+    if (second_clipped = true)
+    {
+        for (const auto& e : new_elements1)
+        {
+            elm_list[new_numbe] = e.new_el;
+            b_elm[new_numbe] = e.be1;
+            joint[new_numbe] = e.j;
+            s4.b0[2 * new_numbe] = e.b01;
+            s4.b0[2 * new_numbe + 1] = e.b02;
+            b_elm[new_numbe].force1 *= e.ratio;
+            b_elm[new_numbe].force2 *= e.ratio;
+            if (e.tip_indx != -1)
+                tips[e.tip_indx].mpointer = new_numbe;
+            new_numbe++;
+        }
     }
     numbe = new_numbe;
     arrangetip();

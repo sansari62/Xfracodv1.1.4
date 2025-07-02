@@ -10,17 +10,20 @@ using namespace CommonPara_h::comvar;
 
 bool second_clipped = false;
 
-struct new_element_para
-{
-    BoundaryElement new_el;
-    BE be1;
-    float ratio = 0;
-    Joint j;
-    float b01 = 0, b02 = 0;
-};
+
 std::vector<new_element_para>  new_elements;
 
 
+int  if_tip_element(int m)
+{
+    for (int k = 0; k < no; ++k)
+    {
+        Tip& t = tips[k];
+        if (t.mpointer == m)
+            return k;
+    }
+    return -1;
+}
 
 void fix_tip_pointer(int m,int new_numbe)
 {
@@ -111,6 +114,43 @@ bool computeSegmentIntersection(
     }
     else return false;
 
+}
+
+void addClippedElement2(int m, int new_numbe, BoundaryElement& new_elem, int first) {
+    int tip_index = if_tip_element(m);
+    if (first == 1)
+       {       
+            elm_list[new_numbe] = new_elem;
+            float ratio = new_elem.a / elm_list[m].a;
+            b_elm[new_numbe] = b_elm[m];
+            b_elm[new_numbe].force1 *= ratio;
+            b_elm[new_numbe].force2 *= ratio;
+
+            joint[new_numbe] = joint[m];
+            s4.b0[2 * new_numbe] = s4.b0[2 * m];
+            s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
+            
+            //fix_tip_pointer(m, new_numbe);
+           // new_numbe++;
+        }
+    else
+    {
+        new_element_para t;
+        t.b01 = s4.b0[2 * m];
+        t.b02 = s4.b0[2 * m + 1];
+        t.j = joint[m];
+        t.new_el = new_elem;
+        t.ratio = new_elem.a / elm_list[m].a;
+        t.be1 = b_elm[m];
+       
+       /* if (tip_index != -1)
+            if (tips[tip_index].ityp == 1)
+                t.tip_indx = tip_index;
+        else
+          t.tip_indx = tip_index;*/
+        new_elements.push_back(t);
+    }
+    return;
 }
 
 
