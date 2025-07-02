@@ -149,7 +149,7 @@ int cross(float xb1, float yb1, float xe1, float ye1, float xb2, float yb2,
 
     db = sqrt(pow(xcross - xb1, 2) + pow(ycross - yb1, 2));
     de = sqrt(pow(xcross - xe1, 2) + pow(ycross - ye1, 2));
-    if (db < de)
+    if (db < de + epsilon) //new for model3 issue
     {
         xe2 = xb1;
         ye2 = yb1;

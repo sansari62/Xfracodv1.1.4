@@ -12,7 +12,7 @@ void write_to_file(stringstream& buffer, int jpoint)
     int index = 0;
     while (index < jpoint)
     {
-        buffer << std::setw(9) << std::fixed << std::setprecision(3) << wjoint[index].w_xp << std::setw(9) <<
+        buffer << std::setw(6) << std::fixed << std::setprecision(3) << wjoint[index].w_xp << std::setw(9) <<
             std::fixed << std::setprecision(3) << wjoint[index].w_yp << std::setw(13) << std::scientific <<
             std::setprecision(3) << wjoint[index].w_ds << std::setw(8) << std::fixed << std::setprecision(3) <<
             wjoint[index].w_bet << std::setw(13) << std::scientific << std::setprecision(3) << wjoint[index].w_dn << std::setw(8) <<
@@ -234,8 +234,7 @@ void fracture_defo(int id, int& jpoint) {
     wstring filename = fd_dir + L"/Frac_deform" + std::to_wstring(state) + L".dat";
     std::ofstream outfile(filename);
 
-    outfile << "     xp        yp         ds        bet        dn        set      aperture    zet\n";
-    outfile << "-------------------------------------------------------------------------------------------\n";    
+    outfile << "xp        yp         ds        bet        dn        set      aperture    zet\n";
    
     jpoint = 0;
     stringstream buffer;

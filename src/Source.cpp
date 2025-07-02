@@ -144,7 +144,18 @@ void compute_n_vlaid_all_points() {
 }
 
 
+std::string getTimeOnly() {
+    auto now = std::chrono::system_clock::now();
+    std::time_t now_c = std::chrono::system_clock::to_time_t(now);
 
+    std::tm tm;
+    localtime_s(&tm, &now_c);
+
+    char buffer[9]; // HH:MM:SS + null terminator
+    std::strftime(buffer, sizeof(buffer), "%H:%M:%S", &tm);
+
+    return std::string(buffer);
+}
 
 
 
@@ -164,7 +175,8 @@ void main_computing_part()
     geoplot();
     if (StopReturn == true) return;
     prenumbe = numbe;
-    add_crack_growth();   
+    if(mcyc != mcyc0)
+        add_crack_growth();   
 }
 
 
@@ -230,7 +242,7 @@ void Central_control()
     while (!StopReturn)
     {
         mcyc++;  
-        cout << " cycle " << comvar::mcyc << " of " <<mcyc0<<"  is running.... ";
+        cout << " cycle " << comvar::mcyc << " of " <<mcyc0<<"  is running"<<" starting at(" << getTimeOnly()<<").... ";
         auto starti = std::chrono::high_resolution_clock::now();
         creep.deltaT = creep.deltaT_min;         //Creep iteration
         creep.ID_creep = (creep.time < creep.totalT) ? 1 : 0;

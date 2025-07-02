@@ -121,7 +121,7 @@ namespace comvar {
 
 	extern Creep creep;
 	extern std::vector < Rock> rock1;
-	;
+	extern bool rect_exca;
 
 
 	extern DispWindow dispwin;         //S10

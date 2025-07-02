@@ -8,6 +8,7 @@
 #include<rstor_chek.h>
 #include<Rectangle_check.h>
 
+
 using namespace CommonPara_h::comvar;
 
 
@@ -370,6 +371,16 @@ void reassigning_boundary_values(int ID,int m,int j,int k, float beta, float x, 
     {
         failt = 0;
         fails = 0;        
+    }
+    Rectangle1 rect = check_rectangle(false);
+    Point p1;
+    p1.x = x;
+    p1.y = y;
+    int p1_state = point_inside_rectangle(p1, rect);
+    if (p1_state == 0)
+    {
+        failt = 0;
+        fails = 0;
     }
     //label 205
     int seed = int((1 + x + y) * 1000);          //random failure

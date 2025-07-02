@@ -1,6 +1,7 @@
 ﻿#define NOMINMAX        // must go before windows.h
 
 #include<stdafx.h>
+#include<Rectangle_check.h>
 #include "CommonPara.h"
 #include <set>
 #include <map>
@@ -8,35 +9,67 @@
 #include <algorithm>
 #include<Tip.h>
 #include<GeologicalForm.h>
-#include<rstor_chek.h>
+
 
 
 using namespace CommonPara_h::comvar;
 
 
-bool are_floats_equal(float a, float b, float tol = 1e-6f) {
-    return std::fabs(a - b) < tol;
-}
 
-struct Rectangle1 {
-    Point corners[4];
-};
-
-
-void fix_tip_pointer1(int m, int new_numbe)
+void fix_tip_pointer1(int m, int new_numbe,int p1_stat, int p2_stat)
 {
     for (int k = 0; k < no; ++k)
     {
         Tip& t = tips[k];
         if (t.mpointer == m)
+        {
             t.mpointer = new_numbe;
+            if (t.ityp == -1 )
+            {
+                if(p1_stat == 1)
+                {
+                    tips[k].xbe = elm_list[new_numbe].xm - 3.0 * elm_list[new_numbe].a * elm_list[new_numbe].cosbet;
+                    tips[k].ybe = elm_list[new_numbe].ym - 3.0 * elm_list[new_numbe].a * elm_list[new_numbe].sinbet;
+                    tips[k].xen = tips[k].xbe + 2. * elm_list[new_numbe].a * elm_list[new_numbe].cosbet;
+                    tips[k].yen = tips[k].ybe + 2. * elm_list[new_numbe].a * elm_list[new_numbe].sinbet;
+                    tips[k].dl = 2. * elm_list[new_numbe].a;
+                    tips[k].costem = elm_list[new_numbe].cosbet;
+                    tips[k].sintem = elm_list[new_numbe].sinbet;
+                }
+                else
+                {
+                    t.ityp = 0;
+                }
+
+            }
+            else if (t.ityp == 1)
+            {
+                if(p2_stat==1)
+                {
+                    tips[k].xbe = elm_list[new_numbe].xm + elm_list[new_numbe].a * elm_list[new_numbe].cosbet;
+                    tips[k].ybe = elm_list[new_numbe].ym + elm_list[new_numbe].a * elm_list[new_numbe].sinbet;
+                    tips[k].xen = tips[k].xbe + 2. * elm_list[new_numbe].a * elm_list[new_numbe].cosbet;
+                    tips[k].yen = tips[k].ybe + 2. * elm_list[new_numbe].a * elm_list[new_numbe].sinbet;
+                    tips[k].dl = 2. * elm_list[new_numbe].a;
+                    tips[k].ityp = 1;
+                    tips[k].costem = elm_list[new_numbe].cosbet;
+                    tips[k].sintem = elm_list[new_numbe].sinbet;
+                }
+                else
+                {
+                    t.ityp = 0;
+                }
+            }           
+        }
     }
     return;
 }
 
 
 
-int point_inside_rectangle(const Point& point, const Rectangle1& rect, float eps = 1e-6f) {
+
+int point_inside_rectangle(const Point& point, const Rectangle1& rect) {
+    float eps = 1e-6f;
     float min_x = std::min(rect.corners[0].x, rect.corners[2].x);
     float max_x = std::max(rect.corners[0].x, rect.corners[2].x);
     float min_y = std::min(rect.corners[0].y, rect.corners[2].y);
@@ -142,7 +175,7 @@ bool validate_and_extract_rectangle( Rectangle1& out_rect) {
 
 
 
-void setting_newelement(BoundaryElement& newelement, int m, int new_numbe)
+void setting_newelement(BoundaryElement& newelement, int m, int new_numbe,int p1_stat,int p2_stat)
 {
     newelement.kod = elm_list[m].kod;
     newelement.mat_no = elm_list[m].mat_no;
@@ -159,7 +192,7 @@ void setting_newelement(BoundaryElement& newelement, int m, int new_numbe)
     joint[new_numbe].aperture_r = joint[m].aperture_r;
     s4.b0[2 * new_numbe] = s4.b0[2 * m];
     s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
-    fix_tip_pointer1(m, new_numbe);
+    fix_tip_pointer1(m, new_numbe,p1_stat,p2_stat);
 }
 // ---------- Main Clipping Logic ----------
 
@@ -211,7 +244,7 @@ void process_elements(const Rectangle1& rect) {
             float dx = outside_pt.x - clipped.x;
             float dy = outside_pt.y - clipped.y;
             float len = std::sqrt(dx * dx + dy * dy);
-            if (len < 1e-6f) {
+            if (len < 1e-5f) {
                 int merge = 0;
                 specialLabel_200(merge, m);
                 continue;
@@ -231,7 +264,7 @@ void process_elements(const Rectangle1& rect) {
                 //new_numbe--;
                 continue;
             }
-            setting_newelement(newelement, m, new_numbe);
+            setting_newelement(newelement, m, new_numbe,p1_state,p2_state);
             new_numbe++;
         }
         else if (intersections.size() == 2 && p1_state == 1 && p2_state == 1) {
@@ -243,77 +276,10 @@ void process_elements(const Rectangle1& rect) {
                 (ip2.x - p1.x) * (p2.x - p1.x) + (ip2.y - p1.y) * (p2.y - p1.y)) {
                 std::swap(ip1, ip2);
             }
-            addClippedElement(p1, ip1, m, new_numbe);
+            addClippedElement(p1, ip1, m, new_numbe,1);
             // Create [ip2, p2]
-            addClippedElement(ip2, p2, m, new_numbe);
-
-
-
-
-
-
-            //float d1 = std::hypot(p1.x - clip1.x, p1.y - clip1.y);
-            //float d2 = std::hypot(p2.x - clip2.x, p2.y - clip2.y);
-
-            //// Determine order based on proximity
-            //Point out1_start = (d1 < d2) ? p1 : p2;
-            //Point out1_end = (d1 < d2) ? clip1 : clip2;
-
-            //Point out2_start = (d1 < d2) ? clip2 : clip1;
-            //Point out2_end = (d1 < d2) ? p2 : p1;
-
-            //auto try_add_segment = [&](const Point& start, const Point& end) {
-            //    float dx = end.x - start.x;
-            //    float dy = end.y - start.y;
-            //    float len = std::sqrt(dx * dx + dy * dy);
-            //    if (len < 1e-6f) {
-            //        // Entire element is inside → skip
-            //        int merge = 0;
-            //        specialLabel_200(merge, m);
-            //        return;
-            //    }
-
-            //    float new_xm = 0.5 * (start.x + end.x);
-            //    float new_ym = 0.5 * (start.y + end.y);
-
-            //    BoundaryElement newelement;
-            //    newelement.xm = new_xm;
-            //    newelement.ym = new_ym;
-            //    newelement.a = len / 2;
-            //    newelement.sinbet = dy / len;
-            //    newelement.cosbet = dx / len;
-
-            //    bool unique = isNewElementUnique(newelement);
-            //    if (!unique) return;
-            //    setting_newelement(newelement, m, new_numbe);
-
-            //    /*newelement.kod = elem.kod;
-            //    newelement.mat_no = elem.mat_no;
-
-            //    elm_list[new_numbe] = newelement;
-
-            //    float scale = newelement.a / elem.a;
-            //    b_elm[new_numbe].force1 = b_elm[m].force1 * scale;
-            //    b_elm[new_numbe].force2 = b_elm[m].force2 * scale;
-            //    b_elm[new_numbe].aks = b_elm[m].aks;
-            //    b_elm[new_numbe].akn = b_elm[m].akn;
-            //    b_elm[new_numbe].phi = b_elm[m].phi;
-            //    b_elm[new_numbe].phid = b_elm[m].phid;
-            //    b_elm[new_numbe].coh = b_elm[m].coh;
-
-            //    joint[new_numbe].aperture0 = joint[m].aperture0;
-            //    joint[new_numbe].aperture_r = joint[m].aperture_r;
-
-            //    s4.b0[2 * new_numbe] = s4.b0[2 * m];
-            //    s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];*/
-
-            //    //fix_tip_pointer1(m, new_numbe);
-            //    new_numbe++;
-            //    };
-
-            //// Try adding two outside segments
-            //try_add_segment(out1_start, out1_end);
-            //try_add_segment(out2_start, out2_end);
+            second_clipped = true;
+            addClippedElement(ip2, p2, m, new_numbe,2);
         }
         else
         {
@@ -328,15 +294,19 @@ void process_elements(const Rectangle1& rect) {
 
 
 
-void check_rectangle()
+Rectangle1 check_rectangle(bool flag)
 {
     Rectangle1 rect1;
-   if( validate_and_extract_rectangle(rect1))
-        process_elements(rect1);
-   /*else
-   {
-       MessageBox(nullptr, L"Check edge definition in input!", L"Error!", MB_OK);
-       exit(0);
-   }*/
-
+    if (flag)
+    {
+        if (validate_and_extract_rectangle(rect1))
+        {
+            rect_exca = true;
+            process_elements(rect1);
+        }
+    }
+    else
+        validate_and_extract_rectangle(rect1);
+    
+   return rect1;
 }

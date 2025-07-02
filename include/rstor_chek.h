@@ -2,6 +2,7 @@
 #ifndef rstor_chek_h
 #define rstor_chek_h
 
+extern bool second_clipped;
 struct Point {
     float x, y;
 
@@ -11,6 +12,6 @@ struct Point {
 };
 void check_boreholes();
 void addClippedElement(const Point& a, const Point& b,
-    int m, int& new_numbe);
+    int m, int& new_numbe,int);
 
 #endif // !rstor_chek_h

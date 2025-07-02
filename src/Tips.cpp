@@ -766,6 +766,7 @@ void add_crack_growth()
             ktipgrow = true;            
         }
         arrangetip();
+        geoplot();
         if (irock == 1)       
         {  
             if (s15.i_bound == 0 && s15.i_intern == 0)

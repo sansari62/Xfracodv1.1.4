@@ -113,6 +113,7 @@ namespace comvar {
 	std::vector< Rock>  rock1(10, Rock());
 	std::vector<Tip> tips(m0);// 500 in v2.3, Sara think about this
 	DispWindow dispwin;
+	bool rect_exca = false;
 
 
 	std::vector<Joint> joint(m0);       //join includes aperture0 and aperture_r

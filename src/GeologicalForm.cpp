@@ -127,7 +127,8 @@ void GeologicalForm::cross_current_or_save_element(float xb1, float yb1, float x
     newelement.sinbet = elm_list[m].sinbet;
     newelement.cosbet = elm_list[m].cosbet;   
     bool unique = isNewElementUnique(newelement);
-    if (!unique)
+    float length = 2 * newelement.a;
+    if (!unique || length< 5e-5)
     {
         k--;
         return;
@@ -213,16 +214,17 @@ void GeologicalForm::ctl_cross_elements(int& k,int m, int numbe0,int num)
         {
            continue;
         }
-        if (!((abs(xcross - xb2) <= 1e-5 && abs(ycross - yb2) <= 1e-5) || 
-            (abs(xcross - xe2) <= 1e-5 && abs(ycross - ye2) <= 1e-5)) )
+        float threshold = 1e-5;
+        if (!((abs(xcross - xb2) <= threshold && abs(ycross - yb2) <= threshold) ||
+            (abs(xcross - xe2) <= threshold && abs(ycross - ye2) <= threshold)) )
         {          
             k++;               //one new element will be added            
             int jj = numbe0 + num + k - 1 ;   // element_no instead of num, in the orig code num is one of input parametes to elem
             cross_current_or_save_element(xb2, yb2, xe2, ye2, xcross, ycross, j, jj,k);
         }
 
-        if ((abs(xcross - xb1) <= 1e-5 && abs(ycross - yb1) <= 1e-5) ||
-            (abs(xcross - xe1) <= 1e-5 && abs(ycross - ye1) <= 1e-5))
+        if ((abs(xcross - xb1) <= threshold && abs(ycross - yb1) <= threshold) ||
+            (abs(xcross - xe1) <= threshold && abs(ycross - ye1) <= threshold))
         {
             continue;       //goto 200
         }
