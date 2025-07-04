@@ -275,6 +275,39 @@ std::vector<Point> computeIntersectionWithCircleSector(
 
 
 
+//void keep_both_elems(point p1, point p2, point intersec)
+//{
+//    struct IntersectionData {
+//        float t;
+//        Point pt;
+//    };
+//    std::vector<IntersectionData> sortedPoints;
+//
+//    float dx = p2.x - p1.x;
+//    float dy = p2.y - p1.y;
+//
+//    for (const Point& ip : intersections) {
+//        float t;
+//        if (std::abs(dx) >= std::abs(dy))
+//            t = (ip.x - p1.x) / dx;
+//        else
+//            t = (ip.y - p1.y) / dy;
+//
+//        sortedPoints.push_back({ t, ip });
+//    }
+//
+//    // Sort by t
+//    std::sort(sortedPoints.begin(), sortedPoints.end(),
+//        [](const IntersectionData& a, const IntersectionData& b) {
+//            return a.t < b.t;
+//        });
+//
+//    addClippedElement(p1, sortedPoints[0].pt, m, new_numbe, 1);
+//    second_clipped = true;
+//    addClippedElement(sortedPoints[1].pt, p2, m, new_numbe, 2);
+//}
+//}
+
 void findallintersect(const Point& p1, const Point& p2, float xc, float yc, float R,
     float ang1, float ang2,int& new_numbe, int m,int p1_stat, int p2_stat)
 {
@@ -296,8 +329,18 @@ void findallintersect(const Point& p1, const Point& p2, float xc, float yc, floa
     }
     else if (intersections.size() == 1)
     {
-        Point outside_pt = (p1_stat == 1) ? p1 : p2;
-        addClippedElement(outside_pt, intersections[0], m, new_numbe, 1);
+        if (p1_stat == 1 && p2_stat == 1)
+        {
+            addClippedElement(p1, intersections[0], m, new_numbe, 1);
+            second_clipped = true;
+            addClippedElement(intersections[0], p2, m, new_numbe, 2);
+        }
+        else
+
+        {
+            Point outside_pt = (p1_stat == 1) ? p1 : p2;
+            addClippedElement(outside_pt, intersections[0], m, new_numbe, 1);
+        }
     }
     else
     {

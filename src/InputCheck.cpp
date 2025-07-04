@@ -4,6 +4,7 @@
 #include<rstor_chek.h>
 #include<Rectangle_check.h>
 #include <filesystem>
+#include<Geoplot.h>
 
 
 using namespace CommonPara_h::comvar;
@@ -1257,6 +1258,7 @@ void inputcheck()
     {
         if (na>0)
             check_boreholes();
+        geoplot();
         if(nb>=3)
             check_rectangle(true);
     }       

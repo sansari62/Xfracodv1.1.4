@@ -205,7 +205,7 @@ bool check_segmnt_valid(const Point& a, const Point& b,
     float dy = b.y - a.y;
     float len = std::sqrt(dx * dx + dy * dy);
     bool valid = true;
-    if (len < 1e-5f)
+    if (len / orig_elem.a < 0.25f)
     {
         //int merge = 0;
         //specialLabel_200(merge, m);
@@ -289,12 +289,12 @@ void process_elements(const Rectangle1& rect) {
             bool direct;
             if (isALeftOfB(clipped, outside_pt))
             {
-                bool segm = check_segmnt_valid(clipped, outside_pt, m, new_elem);
+                segm = check_segmnt_valid(clipped, outside_pt, m, new_elem);
                 direct = 1;//right
             }
             else
             {
-                bool segm = check_segmnt_valid(outside_pt, clipped, m, new_elem);
+                segm = check_segmnt_valid(outside_pt, clipped, m, new_elem);
                 direct = 0; //left
             }
             //one segment remained
