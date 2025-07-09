@@ -3,7 +3,6 @@
 #include <CommonPara.h>
 #include<GeologicalForm.h>
 #include <optional>
-#include<Tip.h>
 #include <algorithm>
 
 using namespace CommonPara_h::comvar;
@@ -12,29 +11,6 @@ bool second_clipped = false;
 
 
 std::vector<new_element_para>  new_elements;
-
-
-int  if_tip_element(int m)
-{
-    for (int k = 0; k < no; ++k)
-    {
-        Tip& t = tips[k];
-        if (t.mpointer == m)
-            return k;
-    }
-    return -1;
-}
-
-void fix_tip_pointer(int m,int new_numbe)
-{
-    for (int k = 0; k < no; ++k)
-    {
-        Tip& t = tips[k];
-        if (t.mpointer == m)
-            t.mpointer = new_numbe;
-    }
-    return;
-}
 
 
 
@@ -116,112 +92,6 @@ bool computeSegmentIntersection(
 
 }
 
-void addClippedElement2(int m, int new_numbe, BoundaryElement& new_elem, int first) {
-    int tip_index = if_tip_element(m);
-    if (first == 1)
-       {       
-            elm_list[new_numbe] = new_elem;
-            float ratio = new_elem.a / elm_list[m].a;
-            b_elm[new_numbe] = b_elm[m];
-            b_elm[new_numbe].force1 *= ratio;
-            b_elm[new_numbe].force2 *= ratio;
-
-            joint[new_numbe] = joint[m];
-            s4.b0[2 * new_numbe] = s4.b0[2 * m];
-            s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
-            
-            //fix_tip_pointer(m, new_numbe);
-           // new_numbe++;
-        }
-    else
-    {
-        new_element_para t;
-        t.b01 = s4.b0[2 * m];
-        t.b02 = s4.b0[2 * m + 1];
-        t.j = joint[m];
-        t.new_el = new_elem;
-        t.ratio = new_elem.a / elm_list[m].a;
-        t.be1 = b_elm[m];
-       
-       /* if (tip_index != -1)
-            if (tips[tip_index].ityp == 1)
-                t.tip_indx = tip_index;
-        else
-          t.tip_indx = tip_index;*/
-        new_elements.push_back(t);
-    }
-    return;
-}
-
-
-void addClippedElement(const Point& a, const Point& b,
-    int m, int& new_numbe, int first)
-{
-    const BoundaryElement& orig_elem = elm_list[m];
-    float dx = b.x - a.x;
-    float dy = b.y - a.y;
-    float len = std::sqrt(dx * dx + dy * dy);
-    if (len < 1e-6f)
-    {
-        int merge = 0;
-        specialLabel_200(merge, m);
-        return; // skip degenerate
-    }
-
-    BoundaryElement newelem;
-    newelem.xm = 0.5f * (a.x + b.x);
-    newelem.ym = 0.5f * (a.y + b.y);
-    newelem.a = len / 2.0f;
-    newelem.cosbet = dx / len;
-    newelem.sinbet = dy / len;
-    newelem.kod = orig_elem.kod;
-    newelem.mat_no = orig_elem.mat_no;   
-    if (!isNewElementUnique(newelem)) return;
-    if (first == 1)
-
-    {
-        if (new_numbe > m)
-        {
-            new_element_para t;
-            t.b01 = s4.b0[2 * m];
-            t.b02 = s4.b0[2 * m + 1];
-            t.j = joint[m];
-            t.new_el = newelem;
-            t.ratio = newelem.a / orig_elem.a;
-            t.be1 = b_elm[m];
-            new_elements.push_back(t);
-        }
-        else
-        {
-            elm_list[new_numbe] = newelem;
-            float ratio = newelem.a / orig_elem.a;
-            b_elm[new_numbe] = b_elm[m];
-            b_elm[new_numbe].force1 *= ratio;
-            b_elm[new_numbe].force2 *= ratio;
-
-            joint[new_numbe] = joint[m];
-            s4.b0[2 * new_numbe] = s4.b0[2 * m];
-            s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
-
-            fix_tip_pointer(m, new_numbe);
-            new_numbe++;
-        }
-    }
-    else
-    {
-        new_element_para t;
-        t.b01 = s4.b0[2 * m];
-        t.b02 = s4.b0[2 * m + 1];
-        t.j = joint[m];
-        t.new_el = newelem;
-        t.ratio = newelem.a / orig_elem.a;
-        t.be1 = b_elm[m];
-        new_elements.push_back(t);
-    }
-
-}
-
-
 
 std::vector<Point> computeIntersectionWithCircleSector(
     const Point& p1, const Point& p2, float xc, float yc, float R,
@@ -240,7 +110,6 @@ std::vector<Point> computeIntersectionWithCircleSector(
     float discriminant = b * b - 4 * a * c;
     if (discriminant < -1e-6f) return intersections;  // Definitely no intersection
     if (discriminant < 0) discriminant = 0;   // Treat near-zero as tangent
-    //if (discriminant < 0) return false;
 
     discriminant = std::sqrt(discriminant);
     float t1 = (-b - discriminant) / (2 * a);
@@ -274,50 +143,16 @@ std::vector<Point> computeIntersectionWithCircleSector(
 }
 
 
-
-//void keep_both_elems(point p1, point p2, point intersec)
-//{
-//    struct IntersectionData {
-//        float t;
-//        Point pt;
-//    };
-//    std::vector<IntersectionData> sortedPoints;
-//
-//    float dx = p2.x - p1.x;
-//    float dy = p2.y - p1.y;
-//
-//    for (const Point& ip : intersections) {
-//        float t;
-//        if (std::abs(dx) >= std::abs(dy))
-//            t = (ip.x - p1.x) / dx;
-//        else
-//            t = (ip.y - p1.y) / dy;
-//
-//        sortedPoints.push_back({ t, ip });
-//    }
-//
-//    // Sort by t
-//    std::sort(sortedPoints.begin(), sortedPoints.end(),
-//        [](const IntersectionData& a, const IntersectionData& b) {
-//            return a.t < b.t;
-//        });
-//
-//    addClippedElement(p1, sortedPoints[0].pt, m, new_numbe, 1);
-//    second_clipped = true;
-//    addClippedElement(sortedPoints[1].pt, p2, m, new_numbe, 2);
-//}
-//}
-
 void findallintersect(const Point& p1, const Point& p2, float xc, float yc, float R,
-    float ang1, float ang2,int& new_numbe, int m,int p1_stat, int p2_stat)
+    float ang1, float ang2,int& new_numbe, int m,int p1_stat, int p2_stat,int tip_index)
 {
     // Step 1: Find all intersections
     Point ip1, ip2;   
     std::vector<Point> intersections = computeIntersectionWithCircleSector(p1, p2, xc, yc, R, ang1,ang2,p1_stat,p2_stat);
-
-    if (intersections.empty()) {        
+    if (intersections.empty()) {  
+        if (tip_index != -1)
+            tips[tip_index].mpointer = new_numbe;
             auto& elem = elm_list[m];
-            fix_tip_pointer(m, new_numbe);
             elm_list[new_numbe] = elem;
             b_elm[new_numbe] = b_elm[m];
             joint[new_numbe].aperture0 = joint[m].aperture0;
@@ -331,15 +166,12 @@ void findallintersect(const Point& p1, const Point& p2, float xc, float yc, floa
     {
         if (p1_stat == 1 && p2_stat == 1)
         {
-            addClippedElement(p1, intersections[0], m, new_numbe, 1);
-            second_clipped = true;
-            addClippedElement(intersections[0], p2, m, new_numbe, 2);
+            two_intersection_case(p1, p2, intersections[0], intersections[0], m, new_numbe, tip_index, new_elements);
         }
         else
-
         {
             Point outside_pt = (p1_stat == 1) ? p1 : p2;
-            addClippedElement(outside_pt, intersections[0], m, new_numbe, 1);
+            one_point_intersection(outside_pt, intersections[0], m, new_numbe, tip_index, new_elements);
         }
     }
     else
@@ -368,10 +200,8 @@ void findallintersect(const Point& p1, const Point& p2, float xc, float yc, floa
             [](const IntersectionData& a, const IntersectionData& b) {
                 return a.t < b.t;
             });
-        
-            addClippedElement(p1, sortedPoints[0].pt, m, new_numbe, 1);
-            second_clipped = true;
-            addClippedElement(sortedPoints[1].pt, p2, m, new_numbe, 2);
+
+        two_intersection_case(p1, p2, sortedPoints[0].pt, sortedPoints[1].pt, m, new_numbe, tip_index, new_elements);
         }    
     
     return;
@@ -388,6 +218,7 @@ void clipBoundaryElements(
         // Reconstruct endpoints
         float dx = elem.a * elem.cosbet;
         float dy = elem.a * elem.sinbet;
+        int tip_index = if_tip_element(m);
 
         Point p1{ elem.xm - dx, elem.ym - dy };
         Point p2{ elem.xm + dx, elem.ym + dy };
@@ -401,14 +232,15 @@ void clipBoundaryElements(
             (p1_status == 2 && p2_status == 0);                       // one inside, one on arc
 
         if (remove) {
-            // Entire element is inside → skip
-            int merge = 0;
-            specialLabel_200(merge,m);
+            // Entire element is inside → skip           
+            if (tip_index != -1)
+                tips[tip_index].ityp = 0;
             continue;
         }
         else
         {
-            findallintersect(p1, p2, xc, yc, R, ang1_deg, ang2_deg, new_numbe, m,p1_status,p2_status);
+            findallintersect(p1, p2, xc, yc, R, ang1_deg, ang2_deg, new_numbe, m,p1_status,p2_status,
+                tip_index);
 
         }         
             
@@ -424,6 +256,8 @@ void clipBoundaryElements(
             s4.b0[2 * new_numbe + 1] = e.b02;
             b_elm[new_numbe].force1 *=  e.ratio ;
             b_elm[new_numbe].force2 *=  e.ratio;
+            if (e.tip_indx != -1)
+                tips[e.tip_indx].mpointer = new_numbe;
             new_numbe++;
         }
     }

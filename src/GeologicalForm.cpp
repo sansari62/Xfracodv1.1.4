@@ -128,7 +128,7 @@ void GeologicalForm::cross_current_or_save_element(float xb1, float yb1, float x
     newelement.cosbet = elm_list[m].cosbet;   
     bool unique = isNewElementUnique(newelement);
     float length = 2 * newelement.a;
-    if (!unique || length< 5e-5)
+    if (!unique || newelement.a / ( elm_list[m].a) < 0.125)
     {
         k--;
         return;

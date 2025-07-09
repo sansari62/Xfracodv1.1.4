@@ -22,7 +22,7 @@
 #include<map>
 #include<BE.h>
 
-#define m0 6000
+#define m0 10000
 
 
 

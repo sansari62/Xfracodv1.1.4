@@ -1249,21 +1249,21 @@ void inputcheck()
         std::cerr << "Error opening file temp001!" << std::endl;
         return;
     }
+    
     check_fracture_cross();
     reorder_fractures(file25);
     check_cross_boundaries();
     reorder_boundaries(file25);
     check_cross_arcs(file25);
-    if (restor_flg)
+    if (restor_flg)       
     {
         if (na>0)
-            check_boreholes();
-        geoplot();
+            check_boreholes();        
         if(nb>=3)
             check_rectangle(true);
-    }       
+    }   
+    geoplot();
     final_wrap_up();
-    
-
     return;
 }
+
