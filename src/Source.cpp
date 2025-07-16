@@ -242,7 +242,7 @@ void Central_control()
     while (!StopReturn)
     {
         mcyc++;  
-        cout << " cycle " << comvar::mcyc << " of " <<mcyc0<<"  is running"<<" starting at(" << getTimeOnly()<<").... ";
+        cout << " cycle " << comvar::mcyc << " of " <<mcyc0<<"  is running"<<" starting at (" << getTimeOnly()<<").... ";
         auto starti = std::chrono::high_resolution_clock::now();
         creep.deltaT = creep.deltaT_min;         //Creep iteration
         creep.ID_creep = (creep.time < creep.totalT) ? 1 : 0;

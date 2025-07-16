@@ -604,10 +604,11 @@ void check_crack_growth()
             if (t.ityp == 0) continue; 
             StopReturn = false;
             fmax1(fm,angle);  
+            if (t.ityp == 0) continue;
             if (fm < 0) fm = 0;            
             if (abs(angle) >= 100 * pi / 180)//1.745329)
             {
-                //if code did not find proper max, then ignore this tip
+                //if no proper max, then ignore this tip
                t.angl = 0;
                t.f_value = 0;
             }
@@ -723,15 +724,7 @@ void If_No_tip()
                 geoplot();
             }
             if (no != 0)
-            {
-               // geoplot();
-                //------ - Initialising the seed elements for growth---------
-                /*for (ni = 0; ni < no; ni++)
-                {
-                    if (tips[ni].ityp == 0) break;
-                    nelement = tips[ni].mpointer;
-                  
-                }*/
+            {               
                 return;
             }
             if (lastinput == "endf")
@@ -744,15 +737,8 @@ void If_No_tip()
             
             return;
         }
-            //------ - Initialising the seed elements for growth----
-            /*for (ni = 0; ni < no; ni++)
-            {
-                if (tips[ni].ityp == 0) break;
-                nelement = tips[ni].mpointer;
-              
-            }*/
-
-            return;
+        
+     return;
     }
       
 
@@ -768,21 +754,19 @@ void add_crack_growth()
         {
             if (tips[ni].ityp == 0) continue;
             if (tips[ni].ifail != 1) continue;            
-            nelement = tips[ni].mpointer;              
             newtips(tips[ni].angl);
             creep.creep_x[ni] = 0;         //reset the creep growth to zero
             creep.creep_y[ni] = 0;          //reset the creep growth to zero
             ktipgrow = true;            
         }
         arrangetip();       
-        if (irock == 1)       
-        {  
-            if (s15.i_bound == 0 && s15.i_intern == 0)
-                return;
-            else
-                initiation();
+        if (irock == 1 && !(s15.i_bound == 0 && s15.i_intern == 0))
+        {
+            initiation();
             return;
         }
+        // Continue here if either irock !=1 OR irock==1 with both flags==0
+
         if (creep.ID_creep == 1 && creep.time >= creep.totalT)        //creep problem,id_creep=ID_creep
         {
             geoplot();
@@ -796,18 +780,23 @@ void add_crack_growth()
             geoplot();
             if (lastinput != "endf")
             {
-                MessageBox(nullptr, L"No more fracture propogation, continue from input file", L"Error!", MB_OK);
+                MessageBox(nullptr, L"No more fracture propogation, continue from input file", L"Message!", MB_OK);
                 input();
             }
-            else if (lastinput == "endf")
+            if (lastinput == "endf")
             {
-               //geoplot();
-                StopReturn = false;
-                return;                    
-               
+                cout << "\n Fracture tip reached model boundary, stopping simulation! ";
+                MessageBox(nullptr, L"End of input file.quit!", L"Message!", MB_OK);  
+                file2.close();
+                inFile.close();
+                file9.close();
+                logfile.close();
+               // std::filesystem::remove("temp001.dat");
+                std::exit(0);
+                //StopReturn = true;
+               // return;              
             }
-        }   
-
+        }  
         return;
     }
 

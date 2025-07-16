@@ -165,8 +165,9 @@ void process_elements(const Rectangle1& rect) {
             elm_list[new_numbe] = elem;
             b_elm[new_numbe] = b_elm[m];
             joint[new_numbe] = joint[m];
-            s4.b0[2 * new_numbe] = s4.b0[2 * m];
-            s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
+            update_s4(m, new_numbe);
+            //s4.b0[2 * new_numbe] = s4.b0[2 * m];
+            //s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
             new_numbe++;
         }
         else if (intersections.size() == 1) {
@@ -203,8 +204,9 @@ void process_elements(const Rectangle1& rect) {
             elm_list[new_numbe] = e.new_el;
             b_elm[new_numbe] = e.be1;
             joint[new_numbe] = e.j;
-            s4.b0[2 * new_numbe] = e.b01;
-            s4.b0[2 * new_numbe + 1] = e.b02;
+           // s4.b0[2 * new_numbe] = e.b01;
+           // s4.b0[2 * new_numbe + 1] = e.b02;
+            update_s4(e.s4_indx,new_numbe);
             b_elm[new_numbe].force1 *= e.ratio;
             b_elm[new_numbe].force2 *= e.ratio;
             if (e.tip_indx != -1)

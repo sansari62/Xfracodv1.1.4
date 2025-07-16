@@ -50,10 +50,10 @@ int pointInSector(const Point& p, float xc, float yc, float R, float ang1_rad,
         angle_inside = true;
     }
     else if (ang1 < ang2) {
-        angle_inside = angle_rad >= ang1 && angle_rad <= ang2;
+        angle_inside = (angle_rad >= ang1 - EPS) && (angle_rad <= ang2 + EPS);
     }
     else {
-        angle_inside = angle_rad >= ang1 || angle_rad <= ang2;
+        angle_inside = (angle_rad >= ang1 - EPS) || (angle_rad <= ang2 + EPS);
     }
     if (!angle_inside)
         return 1; // angle not inside → outside
@@ -157,8 +157,9 @@ void findallintersect(const Point& p1, const Point& p2, float xc, float yc, floa
             b_elm[new_numbe] = b_elm[m];
             joint[new_numbe].aperture0 = joint[m].aperture0;
             joint[new_numbe].aperture_r = joint[m].aperture_r;
-            s4.b0[2 * new_numbe] = s4.b0[2 * m];
-            s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
+           // s4.b0[2 * new_numbe] = s4.b0[2 * m];
+           // s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
+            update_s4(m, new_numbe);
             new_numbe++; 
             return;
     }
@@ -252,12 +253,14 @@ void clipBoundaryElements(
             elm_list[new_numbe] = e.new_el;
             b_elm[new_numbe] = e.be1;
             joint[new_numbe] = e.j;
-            s4.b0[2 * new_numbe] = e.b01;
-            s4.b0[2 * new_numbe + 1] = e.b02;
+           // s4.b0[2 * new_numbe] = e.b01;
+            //s4.b0[2 * new_numbe + 1] = e.b02;
+            update_s4(e.s4_indx,new_numbe);
             b_elm[new_numbe].force1 *=  e.ratio ;
             b_elm[new_numbe].force2 *=  e.ratio;
             if (e.tip_indx != -1)
-                tips[e.tip_indx].mpointer = new_numbe;
+               // tips[e.tip_indx].mpointer = new_numbe;
+                fix_tip_pointer1(new_numbe, e.tip_indx, 1);
             new_numbe++;
         }
     }

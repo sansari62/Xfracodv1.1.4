@@ -341,6 +341,19 @@ bool check_new_crack_in_exca(float x1, float y1, float x2, float y2)
 }
 
 
+
+bool check_iwin_limit(float xp,float yp)
+{
+    if (xp >= s5u.xmax || xp <= s5u.xmin || yp >= s5u.ymax || yp <= s5u.ymin)
+    {
+        
+        return false;
+    }
+    return true;
+}
+
+
+
 void failure(float xp, float yp, float r, float alpha, int im)
 {
     //IM = 1, tensile, IM = 2, shear
@@ -364,6 +377,12 @@ void failure(float xp, float yp, float r, float alpha, int im)
     tips[n].assign_val(xb, yb, xn, yn, dl, cosf(alpha), sinf(alpha), -1, material);  
     no++;    
     //-------------------------------add new element------------
+    bool valid = check_iwin_limit(0.5 * (xb + xn), 0.5 * (yb + yn));
+    if(!valid)
+    {
+        no -= 1;
+        return;
+    }
     m = numbe;  
     elm_list[m].xm= 0.5 * (xb + xn);
     elm_list[m].ym= 0.5 * (yb + yn);
@@ -504,8 +523,14 @@ void failureB(float xp, float yp, float r, float alpha, int im)
     //---------------Add new element-------------------------------
     float x = 0.5 * (xb + xp);
     float y = 0.5 * (yb + yp);    
-    elm_list[m].xm= 0.5 * (xb + xp);
-    elm_list[m].ym = 0.5 * (yb + yp);
+    bool valid = check_iwin_limit(x,y);
+    if (!valid)
+    {
+        no -= 1;
+        return;
+    }
+    elm_list[m].xm= x;
+    elm_list[m].ym = y;
     elm_list[m].a = dl / 2;
     elm_list[m].sinbet = sinb;
     elm_list[m].cosbet = cosb;

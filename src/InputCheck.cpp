@@ -1261,8 +1261,7 @@ void inputcheck()
             check_boreholes();        
         if(nb>=3)
             check_rectangle(true);
-    }   
-    geoplot();
+    }  
     final_wrap_up();
     return;
 }

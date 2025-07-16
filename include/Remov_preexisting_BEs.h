@@ -22,10 +22,13 @@ struct new_element_para
     BE be1;
     float ratio;
     Joint j;
-    float b01, b02;
+    //float b01, b02;, b01(0.0f), b02(0.0f)
     int tip_indx;
-    new_element_para() : tip_indx(-1), ratio(1), b01(0.0f), b02(0.0f) {}
+    int s4_indx;
+    new_element_para() : tip_indx(-1), ratio(1), s4_indx(-1){}
+    
 };
+void  update_s4(int m, int new_numbe);
 void fix_tip_pointer1(int new_numbe, int tip_indx, int direc);
 
 //void setting_newelement(BoundaryElement& newelement, int m, int new_numbe, int p1_stat, int p2_stat);

@@ -27,8 +27,7 @@ void fix_tip_pointer1(int new_numbe, int k,int direction)
                 tips[k].dl = 2. * elm_list[new_numbe].a;
                 tips[k].costem = elm_list[new_numbe].cosbet;
                 tips[k].sintem = elm_list[new_numbe].sinbet;
-            }
-              
+            }              
             else //direction=1 right tip element
             {               
                 tips[k].xbe = elm_list[new_numbe].xm + elm_list[new_numbe].a * elm_list[new_numbe].cosbet;
@@ -44,27 +43,6 @@ void fix_tip_pointer1(int new_numbe, int k,int direction)
 }
 
 
-//void setting_newelement(BoundaryElement& newelement, int m, int new_numbe, int p1_stat, int p2_stat)
-//{
-//    newelement.kod = elm_list[m].kod;
-//    newelement.mat_no = elm_list[m].mat_no;
-//    elm_list[new_numbe] = newelement;
-//    b_elm[new_numbe].force1 = b_elm[m].force1 * elm_list[new_numbe].a / elm_list[m].a;
-//    b_elm[new_numbe].force2 = b_elm[m].force2 * elm_list[new_numbe].a / elm_list[m].a;
-//    b_elm[new_numbe].aks = b_elm[m].aks;
-//    b_elm[new_numbe].akn = b_elm[m].akn;
-//    b_elm[new_numbe].phi = b_elm[m].phi;
-//    b_elm[new_numbe].phid = b_elm[m].phid;
-//
-//    b_elm[new_numbe].coh = b_elm[m].coh;
-//    joint[new_numbe].aperture0 = joint[m].aperture0;
-//    joint[new_numbe].aperture_r = joint[m].aperture_r;
-//    s4.b0[2 * new_numbe] = s4.b0[2 * m];
-//    s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
-//   // fix_tip_pointer1(m, new_numbe, p1_stat, p2_stat);
-//}
-
-
 bool check_segmnt_valid(const Point& a, const Point& b,
     int m, BoundaryElement& newelem)
 {
@@ -72,8 +50,9 @@ bool check_segmnt_valid(const Point& a, const Point& b,
     float dx = b.x - a.x;
     float dy = b.y - a.y;
     float len = std::sqrt(dx * dx + dy * dy);
+    float new_a = len / 2;
     bool valid = true;
-    if (len / orig_elem.a < 0.125f)
+    if (new_a / orig_elem.a < 0.125f)
     {
         //int merge = 0;
         //specialLabel_200(merge, m);
@@ -122,6 +101,42 @@ bool isALeftOfB(const Point& A, const Point& B) {
 //    // If X equal, compare Y
 //    return A.y < B.y;
 //}
+void  update_s4(int m, int new_numbe)
+{
+    int is = 2 * new_numbe;
+    int in =  is+1;
+    int it = 2 * m;
+    int itt = it + 1;
+
+    s4.b0[is] = s4.b0[it];
+    s4.b0[in] = s4.b0[itt];
+    s4.d0[is] = s4.d0[it];
+    s4.d0[in] = s4.d0[itt];
+    s4.b0_old[is] = s4.b0_old[it];
+    s4.b0_old[in] = s4.b0_old[itt];
+
+    s4.b[is] = s4.b[it];
+    s4.b[in] = s4.b[itt];
+    s4.b1[is] = s4.b1[it];
+    s4.b1[in] = s4.b1[itt];
+    s4.d[is] = s4.d[it];
+    s4.d[in] = s4.d[itt];       
+
+    s4.c[is] = s4.c[it];
+    s4.c[in] = s4.c[itt];
+
+    s4.c_d[is] = s4.c_d[it];
+    s4.c_d[in] = s4.c_d[itt];
+
+    s4.c_s[is] = s4.c_s[it];
+    s4.c_s[in] = s4.c_s[itt];   
+
+    s4.df0[is] = s4.df0[it];
+    s4.df0[in] = s4.df0[itt];
+
+}
+
+
 
 void addClippedElement2(int m, int new_numbe, BoundaryElement& new_elem, int first, std::vector<new_element_para>& vec) {
     if (first == 1)
@@ -133,19 +148,22 @@ void addClippedElement2(int m, int new_numbe, BoundaryElement& new_elem, int fir
         b_elm[new_numbe].force2 *= ratio;
 
         joint[new_numbe] = joint[m];
-        s4.b0[2 * new_numbe] = s4.b0[2 * m];
-        s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
+        //s4.b0[2 * new_numbe] = s4.b0[2 * m];
+        //s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
+        //newly added 
+        update_s4(m,new_numbe);
        
     }
     else
     {
         new_element_para t;
-        t.b01 = s4.b0[2 * m];
-        t.b02 = s4.b0[2 * m + 1];
+       // t.b01 = s4.b0[2 * m];
+       // t.b02 = s4.b0[2 * m + 1];
         t.j = joint[m];
         t.new_el = new_elem;
         t.ratio = new_elem.a / elm_list[m].a;
-        t.be1 = b_elm[m];       
+        t.be1 = b_elm[m];    
+        t.s4_indx = new_numbe;
         vec.push_back(t);
     }
     return;
@@ -231,7 +249,10 @@ void two_intersection_case(Point p1, Point p2, Point ip1, Point ip2, int m, int&
         if (tip_index != -1)
         {
             if (tips[tip_index].ityp == -1)
-                tips[tip_index].mpointer = new_numbe;
+                fix_tip_pointer1(new_numbe, tip_index, 0);
+                //tips[tip_index].mpointer = new_numbe;
+            else
+                tips[tip_index].ityp = 0;
         }
         new_numbe++;
     }
@@ -240,7 +261,11 @@ void two_intersection_case(Point p1, Point p2, Point ip1, Point ip2, int m, int&
         if (tip_index != -1)
         {
             if (tips[tip_index].ityp == 1)
-                tips[tip_index].mpointer = new_numbe;
+                //tips[tip_index].mpointer = new_numbe;
+                fix_tip_pointer1(new_numbe, tip_index, 1);
+            else
+                tips[tip_index].ityp = 0;
+
         }
         new_numbe++;
     }
