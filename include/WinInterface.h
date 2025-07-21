@@ -62,13 +62,14 @@ extern std::vector<AcousricE> AE;
  struct Wjoint
 {
     float w_xp, w_yp, w_ds, w_bet, w_dn, w_set, w_aperture, w_zet;
+    int m_indx;
 
 
-    Wjoint() : w_xp(0), w_yp(0), w_ds(0), w_bet(0), w_dn(0), w_set(0), w_aperture(0), w_zet(0) {}
+    Wjoint() : w_xp(0), w_yp(0), w_ds(0), w_bet(0), w_dn(0), w_set(0), w_aperture(0), w_zet(0),m_indx(0){}
 
 
     void assign_val(float xp, float yp, float ds,float bet, float dn, float wset,
-        float waper, float zet)
+        float waper, float zet,int mindex)
     {    
 		w_xp = xp;
 		w_yp = yp;
@@ -78,6 +79,7 @@ extern std::vector<AcousricE> AE;
 		w_set = wset;
 		w_aperture = waper;
 		w_zet = zet;
+        m_indx = mindex;
     }
 };
 

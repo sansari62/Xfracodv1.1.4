@@ -124,15 +124,17 @@ void  file_preprocesing(const std::wstring& filename)
 
 
 
+namespace fs = std::filesystem;
 
 
 int main()
 {
     cout <<
-        " XFracod2D v1.0.2 - Fracture Creation and Propagation Code\n" << " Copyright(c) DynaFrax UG LTD.All rights reserved.\n"
-        <<"\n*This test version of XFracod2D supports up to 500 boundary elements.\n"
-        " If you need to simulate models with more than 500 boundary elements,\n"
-        "please contact us at info@dynafrax.com for further options.\n";// <<
+        " XFracod2D v1.1.4 - Next Generation Fracture System Simulation Code\n" << " Copyright(c) DynaFrax UG LTD. All rights reserved.\n";
+    //    <<"\n*This test version of XFracod2D supports up to 500 boundary elements.\n"
+    //    " If you need to simulate models with more than 500 boundary elements,\n"
+    //    "please contact us at info@dynafrax.com for further options.\n";// <<
+    //
     std::wstring selectedFile = openFileDialog();
 
     if (!selectedFile.empty()) {        
@@ -157,6 +159,7 @@ int main()
     else {
         std::cout << "Failed to create directory.\n";
     }
+
     file2.open(dir + L"/Coutput.dat");
     logfile.open(dir + L"/Clog.txt");
     //file57.open(dir + L"/Cpermeability.dat");
@@ -168,11 +171,10 @@ int main()
     logfile<< " The release version: " << VERSION << "\n";
 
     stress_dir = dir + L"\\" + L"Stress";
-    if (std::filesystem::create_directory(stress_dir) || ERROR_ALREADY_EXISTS == GetLastError()) {
+    if (!fs::exists(stress_dir)) {
+        std::filesystem::create_directory(stress_dir);
     }
-    else {
-        std::cout << "Failed to create stress directory.\n";
-    }
+    
     BE_dir = dir + L"\\" + L"BE";
     if (std::filesystem::create_directory(BE_dir) || ERROR_ALREADY_EXISTS == GetLastError()) {
     }
@@ -206,6 +208,6 @@ int main()
     inFile.close();
     file9.close();
     logfile.close();
-          
+    std::filesystem::remove("temp001.dat");
     return 0;
 }

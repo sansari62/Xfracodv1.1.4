@@ -154,11 +154,11 @@
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <SupportJustMyCode>true</SupportJustMyCode>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <DebugInformationFormat>None</DebugInformationFormat>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
@@ -208,6 +208,7 @@ exit /b
     <ClCompile Include="src\Internal.cpp" />
     <ClCompile Include="src\Mainb.cpp" />
     <ClCompile Include="src\Rectangle_excavation.cpp" />
+    <ClCompile Include="src\Remov_preexisting_BEs.cpp" />
     <ClCompile Include="src\Rock.cpp" />
     <ClCompile Include="src\rstor_chek.cpp" />
     <ClCompile Include="src\S4.cpp" />
@@ -226,6 +227,8 @@ exit /b
     <ClInclude Include="include\BoundaryElement.h" />
     <ClInclude Include="include\BoundaryStress.h" />
     <ClInclude Include="include\Rectangle_check.h" />
+    <ClInclude Include="include\Remov_preexisting_BEs.h" />
+    <ClInclude Include="include\rstor_chek.h" />
     <ClInclude Include="include\stdafx.h" />
     <ClInclude Include="include\CommonPara.h" />
     <ClInclude Include="include\Creep.h" />
@@ -255,7 +258,6 @@ exit /b
     <ClInclude Include="include\Tip.h" />
     <ClInclude Include="include\WinInterface.h" />
     <ClInclude Include="include\Work.h" />
-    <ClInclude Include="rstor_chek.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

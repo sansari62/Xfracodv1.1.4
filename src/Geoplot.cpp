@@ -122,6 +122,7 @@ void geoplot()
     BEfile.close();
     win_exchange.w_numbe = numbe_real;
     int npoint, jpoint, npointp;
+    AcousticE();
     internal(0, npoint);   
     fracture_defo(0, jpoint);          
     ++state;

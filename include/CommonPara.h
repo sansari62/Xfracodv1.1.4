@@ -6,12 +6,10 @@
 #include<MonitoringLine.h>
 #include<BoundaryStress.h>
 #include<Elliptical_opening.h>
-
 #include<Tip.h>
 #include<Borehole.h>
 #include<Rock.h>
 #include<DispWindow.h>
-
 #include "S4.h"
 #include <array>
 
@@ -24,7 +22,7 @@
 #include<map>
 #include<BE.h>
 
-#define m0 500 //2000
+#define m0 10000
 
 
 
@@ -123,7 +121,7 @@ namespace comvar {
 
 	extern Creep creep;
 	extern std::vector < Rock> rock1;
-	;
+	extern bool rect_exca;
 
 
 	extern DispWindow dispwin;         //S10
@@ -302,7 +300,7 @@ namespace comvar {
 	{
 		float aa;			//maximum element SIZE
 		float aaa;			//minimum element SIZE
-		int i_rand;			//!i_rand=1, random fracture initiation; =0 not random
+		int i_rand;			//i_rand=1, random fracture initiation; =0 not random
 		float f_ini0;
 		int  i_bound;		// 1: allow fracture initiation at boundarieds 
 		int  i_intern;		//1 allow Fracture initiation in intact rock 

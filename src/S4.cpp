@@ -8,8 +8,8 @@ using namespace  CommonPara_h::comvar;
 
 
 S4::S4(int length) :
-    c(length, vector<float>(length , 0.0)), c_s(length, vector<float>(length, 0.0)),
-    c_d(length, vector<float>(length, 0.0)),
+    c(length, vector<double>(length , 0.0)), c_s(length, vector<double>(length, 0.0)),
+    c_d(length, vector<double>(length, 0.0)),
     d0(length, 0.0), d(length, 0.0), b(length, 0.0), b1(length, 0.0),
     df0(length, 0.0), df(length, 0.0), b0(length, 0.0), b0_old(length, 0.0) {}
 

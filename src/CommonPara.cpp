@@ -1,6 +1,6 @@
 #include<stdafx.h>
 #include "CommonPara.h"
-#include<map>
+//#include<map>
 
 
 
@@ -18,8 +18,8 @@ namespace comvar {
 	int nb = 0;
 	int nf = 0;
 
-	int ng = 3000;    //the real value should taken from UI, ng=m0 and 
-	int ns = 13000;   //ns no of grid-points + m0 (100*100+3000)
+	int ng = m0;    //the real value should taken from UI, ng=m0 and 
+	int ns = 10000+m0;   //ns no of grid-points + m0 (100*100+3000)
 
 	int npli = 0;
 	int nq = 0;
@@ -28,7 +28,6 @@ namespace comvar {
 	float d_max = 1000;
 
 	int nc = 0;
-
 	string title = "FRACOD application";
 
 	float delta = 0.0;
@@ -40,7 +39,7 @@ namespace comvar {
 
 	const int m1 = 1500;
 	const int m2 = 3000;
-	const int MAX_SIZE_frac = 400;
+	const int MAX_SIZE_frac = 2000;
 	const int MAX_SIZE_arc = 50;
 	float pi = 3.1415926; 
 	const int mem_size = 2*m0;
@@ -68,7 +67,7 @@ namespace comvar {
 	int irock = 0 ;		
 	int mat_lining = 10;
 
-	float dist_thr = 1e-10;
+	float dist_thr = 1e-6;
 	float ang_thr = 1;
 	float stres_thr = 1;
 	int state = 0;
@@ -114,6 +113,7 @@ namespace comvar {
 	std::vector< Rock>  rock1(10, Rock());
 	std::vector<Tip> tips(m0);// 500 in v2.3, Sara think about this
 	DispWindow dispwin;
+	bool rect_exca = false;
 
 
 	std::vector<Joint> joint(m0);       //join includes aperture0 and aperture_r
@@ -138,9 +138,7 @@ namespace comvar {
 	std::ifstream inFile;
 
 	std::fstream file9;  // ("Cbound.dat");
-	std::ofstream logfile;
-
-	
+	std::ofstream logfile;	
 	
 }
  
