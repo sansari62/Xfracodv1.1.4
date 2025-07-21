@@ -3,6 +3,7 @@
 #include "CommonPara.h"
 #include<DX.h>
 #include<Tip.h>
+#include<Rectangle_check.h>
 
 using namespace CommonPara_h::comvar;
 
@@ -21,7 +22,7 @@ int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, 
     float y2 = yc + ac * sinbeta;
     int  en;
     float thr = 0.0003; //6e-4;
-    //const float epsilon = 1e-6;
+    const float epsilon = 1e-6f;
 
     if (flagB == 0)
         en = numbe - 1;
@@ -36,25 +37,26 @@ int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, 
             if (be.kod != 5) continue;
         }
 
-        float dist1 = sqrt(powf(x1 - be.xm, 2) + powf(y1 - be.ym, 2));
-        float dist2 = sqrt(powf(x2 - be.xm, 2) + powf(y2 - be.ym, 2));
+        float dist1 = sqrt(pow(x1 - be.xm, 2) + pow(y1 - be.ym, 2));
+        float dist2 = sqrt(pow(x2 - be.xm, 2) + pow(y2 - be.ym, 2));
 
 
-        if (min(dist1, dist2) - thr <= factors.tolerance * max(ac, be.a))
+       // if (min(dist1, dist2) -thr <= factors.tolerance * max(ac, be.a))
+        if (min(dist1, dist2)  <= factors.tolerance * max(ac, be.a) )
         {
-
             return(0);
         }
 
         if (symm.ksym == 1 || symm.ksym == 4)
         {
-            dist1 = sqrt(powf(x1 - (2.0 * symm.xsym - be.xm), 2) +
-                powf(y1 - be.ym, 2));
-            dist2 = sqrtf(powf(x2 - (2.0 * symm.xsym - be.xm), 2) +
-                powf(y2 - be.ym, 2));
-            if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a))
-            {
+            dist1 = sqrt(pow(x1 - (2.0 * symm.xsym - be.xm), 2) +
+                pow(y1 - be.ym, 2));
+            dist2 = sqrt(pow(x2 - (2.0 * symm.xsym - be.xm), 2) +
+                pow(y2 - be.ym, 2));
+            //if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a))
+            if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a) + epsilon)
 
+            {
                 return(0);
             }
 
@@ -62,8 +64,8 @@ int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, 
 
         if (symm.ksym == 2 || symm.ksym == 4)
         {
-            dist1 = sqrt(powf(x1 - be.xm, 2) + powf(y1 - (2.0 * symm.ysym - be.ym), 2));
-            dist2 = sqrt(pow(x2 - be.xm, 2) + powf(y2 - (2.0 * symm.ysym - be.ym), 2));
+            dist1 = sqrt(pow(x1 - be.xm, 2) + pow(y1 - (2.0 * symm.ysym - be.ym), 2));
+            dist2 = sqrt(pow(x2 - be.xm, 2) + pow(y2 - (2.0 * symm.ysym - be.ym), 2));
             if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a))
             {
 
@@ -73,8 +75,8 @@ int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, 
 
         if (symm.ksym == 3 || symm.ksym == 4)
         {
-            dist1 = sqrt(powf(x1 - (2.0 * symm.xsym - be.xm), 2) + powf(y1 - (2.0 * symm.ysym - be.ym), 2));
-            dist2 = sqrt(powf(x2 - (2.0 * symm.xsym - be.xm), 2) + powf(y2 - (2.0 * symm.ysym - be.ym), 2));
+            dist1 = sqrt(pow(x1 - (2.0 * symm.xsym - be.xm), 2) + pow(y1 - (2.0 * symm.ysym - be.ym), 2));
+            dist2 = sqrt(pow(x2 - (2.0 * symm.xsym - be.xm), 2) + pow(y2 - (2.0 * symm.ysym - be.ym), 2));
             if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a))
             {
 
@@ -315,6 +317,40 @@ void setting_elem_and_tipn_failure(int m, int im)
 }
 
 
+bool check_new_crack_in_exca(float x1, float y1, float x2, float y2)
+{
+    bool nvalid = false;
+    Rectangle1 rect = check_rectangle(false);
+    Point p1, p2;
+    p1.x = x1;
+    p1.y = y1;
+    p2.x = x2;
+    p2.y = y2;
+
+    int p1_state = point_inside_rectangle(p1, rect);
+    int p2_state = point_inside_rectangle(p2, rect);
+
+    if ((p1_state == 0 && p2_state == 0) ||
+        (p1_state == 2 && p2_state == 2) ||
+        (p1_state == 0 && p2_state == 2) ||
+        (p1_state == 2 && p2_state == 0)) {
+        nvalid = true;
+    }
+    return nvalid;
+}
+
+
+
+bool check_iwin_limit(float xp,float yp)
+{
+    if (xp >= s5u.xmax || xp <= s5u.xmin || yp >= s5u.ymax || yp <= s5u.ymin)
+    {
+        
+        return false;
+    }
+    return true;
+}
+
 
 
 void failure(float xp, float yp, float r, float alpha, int im)
@@ -336,10 +372,16 @@ void failure(float xp, float yp, float r, float alpha, int im)
     xn = xp;
     yn = yp;    
     material = (multi_region)?check_material_id(0.5 * (xb + xn), 0.5 * (yb + yn)): j_material;
-    float dl = sqrtf(std::powf(xn - xb,2) + std::powf(yn - yb,2));
+    float dl = sqrt(std::pow(xn - xb,2) + std::pow(yn - yb,2));
     tips[n].assign_val(xb, yb, xn, yn, dl, cosf(alpha), sinf(alpha), -1, material);  
     no++;    
     //-------------------------------add new element------------
+    bool valid = check_iwin_limit(0.5 * (xb + xn), 0.5 * (yb + yn));
+    if(!valid)
+    {
+        no -= 1;
+        return;
+    }
     m = numbe;  
     elm_list[m].xm= 0.5 * (xb + xn);
     elm_list[m].ym= 0.5 * (yb + yn);
@@ -348,6 +390,11 @@ void failure(float xp, float yp, float r, float alpha, int im)
     elm_list[m].cosbet= (xn - xb) / dl;
     elm_list[m].kod = 5;
     elm_list[m].mat_no = material;
+    if (check_new_crack_in_exca(xn, yn, xb, yb))
+    {
+        no -= 1;
+        return;
+    }
 
     legal = CheckNewElement(elm_list[m].a, elm_list[m].xm, elm_list[m].ym,
         elm_list[m].cosbet, elm_list[m].sinbet, 0);    
@@ -442,7 +489,7 @@ void failure(float xp, float yp, float r, float alpha, int im)
     return;
 }
 
-
+ 
 
 
 
@@ -475,53 +522,73 @@ void failureB(float xp, float yp, float r, float alpha, int im)
     //---------------Add new element-------------------------------
     float x = 0.5 * (xb + xp);
     float y = 0.5 * (yb + yp);    
-    elm_list[m].xm= 0.5 * (xb + xp);
-    elm_list[m].ym = 0.5 * (yb + yp);
+    bool valid = check_iwin_limit(x,y);
+    if (!valid)
+    {
+        no -= 1;
+        return;
+    }
+    elm_list[m].xm= x;
+    elm_list[m].ym = y;
     elm_list[m].a = dl / 2;
     elm_list[m].sinbet = sinb;
     elm_list[m].cosbet = cosb;
     elm_list[m].kod = 5;
     elm_list[m].mat_no = material;
-     
-    int legal = CheckNewElement(elm_list[m].a, elm_list[m].xm, elm_list[m].ym, 
-        elm_list[m].cosbet, elm_list[m].sinbet, 1);
-      
-    m = numbe + 1;     
-    if (legal == 0)
-    {
-        m -= 1;
+   
+    if (check_new_crack_in_exca(x, y, xb, yb))
+    {       
         no -= 1;
+        return;
     }
     else
     {
-        setting_elem_and_tipn_failure(m-1, im);
-        // -----------------------------------------------       
-        if (multi_region)
-            material = check_material_id(0.5 * (xb + xe), 0.5 * (yb + ye));
-             
-        elm_list[m].xm = 0.5 * (xb + xe);
-        elm_list[m].ym = 0.5 * (yb + ye);
-        elm_list[m].a = dl / 2;
-        elm_list[m].sinbet = sinb;
-        elm_list[m].cosbet = cosb;
-        elm_list[m].kod = 5;
-        elm_list[m].mat_no = material;
-
-        legal = CheckNewElement(elm_list[m].a, elm_list[m].xm, elm_list[m].ym, 
+        int legal = CheckNewElement(elm_list[m].a, elm_list[m].xm, elm_list[m].ym,
             elm_list[m].cosbet, elm_list[m].sinbet, 1);
-        m = numbe + 2;
+
+        m = numbe + 1;
         if (legal == 0)
         {
-            elm_list[m-1].mat_no = 0;
-            tips[no-1].mat_no = 0;
-            m -= 2;
+            m -= 1;
             no -= 1;
         }
         else
         {
-            setting_elem_and_tipn_failure(m-1, im);            
-            tips[n].mpointer = m-1;
-            ktipgrow = true;           
+            setting_elem_and_tipn_failure(m - 1, im);
+            // -----------------------------------------------       
+            if (multi_region)
+                material = check_material_id(0.5 * (xb + xe), 0.5 * (yb + ye));
+
+            elm_list[m].xm = 0.5 * (xb + xe);
+            elm_list[m].ym = 0.5 * (yb + ye);
+            elm_list[m].a = dl / 2;
+            elm_list[m].sinbet = sinb;
+            elm_list[m].cosbet = cosb;
+            elm_list[m].kod = 5;
+            elm_list[m].mat_no = material;
+            if (check_new_crack_in_exca(elm_list[m].xm, elm_list[m].ym, xe, ye))
+            {
+                m -= 1;
+                no -= 1;
+                numbe = m;
+                return;
+            }
+            legal = CheckNewElement(elm_list[m].a, elm_list[m].xm, elm_list[m].ym,
+                elm_list[m].cosbet, elm_list[m].sinbet, 1);
+            m = numbe + 2;
+            if (legal == 0)
+            {
+                elm_list[m - 1].mat_no = 0;
+                tips[no - 1].mat_no = 0;
+                m -= 2;
+                no -= 1;
+            }
+            else
+            {
+                setting_elem_and_tipn_failure(m - 1, im);
+                tips[n].mpointer = m - 1;
+                ktipgrow = true;
+            }
         }
     }
      tips[n].xbe = xe;

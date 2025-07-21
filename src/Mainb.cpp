@@ -16,7 +16,7 @@ void solve(int n, int mode)
         {
             if (s4.c[jj][j] == 0)
                 continue;
-            float xx = s4.c[jj][j] / s4.c[j][j];
+            double xx = s4.c[jj][j] / s4.c[j][j];
             for (int i = j; i < n; ++i)
             {
                 s4.c[jj][i] -= s4.c[j][i] * xx;

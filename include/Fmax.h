@@ -2,7 +2,7 @@
 #define Fmax_h
 
 
-void newcoord();
+bool newcoord();
 
 void fmax1(float& f0, float& angle);
 

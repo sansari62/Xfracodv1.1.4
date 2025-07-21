@@ -24,6 +24,7 @@ int check_elastic_growth(int m)
 
     int ms = 2 * m; //Sara because of index error in d0[2m-1 in line64 add this indexs,make sure it works correctly
     int mn = ms + 1;
+    //const float epsilon = 1e-4f;
 
     if (s4.d0[mn] > 0)
     {
@@ -68,7 +69,7 @@ int check_elastic_growth(int m)
 
 
 
-void newcoord()
+bool newcoord()
 {    
 
     /*compute the coordinates of gost element*/
@@ -106,9 +107,22 @@ void newcoord()
     sw = sqrt(xd*xd + yd*yd);
     int mm = t.mat_no;
 
+   /* if (xe >= s5u.xmax || xb <= s5u.xmin || ye >= s5u.ymax || yb <= s5u.ymin)
+    {
+        t.ityp = 0;
+        return false;
+    }*/
+    float xp = xb + 0.5 * xd;
+    float yp = yb + 0.5 * yd;
+    if(xp >= s5u.xmax || xp <= s5u.xmin || yp >= s5u.ymax || yp <= s5u.ymin)
+    {
+        t.ityp = 0;
+        return false;
+    }
+
     int m = numbe -1;     // index of new element(ghost element)
-    elm_list[m].xm = xb + 0.5 * xd;
-    elm_list[m].ym = yb + 0.5 * yd;
+    elm_list[m].xm = xp;
+    elm_list[m].ym = yp;
     elm_list[m].a = 0.5 * sw;
     elm_list[m].sinbet = yd / sw;
     elm_list[m].cosbet = xd / sw;
@@ -149,7 +163,7 @@ void newcoord()
     b_elm[m].force1 = 2.0 * elm_list[m].a * ( -(pyy - pxx) * sinb * cosb + pxy * (cosb * cosb - sinb * sinb) );
     b_elm[m].force2 = 2.0 * elm_list[m].a * ( -(pxx * sinb * sinb - 2.0 * pxy * sinb * cosb + pyy * cosb * cosb) );
 
-    return;
+    return true;
 }
 
 
@@ -338,7 +352,11 @@ void fmax1(float& f0, float& angle)
         if (kk == 0) return;                
     }
     numbe++;
-    newcoord();    
+    if (!newcoord())
+    {
+        numbe--;
+        return;
+    }  
     bool flag0 = (be.xm == symm.xsym && (symm.ksym == 1 || symm.ksym == 4) ||
         be.ym == symm.ysym && (symm.ksym == 2 || symm.ksym == 4));
     bool flag1 = b_elm[m].jstate == 2 && b_elm[m].jslipd == 1;

@@ -5,6 +5,7 @@
 #include <ctime>
 #include "CommonPara.h"
 #include<Failure.h>
+#include<Rectangle_check.h>
 
 using namespace CommonPara_h::comvar;
 
@@ -159,7 +160,16 @@ void  check_point_in_rock(float xp, float yp, bool flag, int& n_valid)
             return ;
         }
     }
-
+    Rectangle1 rect = check_rectangle(false);
+    Point p1;
+    p1.x = xp;
+    p1.y = yp;
+    int p1_state = point_inside_rectangle(p1, rect);
+    if (p1_state == 0)
+    {
+        n_valid = 0;
+        return;
+    }
     float dist0 = 1e6;
     int n = -1;
     //**find the element closest to the point**  

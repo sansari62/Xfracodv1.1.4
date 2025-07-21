@@ -117,6 +117,9 @@
     <ClCompile Include="src\Rectangle_excavation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Remov_preexisting_BEs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Acoustic.h">
@@ -227,10 +230,13 @@
     <ClInclude Include="include\Save_and_Restore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rstor_chek.h">
+    <ClInclude Include="include\Rectangle_check.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Rectangle_check.h">
+    <ClInclude Include="include\rstor_chek.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Remov_preexisting_BEs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

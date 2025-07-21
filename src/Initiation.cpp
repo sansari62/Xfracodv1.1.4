@@ -1,11 +1,13 @@
 #include<stdafx.h>
-
 #include <Initiation.h>
 #include <CommonPara.h>
 #include <random>
 #include <ExcavationCracks.h>
 #include<Failure.h>
 #include<Mainb.h>
+#include<rstor_chek.h>
+#include<Rectangle_check.h>
+
 
 using namespace CommonPara_h::comvar;
 
@@ -108,8 +110,8 @@ void point(float xp, float yp, float& sig1, float& sig2, float& bet, float& sig1
         bet += pi / 2;
     }
     disp = sqrt(ux * ux + uy * uy);
-    zet = ux > 0.0 ? atanf(uy / ux) :
-        ux < 0.0 ? pi + atanf(uy / ux) :
+    zet = ux > 0. ? atanf(uy / ux) :
+        ux < 0. ? pi + atanf(uy / ux) :
         1.57 * int(copysign(1, uy));
 
     return;
@@ -246,7 +248,7 @@ void reassigning_boundary_values(int ID,int m,int j,int k, float beta, float x, 
         un_a = (be.a * (us_n * sinf(beta/2) + un_n * cosf(beta/2)) + elm_list[j].a *
             (-us_m * sinf(beta/2) + un_m * cosf(beta/2))) / (be.a + elm_list[j].a);
 
-        ang = static_cast<float>(atan2(be.sinbet,be.cosbet)) + beta / 2.0;
+        ang = atan2f(be.sinbet,be.cosbet) + beta / 2.0;
     }
 
     else //if (k == 2)
@@ -258,7 +260,7 @@ void reassigning_boundary_values(int ID,int m,int j,int k, float beta, float x, 
             elm_list[j].a *
             (-us_n * sinf(beta/2) + un_n * cosf(beta/2))) / (be.a + elm_list[j].a);
 
-        ang = static_cast<float>(atan2(be.sinbet,be.cosbet)) - beta / 2.0;
+        ang = atan2f(be.sinbet,be.cosbet) - beta / 2.0;
     }
 
     
@@ -336,8 +338,8 @@ void reassigning_boundary_values(int ID,int m,int j,int k, float beta, float x, 
     }
     float failt = sig2 / rock1[mm].rst;
     float alphat = bet;
-    float dcheck = sqrt(powf((r / 2 * cosf(alphat) - x), 2) +
-        powf((r / 2 * sinf(alphat) - y), 2));
+    float dcheck = sqrt(pow((r / 2 * cosf(alphat) - x), 2) +
+        pow((r / 2 * sinf(alphat) - y), 2));
 
     if (dcheck > r)
     {
@@ -369,6 +371,16 @@ void reassigning_boundary_values(int ID,int m,int j,int k, float beta, float x, 
     {
         failt = 0;
         fails = 0;        
+    }
+    Rectangle1 rect = check_rectangle(false);
+    Point p1;
+    p1.x = x;
+    p1.y = y;
+    int p1_state = point_inside_rectangle(p1, rect);
+    if (p1_state == 0)
+    {
+        failt = 0;
+        fails = 0;
     }
     //label 205
     int seed = int((1 + x + y) * 1000);          //random failure
@@ -564,9 +576,6 @@ std::pair<bool,bool> for_j_loop(int k, int m, float xt, float yt, float & x, flo
     /*this function called by both initiation and internal functions
     flag intern_call differentiatie these calls*/
 {
-   
-
-
     float xt1, yt1;
     int mm = elm_list[m].mat_no;
     std::pair<bool, bool> jmp;
@@ -822,7 +831,7 @@ void InitiationR()
     float sig_sum1 = 0, sig_sum2 = 0;
     float set, zet, bet;
     float disp, sig1, sig2, sig12;   
-    double failt, fails;
+    float failt, fails;
 
     for (auto it = valid1.begin(); it != valid1.end(); ) {
 
@@ -879,7 +888,7 @@ void InitiationR()
         sig_sum2 = call_point_and_cal_sig_sum(1, xp, yp, alphas2, mm, r);
         sig_sum2 += call_point_and_cal_sig_sum(2, xp, yp, alphas2, mm, r);
 
-        if (fails >= s15.f_ini0 && randn <= ((fails - s15.f_ini0) / (1.0001 - s15.f_ini0)) * ((fails - s15.f_ini0) / (1.0001 - s15.f_ini0)))
+        if (fails >= s15.f_ini0 && randn <= std::pow((fails - s15.f_ini0) / (1.0001 - s15.f_ini0),2))
         {
             if (sig_sum1 > sig_sum2)
                 Sum_Failure(xp, yp, r, alphas1, 2, fails, 2); //last "2" is location, ie.intack rock
@@ -903,7 +912,7 @@ void initiation()
           InitiationB();
 
       if (s15.i_intern == 1)
-          InitiationR();
-     
-      Choose_Failure();           
+          InitiationR();     
+      Choose_Failure();    
+    
   }

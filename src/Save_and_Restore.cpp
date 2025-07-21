@@ -103,7 +103,8 @@ void restore(string filename)
 {
     std::ifstream inputFile(filename);
     if (!inputFile.is_open()) {
-        std::cerr << "Error in opening save_file!" << std::endl;
+        MessageBox(nullptr, L"Error in opening save_file!press OK to quit.",
+            L"Error!", MB_OK);
         exit(1);
     }
     string lineData;
@@ -111,7 +112,7 @@ void restore(string filename)
     if (lineData != "XFRACOD_SAVED_FILE")
     {
         MessageBox(nullptr, L"File is not a FRACOD saved file!press OK to quit.",
-            L"Message!", MB_OK);
+            L"Error!", MB_OK);
         exit(0);
     } 
     getline(inputFile, lineData);

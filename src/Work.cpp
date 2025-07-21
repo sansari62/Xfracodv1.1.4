@@ -21,7 +21,7 @@ void safety_check()
         {
             if (b_elm[m].aks == 0.0 || b_elm[m].akn == 0.0)
                 MessageBox(nullptr,
-                    L"Stiffness is zero.Element stiffness is zero.\n"
+                    L"Element stiffness is zero.\n"
                     L"Please check jmat in the input file.",
                     L"Warning!",MB_OK);
             if (joint[m].aperture0 == 0.0 || joint[m].aperture_r == 0.0)
@@ -539,7 +539,7 @@ void work0(int mode)
 
     if (insituS.incres == 0) 
         n_it = 1;
-
+    float thre = 0;
     for (int it = 1; it <= n_it; it++)   
     {
         increment();              //only old elements are used here(numbe_old)
@@ -595,7 +595,7 @@ void work0(int mode)
                 // Open fracture conditions
                 Sigma_n_prime = be.sigma_n + watercm.pwater[m] * watercm.jwater[m];
                 const float eps = 0;// 1e-5f;
-                if (Sigma_n_prime > -1e4 && untem < 0 )
+                if (Sigma_n_prime > -1e4 + thre && untem < thre)
                 {
                     be.jstate = 1;
                     be.jslipd = 0;
@@ -776,6 +776,7 @@ void work1(int mode)
     float ss = 0.0, ustem = 0.0,usneg = 0.0,unneg = 0.0,untem = 0.0;
     float sn = 0.0;
     auto& belm = b_elm[numbe - 1];
+    float thre = 0;
 
     belm.jstate = 0;
     float ph = 30.0 * 3.1416 / 180.0;
@@ -792,21 +793,21 @@ void work1(int mode)
 
     streng = max(- (sn + watercm.pwater[numbe - 1] * watercm.jwater[numbe - 1]) * tanf(ph), 0.0);
 
-    if (sn + watercm.pwater[numbe - 1] * watercm.jwater[numbe - 1] > 1e4)
+    if (sn + watercm.pwater[numbe - 1] * watercm.jwater[numbe - 1] > 1e4 +thre)
     {
         belm.jstate = 1;
         belm.jslipd = 0;      
     }
     else
     {
-        if (abs(ss) > streng)    
+        if (abs(ss) > streng+ thre)
         {
            belm.jstate = 2;
            belm.jslipd = -copysign(1.0, ss);
         }
         //Sara set m to 0   change m to numbe-1 Sara! 9.9.2024
         float epsilon = 0;// 1e-5;
-        if (sn + watercm.pwater[numbe - 1] * watercm.jwater[numbe - 1] < epsilon && abs(ss) < streng)    //m instead of numbe check later in test
+        if (sn + watercm.pwater[numbe - 1] * watercm.jwater[numbe - 1] < thre && abs(ss) < streng+ thre)    //m instead of numbe check later in test
            belm.jstate = 0;
     }
     //label30
