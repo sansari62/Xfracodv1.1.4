@@ -889,7 +889,6 @@ void InitiationR()
         sig_sum2 += call_point_and_cal_sig_sum(2, xp, yp, alphas2, mm, r);
 
         if (fails >= s15.f_ini0 && randn <= std::pow((fails - s15.f_ini0) / (1.0001 - s15.f_ini0),2))
-            //((fails - s15.f_ini0) / (1.0001 - s15.f_ini0)) * ((fails - s15.f_ini0) / (1.0001 - s15.f_ini0)))
         {
             if (sig_sum1 > sig_sum2)
                 Sum_Failure(xp, yp, r, alphas1, 2, fails, 2); //last "2" is location, ie.intack rock
@@ -913,14 +912,7 @@ void initiation()
           InitiationB();
 
       if (s15.i_intern == 1)
-          InitiationR();
-     
+          InitiationR();     
       Choose_Failure();    
-     /* if (restor_flg && numbe>numbe_old)
-      {
-          if (na > 0)
-              check_boreholes();
-          if (nb >= 3)
-              check_rectangle();
-      }*/
+    
   }

@@ -130,7 +130,7 @@ namespace fs = std::filesystem;
 int main()
 {
     cout <<
-        " XFracod2D v1.1.2 - Next Generation Fracture System Simulation Code\n" << " Copyright(c) DynaFrax UG LTD. All rights reserved.\n";
+        " XFracod2D v1.1.4 - Next Generation Fracture System Simulation Code\n" << " Copyright(c) DynaFrax UG LTD. All rights reserved.\n";
     //    <<"\n*This test version of XFracod2D supports up to 500 boundary elements.\n"
     //    " If you need to simulate models with more than 500 boundary elements,\n"
     //    "please contact us at info@dynafrax.com for further options.\n";// <<

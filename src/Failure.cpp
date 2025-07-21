@@ -57,7 +57,6 @@ int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, 
             if (min(dist1, dist2) <= factors.tolerance * max(ac, be.a) + epsilon)
 
             {
-
                 return(0);
             }
 

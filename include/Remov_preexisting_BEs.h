@@ -31,8 +31,6 @@ struct new_element_para
 void  update_s4(int m, int new_numbe);
 void fix_tip_pointer1(int new_numbe, int tip_indx, int direc);
 
-//void setting_newelement(BoundaryElement& newelement, int m, int new_numbe, int p1_stat, int p2_stat);
-
 bool check_segmnt_valid(const Point& a, const Point& b,int m, BoundaryElement& newelem);
 void one_point_intersection(Point outside_pt, Point clipped, int m, int& new_numbe, int tip_index,
     std::vector<new_element_para>& vec);

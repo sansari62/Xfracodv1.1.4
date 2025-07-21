@@ -25,27 +25,36 @@ void write_to_file(stringstream& buffer, int jpoint)
        //// wjoint[index].w_zet << endl;
        // ///////
         int m = wjoint[index].m_indx;
-        float tx = (wjoint[index].w_xp + wjoint[index + 1].w_xp) / 2;
-        float ty = (wjoint[index].w_yp + wjoint[index + 1].w_yp) / 2;
+        //float tx = (wjoint[index].w_xp + wjoint[index + 1].w_xp) / 2;
+        //float ty = (wjoint[index].w_yp + wjoint[index + 1].w_yp) / 2;
         float ta= elm_list[m].a ;
         float cosm = elm_list[m].cosbet;
         float sinm = elm_list[m].sinbet;
+        float tx = elm_list[m].xm;
+        float ty = elm_list[m].ym;
         float xb = tx - ta * cosm;
         float yb = ty - ta * sinm;
         float xe = tx + ta * cosm;
         float ye = ty + ta * sinm;
-
+        //char deli = ';';
+        string deli = ",";
         float aperture = joint[m].aperture0 - 2*s4.d0[2 * m + 1];
         if (aperture < joint[m].aperture_r)
             aperture = joint[m].aperture_r;
 
-        buffer << std::setw(6) << std::fixed << std::setprecision(3) <<xb << std::setw(9) <<
-            std::fixed << std::setprecision(3) << yb << std::setw(9) <<
-            std::fixed << std::setprecision(3)<<xe<< std::setw(9) <<
-            std::fixed << std::setprecision(3)<<ye <<std::setw(13) << std::scientific <<
-            std::setprecision(3) << 2* wjoint[index].w_ds <<           
-           std::setw(13) << std::scientific << std::setprecision(3) << 2*wjoint[index].w_dn <<             
-             std::setw(13) <<std::scientific << std::setprecision(3) << aperture << endl;
+       /* buffer << std::setw(6) << std::fixed << std::setprecision(3) <<xb << deli << std::setw(9) <<
+            std::fixed << std::setprecision(3) << yb << deli << std::setw(9) <<
+            std::fixed << std::setprecision(3)<<xe << deli << std::setw(9) <<
+            std::fixed << std::setprecision(3)<<ye << deli <<std::setw(13) << std::scientific <<
+            std::setprecision(3) << 2* wjoint[index].w_ds << deli <<
+           std::setw(13) << std::scientific << std::setprecision(3) << 2*wjoint[index].w_dn << deli <<
+             std::setw(13) <<std::scientific << std::setprecision(3) << aperture << endl;*/
+
+
+        buffer << std::fixed << std::setprecision(6) << xb << deli << std::fixed << std::setprecision(6) << yb << deli << 
+            std::fixed << std::setprecision(6) << xe << deli << std::fixed <<
+            std::setprecision(6) << ye << deli << std::scientific << std::setprecision(6) << 2 * wjoint[index].w_ds << deli <<
+            std::scientific <<std::setprecision(4) << 2 * wjoint[index].w_dn << deli<< std::setprecision(4) <<aperture << endl;
            
         index+=2;
     }
@@ -255,12 +264,14 @@ void frac_defo_Rec_win(int& jpoint) {
 
 void fracture_defo(int id, int& jpoint) {
 
-    wstring filename = fd_dir + L"/Frac_deform" + std::to_wstring(state) + L".dat";
+    wstring filename = fd_dir + L"/Frac_deform" + std::to_wstring(state) + L".csv";
     std::ofstream outfile(filename);
 
     //outfile << "xp         yp         ds          dn          aperture \n";
-    outfile << "x1         y1       x2       y2       ds           dn          aperture \n";
-
+   // outfile << "x1         y1       x2       y2       ds           dn          aperture \n";
+    //outfile << "x1;y1;x2;y2;ds;dn;aperture\n";
+    outfile << "x1"<<","<<"y1"<<","<<"x2"<< "," << "y2" << ","<<"ds" << "," << "dn" << "," << "aperture"<<"\n";
+    
    
     jpoint = 0;
     stringstream buffer;
