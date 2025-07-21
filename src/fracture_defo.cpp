@@ -12,21 +12,8 @@ void write_to_file(stringstream& buffer, int jpoint)
     int index = 0;
     while (index < jpoint)
     {
-       // ////old one 
-       // buffer << std::setw(6) << std::fixed << std::setprecision(3) << (wjoint[index].w_xp + wjoint[index + 1].w_xp) / 2 << std::setw(9) <<
-       //     std::fixed << std::setprecision(3) << (wjoint[index].w_yp + wjoint[index + 1].w_yp) / 2 << std::setw(13) << std::scientific <<
-       //     std::setprecision(3) << wjoint[index].w_ds <<
-       //     // std::setw(8) << std::fixed << std::setprecision(3) <<
-       //     // wjoint[index].w_bet << 
-       //     std::setw(13) << std::scientific << std::setprecision(3) << wjoint[index].w_dn <<
-       //     //std::setw(8) << std::fixed << std::setprecision(3) << wjoint[index].w_set << 
-       //     std::setw(13) << std::scientific << std::setprecision(3) << wjoint[index].w_aperture << endl;
-       // //<< std::setw(8) << std::fixed << std::setprecision(3) <<
-       //// wjoint[index].w_zet << endl;
-       // ///////
-        int m = wjoint[index].m_indx;
-        //float tx = (wjoint[index].w_xp + wjoint[index + 1].w_xp) / 2;
-        //float ty = (wjoint[index].w_yp + wjoint[index + 1].w_yp) / 2;
+      
+        int m = wjoint[index].m_indx;       
         float ta= elm_list[m].a ;
         float cosm = elm_list[m].cosbet;
         float sinm = elm_list[m].sinbet;
