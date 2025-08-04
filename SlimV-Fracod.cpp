@@ -187,6 +187,14 @@ int main()
     else {
         std::cout << "Failed to create frac_defo directory.\n";
     }
+    
+    fs_dir = dir + L"\\" + L"Frac_stress";
+    if (std::filesystem::create_directory(fs_dir) || ERROR_ALREADY_EXISTS == GetLastError()) {
+    }
+    else {
+        std::cout << "Failed to create frac_stress directory.\n";
+    }
+
     monit_dir  = dir + L"\\" + L"Monitoring";
     if (std::filesystem::create_directory(monit_dir) || ERROR_ALREADY_EXISTS == GetLastError()) {
     }

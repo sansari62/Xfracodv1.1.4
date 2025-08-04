@@ -4,28 +4,138 @@
 
 using namespace CommonPara_h::comvar;
 
+//void check_row_for_nan(int row) {
+//    for (int j = 0; j < 613; ++j) {
+//        if (_isnan(comvar::s4.c[row][j])) {
+//            printf("NaN at [%d][%d] = %g\n", row, j, comvar::s4.c[row][j]);
+//        }
+//    }
+//}
+
+bool check_diagonal_for_zero()
+{
+    int n = 2 * numbe;
+    for (int j = 0; j < n; ++j) {
+        if (fabs(comvar::s4.c[j][j]) < 1e-12) {
+            printf("Near-zero at diagonal [%d][%d] = %.3e\n", j, j, comvar::s4.c[j][j]);
+            comvar::s4.c[j][j] = 1e-5;
+            return true;
+        }
+    }
+    return false;
+}
+
+
+std::pair<int, int>  partial_pivoting(int j,int n) {
+    int best = j;
+    double max_val = fabs(s4.c[j][j]);
+    for (int k = j + 2; k < n; k += 2)
+    {
+        if (fabs(s4.c[k][j]) > max_val)
+        {
+            max_val = fabs(s4.c[k][j]);
+            best = k;
+        }
+    }
+    if (max_val < 1e-12)
+    {
+        std::cerr << "Pivot failure: column " << j << " has near-zero values.\n";
+        return make_pair(j, -1); // Skip or handle singularity
+    }
+
+    // Swap row pair (j,j+1) with (best,best+1)
+    if (best != j)
+    {
+        //for (int col = 0; col < n; ++col)
+        //{
+            std::swap(s4.c[j], s4.c[best]);
+            std::swap(s4.c[j + 1], s4.c[best + 1]);
+        //}
+        std::swap(s4.b[j], s4.b[best]);
+        std::swap(s4.b[j + 1], s4.b[best + 1]);
+        return make_pair(j, best);
+    }
+    return make_pair(j, -1);
+}
 
 
 
 void solve(int n, int mode)
 {
-    int nb = n - 1;
+    int nb = n - 1;    
+    std::pair<int, int> swp;
+    swp.first = -1;
+    swp.second = -1;
+    if (ni == 147)
+    {
+        cout << "c1erst in befgin of solve: c[613][613]= " << s4.c[613][613] << endl;
+    }
     for (int j = 0; j < nb; ++j)
     {
+        /*if (ni == 147)
+        {
+            if (j == 613 || j == 612)
+                cout << "c= " << s4.c[613][613] << " j=" << j << endl;
+        }*/
         for (int jj = j + 1; jj < n; ++jj)
         {
             if (s4.c[jj][j] == 0)
                 continue;
-            double xx = s4.c[jj][j] / s4.c[j][j];
+            //if (fabs(s4.c[j][j]) <= 1e-12)
+            //{
+            //    s4.c[j][j] = 1e-5;
+            //    /*printf("Near-zero at diagonal [%d][%d] = %.3e\n", j, j, comvar::s4.c[j][j]);
+            //    swp = partial_pivoting(j, n);
+
+            //    if (swp.second== -1) {
+            //        cout << "partial pivoting is not possible" << n << j << endl;
+            //        return;
+            //    }*/
+            //}         
+            float xx = s4.c[jj][j] / s4.c[j][j];            
             for (int i = j; i < n; ++i)
             {
+                /*if ( ni == 147)
+                {
+                    if (jj == 613)
+                    {
+                        if (i == 613)
+                            cout << "BEFORE: s4.c[613][613] = " << s4.c[613][613]
+                            << ", subtracting s4.c[" << j << "][613] * xx = "
+                            << s4.c[j][613] << " * " << xx << " = " << s4.c[j][613] * xx << endl;
+                    }
+                }*/
+
                 s4.c[jj][i] -= s4.c[j][i] * xx;
+
+                /*if (ni == 147)
+                {
+                    if (jj == 613)
+                    {
+                        if (i == 613)
+                            cout << "AFTER: s4.c[613][613] = " << s4.c[613][613] << endl;
+                    }
+                }*/
             }
             s4.b[jj] -= s4.b[j] * xx;
         }
     }
-
-
+    /*if (swp.first != -1)
+    {
+        int k = swp.first;
+        int best = swp.first;
+        std::swap(s4.c[k], s4.c[best]);
+        std::swap(s4.c[k + 1], s4.c[best + 1]);
+        
+        std::swap(s4.b[k], s4.b[best]);
+        std::swap(s4.b[k + 1], s4.b[best + 1]);
+    }*/
+    if (fabs(s4.c[n - 1][n - 1]) <= 1e-12)
+       {
+            std::cerr << "Warning: small or zero c[" <<n-1 << "][" << n-1 << "] corrected to 1e-6\n";
+            s4.c[n - 1][n - 1] = 1e-6;
+    }
+       
     s4.d[n - 1] = s4.b[n - 1] / s4.c[n - 1][n - 1];
     if (elm_list[int(n / 2) - 1].kod == 5 && mode == 0)
     {
@@ -36,13 +146,31 @@ void solve(int n, int mode)
     for (int j = 1; j <= nb; ++j)
     {
         int jj = n - 1 - j;
-        float sum = 0.0;
-        int l = jj + 1;
+        double sum = 0.0;
+        int l = jj + 1;        
+
         for (int i = l; i < n; ++i)
         {
+           //
             sum += s4.c[jj][i] * s4.d[i];
+           // double a = s4.c[jj][i];
+           // double b = s4.d[i];
+            /*if (ni == 200) {
+                double c = 0.0;
+                if (!std::isfinite(a) || !std::isfinite(b))
+                    std::cout << "Invalid value: c[" << jj << "][" << i << "] = " << a << ", d[" << i << "] = " << b << std::endl;
+                 c += a * b;
+                 cout << "c=" << c << endl;
+            }*/
+            //sum += a * b;
         }
+        /*if (ni == 200) {
+            if (s4.c[jj][jj] == 0)
+                std::cout << "zero value: c[" << jj << "]" << endl;
+        }*/
+
         s4.d[jj] = (s4.b[jj] - sum) / s4.c[jj][jj];
+
 
         if (elm_list[int(jj / 2)].kod == 5 && mode == 0)
         {
@@ -618,6 +746,7 @@ void mainb_work0(int mode)
     mainb_ini(mode, 0, numbe, 0, numbe);
     //  solve system of algebric equations.
     int n = 2 * numbe;
+    //check_diagonal_for_zero();
     solve(n, mode);
 }
 
@@ -747,5 +876,10 @@ void mainb_work1(int mode)
     mainb_ini(mode, 0, numbe, numbe - 1, numbe);
     mainb_ini(mode, numbe - 1, numbe, 0, numbe);
     int n = 2 * numbe;
+    //check_diagonal_for_zero();
+    /*if (fabs(comvar::s4.c[n-1][n-1]) < 1e-12 || comvar::s4.c[n - 1][n - 1]==0) {
+        printf("Near-zero at diagonal [%d][%d] = %.3e\n", n-1, n-1, comvar::s4.c[n - 1][n - 1]);
+        comvar::s4.c[n - 1][n - 1] = 1e-5;
+      }*/
     solve(n, mode);
 }
