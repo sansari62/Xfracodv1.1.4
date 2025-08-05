@@ -8,8 +8,6 @@
 using namespace CommonPara_h::comvar;
 
 bool second_clipped = false;
-
-
 std::vector<new_element_para>  new_elements;
 
 
@@ -124,21 +122,41 @@ std::vector<Point> computeIntersectionWithCircleSector(
             intersections.push_back(ip);            
         }
     }
-    if (intersections.empty() && (p1_status == 0 || p2_status == 0))
+    if (intersections.empty())
     {
-        // Convert angles to Cartesian points on circle perimeter
-        Point arc_pt1 = { xc + R * cos(ang1_deg), yc + R * sin(ang1_deg) };
-        Point arc_pt2 = { xc + R * cos(ang2_deg), yc + R * sin(ang2_deg) };
+        if (p1_status == 0 || p2_status == 0)
+            // Convert angles to Cartesian points on circle perimeter
+        {
+            Point arc_pt1 = { xc + R * cos(ang1_deg), yc + R * sin(ang1_deg) };
+            Point arc_pt2 = { xc + R * cos(ang2_deg), yc + R * sin(ang2_deg) };
+            // Check intersection with radial lines
+            Point radial_inter1, radial_inter2;
+            bool intersects_radial1 = computeSegmentIntersection(p1, p2, xc, yc, arc_pt1.x, arc_pt1.y, radial_inter1);
+            bool intersects_radial2 = computeSegmentIntersection(p1, p2, xc, yc, arc_pt2.x, arc_pt2.y, radial_inter2);
 
-        // Check intersection with radial lines
-        Point radial_inter1, radial_inter2;
-        bool intersects_radial1 = computeSegmentIntersection(p1, p2, xc, yc, arc_pt1.x, arc_pt1.y, radial_inter1);
-        bool intersects_radial2 = computeSegmentIntersection(p1, p2, xc, yc, arc_pt2.x, arc_pt2.y, radial_inter2);
+            if (intersects_radial1) intersections.push_back(radial_inter1);
+            if (intersects_radial2) intersections.push_back(radial_inter2);
+        }
+    }    
+    else
+    {
+        if (intersections.size() == 1)
+        {
+            if (p1_status == 1 && p2_status == 1)
+            {
+                Point arc_pt1 = { xc + R * cos(ang1_deg), yc + R * sin(ang1_deg) };
+                Point arc_pt2 = { xc + R * cos(ang2_deg), yc + R * sin(ang2_deg) };
 
-        if (intersects_radial1) intersections.push_back(radial_inter1);
-        if (intersects_radial2) intersections.push_back(radial_inter2);
+                // Check intersection with radial lines
+                Point radial_inter1, radial_inter2;
+                bool intersects_radial1 = computeSegmentIntersection(p1, p2, xc, yc, arc_pt1.x, arc_pt1.y, radial_inter1);
+                bool intersects_radial2 = computeSegmentIntersection(p1, p2, xc, yc, arc_pt2.x, arc_pt2.y, radial_inter2);
+
+                if (intersects_radial1) intersections.push_back(radial_inter1);
+                if (intersects_radial2) intersections.push_back(radial_inter2);
+            }
+        }
     }
-
     return intersections;
 }
 
@@ -252,14 +270,11 @@ void clipBoundaryElements(
         {
             elm_list[new_numbe] = e.new_el;
             b_elm[new_numbe] = e.be1;
-            joint[new_numbe] = e.j;
-           // s4.b0[2 * new_numbe] = e.b01;
-            //s4.b0[2 * new_numbe + 1] = e.b02;
+            joint[new_numbe] = e.j;           
             update_s4(e.s4_indx,new_numbe);
             b_elm[new_numbe].force1 *=  e.ratio ;
             b_elm[new_numbe].force2 *=  e.ratio;
-            if (e.tip_indx != -1)
-               // tips[e.tip_indx].mpointer = new_numbe;
+            if (e.tip_indx != -1)               
                 fix_tip_pointer1(new_numbe, e.tip_indx, 1);
             new_numbe++;
         }
