@@ -131,7 +131,9 @@ bool newcoord()
     elm_list[m].mat_no = mm;
     cosb = elm_list[m].cosbet;
     sinb = elm_list[m].sinbet;
-
+    int legal = CheckNewElement(0.5 * sw, xp, yp, cosb, sinb, 0);
+    if (legal == 0)
+        return false;
     NewFractureCentralPoint(elm_list[m].xm, elm_list[m].ym, sigxx, sigyy, sigxy);
 
     ss = (sigyy - sigxx) * sinb * cosb + sigxy * (cosb * cosb - sinb * sinb);
@@ -166,10 +168,7 @@ bool newcoord()
     return true;
 }
 
-void helpf(float ang)
-{
-    cout << ni << " = " << ang << endl;
-}
+
 
 
 
@@ -179,9 +178,7 @@ float call_work1_setting_fi0(float dtt, float& fi0, int mm, int mode, float& ang
     float  gi0 = 0.0, fi = 0.0;
     float wi = 0.0;
     if (mode == 1)
-    {
-        /*if(ni==147)
-             helpf(ang);*/
+    {        
         work1(1); //  1 = mode I   2 = mode II
         wi = (b_elm[numbe-1].jstate != 1) ? w0 : w1; // if tip element not open,ignore it
          if (dtt == 0)
