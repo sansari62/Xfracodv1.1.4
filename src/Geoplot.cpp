@@ -161,7 +161,9 @@ void geoplot()
         }
     }  
 
-    std::stringstream buffer;
+    /*std::stringstream buffer;
+    buffer << std::fixed << std::setprecision(4);
+
     buffer << "x1"<<","<<"y1" << "," << "x2" << "," << "y2" << "," << "jstat" << "," << "kod" << "," << "jwater" << "," << "mat" << endl;
     for (int l = 0; l < numbe_real; ++l)
         buffer << geom[l].w_xbeg << "," << geom[l].w_ybeg << "," << geom[l].w_xend << "," << geom[l].w_yend << "," <<
@@ -169,7 +171,34 @@ void geoplot()
         geom[l].w_jwater << "," << geom[l].w_mat << endl;
 
     BEfile << buffer.str();
+    BEfile.close();*/
+
+    // Helper to round to N decimal places
+    auto roundTo = [](float value, int decimals) {
+        float factor = std::pow(10.0, decimals);
+        return std::round(value * factor) / factor;
+        };
+
+    std::stringstream buffer;
+    buffer << std::fixed << std::setprecision(3);
+
+    buffer << "x1" << "," << "y1" << "," << "x2" << "," << "y2" << ","
+        << "jstat" << "," << "kod" << "," << "jwater" << "," << "mat" << "\n";
+
+    for (int l = 0; l < numbe_real; ++l) {
+        float x1 = roundTo(geom[l].w_xbeg, 3);
+        float y1 = roundTo(geom[l].w_ybeg, 3);
+        float x2 = roundTo(geom[l].w_xend, 3);
+        float y2 = roundTo(geom[l].w_yend, 3);
+
+        buffer << x1 << "," << y1 << "," << x2 << "," << y2 << ","
+            << geom[l].w_jstat << "," << geom[l].w_kod << ","
+            << geom[l].w_jwater << "," << geom[l].w_mat << "\n";
+    }
+
+    BEfile << buffer.str();
     BEfile.close();
+
     win_exchange.w_numbe = numbe_real;
     //export_to_vtk();
     int npoint, jpoint, npointp;
