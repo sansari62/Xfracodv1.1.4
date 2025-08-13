@@ -22,7 +22,7 @@
 #include<map>
 #include<BE.h>
 
-#define m0 10000
+#define m0 5000
 
 
 
@@ -140,6 +140,8 @@ namespace comvar {
 	extern wstring stress_dir;
 	extern wstring BE_dir;
 	extern wstring fd_dir;
+	extern wstring fs_dir;
+
 	extern wstring monit_dir;
 	extern std::array<std::ofstream, 20> mon_files;
 	extern std::array<std::ofstream, 10> ml_files;

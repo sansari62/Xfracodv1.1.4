@@ -16,7 +16,7 @@ int check_elastic_growth(int m)
 {
 
     int kk = 0; // = 0 is not checking elastic growth
-    float aki = 0, akii = 0, akie = 0;
+    double aki = 0, akii = 0, akie = 0;
     int mm = elm_list[m].mat_no;
     if (multi_region)
             mm = check_material_id(elm_list[m].xm, elm_list[m].ym);
@@ -45,13 +45,13 @@ int check_elastic_growth(int m)
     }
 
 
-    float temp = aki / akii;
+    double temp = aki / akii;
     float seta1 = atanf(0.25 * (temp + sqrt(temp * temp + 8)));
     float seta2 = atanf(0.25 * (temp - sqrt(temp * temp + 8)));
 
-    float temp2 = seta1 / 2;  //Sara do this for sta2
-    float akie1 = aki * pow(cosf(temp2), 3) - 3 * akii * pow(cosf(temp2), 2) * sinf(temp2);
-    float akie2 = aki * pow(cosf(seta2 / 2), 3) - 3 * akii * pow(cosf(seta2 / 2), 2) *
+    double temp2 = seta1 / 2;  //Sara do this for sta2
+    double akie1 = aki * pow(cosf(temp2), 3) - 3 * akii * pow(cosf(temp2), 2) * sinf(temp2);
+    double akie2 = aki * pow(cosf(seta2 / 2), 3) - 3 * akii * pow(cosf(seta2 / 2), 2) *
         sinf(seta2 / 2);
 
     akie = max(akie1, akie2);
@@ -131,7 +131,9 @@ bool newcoord()
     elm_list[m].mat_no = mm;
     cosb = elm_list[m].cosbet;
     sinb = elm_list[m].sinbet;
-
+    int legal = CheckNewElement(0.5 * sw, xp, yp, cosb, sinb, 0);
+    if (legal == 0)
+        return false;
     NewFractureCentralPoint(elm_list[m].xm, elm_list[m].ym, sigxx, sigyy, sigxy);
 
     ss = (sigyy - sigxx) * sinb * cosb + sigxy * (cosb * cosb - sinb * sinb);
@@ -176,7 +178,7 @@ float call_work1_setting_fi0(float dtt, float& fi0, int mm, int mode, float& ang
     float  gi0 = 0.0, fi = 0.0;
     float wi = 0.0;
     if (mode == 1)
-    {
+    {        
         work1(1); //  1 = mode I   2 = mode II
         wi = (b_elm[numbe-1].jstate != 1) ? w0 : w1; // if tip element not open,ignore it
          if (dtt == 0)

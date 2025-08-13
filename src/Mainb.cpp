@@ -5,27 +5,27 @@
 using namespace CommonPara_h::comvar;
 
 
-
-
 void solve(int n, int mode)
 {
     int nb = n - 1;
+    
     for (int j = 0; j < nb; ++j)
-    {
+    {        
         for (int jj = j + 1; jj < n; ++jj)
         {
             if (s4.c[jj][j] == 0)
                 continue;
-            double xx = s4.c[jj][j] / s4.c[j][j];
+              
+            float xx = s4.c[jj][j] / s4.c[j][j];            
             for (int i = j; i < n; ++i)
-            {
-                s4.c[jj][i] -= s4.c[j][i] * xx;
+            {         
+
+                s4.c[jj][i] -= s4.c[j][i] * xx;               
             }
             s4.b[jj] -= s4.b[j] * xx;
         }
-    }
-
-
+    }    
+       
     s4.d[n - 1] = s4.b[n - 1] / s4.c[n - 1][n - 1];
     if (elm_list[int(n / 2) - 1].kod == 5 && mode == 0)
     {
@@ -36,13 +36,14 @@ void solve(int n, int mode)
     for (int j = 1; j <= nb; ++j)
     {
         int jj = n - 1 - j;
-        float sum = 0.0;
-        int l = jj + 1;
+        double sum = 0.0;
+        int l = jj + 1;        
+
         for (int i = l; i < n; ++i)
-        {
-            sum += s4.c[jj][i] * s4.d[i];
-        }
-        s4.d[jj] = (s4.b[jj] - sum) / s4.c[jj][jj];
+        {          
+            sum += s4.c[jj][i] * s4.d[i];          
+        }        
+        s4.d[jj] = (s4.b[jj] - sum) / s4.c[jj][jj];        
 
         if (elm_list[int(jj / 2)].kod == 5 && mode == 0)
         {
@@ -50,8 +51,7 @@ void solve(int n, int mode)
                 s4.d[jj] = int(s4.d[jj] / abs(s4.d[jj])) * d_max;
         }
     }
-
-    return;
+    return ;
 }
 
 
@@ -740,12 +740,11 @@ void mainb_work1_ini()
 
 
 
-
 void mainb_work1(int mode)
 {
     mainb_work1_ini();
     mainb_ini(mode, 0, numbe, numbe - 1, numbe);
     mainb_ini(mode, numbe - 1, numbe, 0, numbe);
-    int n = 2 * numbe;
+    int n = 2 * numbe;    
     solve(n, mode);
 }

@@ -613,6 +613,7 @@ void check_crack_growth()
                t.f_value = 0;
             }
             else
+
             {
                t.angl = angle;
                t.f_value = fm;
@@ -780,13 +781,13 @@ void add_crack_growth()
             geoplot();
             if (lastinput != "endf")
             {
-                MessageBox(nullptr, L"No more fracture propogation, continue from input file", L"Message!", MB_OK);
+                MessageBox(nullptr, L"No further fracture propagation. Continuing with input file.", L"Message!", MB_OK);
                 input();
             }
             if (lastinput == "endf")
             {
                 cout << "\n Fracture tip reached model boundary, stopping simulation! ";
-                MessageBox(nullptr, L"End of input file.quit!", L"Message!", MB_OK);  
+                MessageBox(nullptr, L"End of input file detected. Terminating process.", L"Message!", MB_OK);  
                 file2.close();
                 inFile.close();
                 file9.close();
