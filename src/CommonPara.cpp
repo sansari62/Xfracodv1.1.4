@@ -130,6 +130,7 @@ namespace comvar {
 	wstring stress_dir;
 	wstring BE_dir;
 	wstring fd_dir;
+	wstring fs_dir;
 	wstring monit_dir;
 	std::array<std::ofstream, 20> mon_files;
 	std::array<std::ofstream, 10> ml_files;

@@ -53,14 +53,11 @@ bool check_segmnt_valid(const Point& a, const Point& b,
     float new_a = len / 2;
     bool valid = true;
     if (new_a / orig_elem.a < 0.125f)
-    {
-        //int merge = 0;
-        //specialLabel_200(merge, m);
+    {        
         valid = false; // skip degenerate
     }
     else
     {
-        // BoundaryElement newelem;
         newelem.xm = 0.5 * (a.x + b.x);
         newelem.ym = 0.5 * (a.y + b.y);
         newelem.a = len / 2.0;
@@ -68,7 +65,6 @@ bool check_segmnt_valid(const Point& a, const Point& b,
         newelem.sinbet = dy / len;
         newelem.kod = orig_elem.kod;
         newelem.mat_no = orig_elem.mat_no;
-       // if (!isNewElementUnique(newelem)) valid = false;
     }
     return valid;
 }
@@ -93,14 +89,7 @@ bool isALeftOfB(const Point& A, const Point& B) {
 }
 
 
-//bool isALeftOfB(const Point& A, const Point& B) {
-//    if (A.x < B.x)
-//        return true;
-//    if (A.x > B.x)
-//        return false;
-//    // If X equal, compare Y
-//    return A.y < B.y;
-//}
+
 void  update_s4(int m, int new_numbe)
 {
     int is = 2 * new_numbe;
@@ -147,18 +136,13 @@ void addClippedElement2(int m, int new_numbe, BoundaryElement& new_elem, int fir
         b_elm[new_numbe].force1 *= ratio;
         b_elm[new_numbe].force2 *= ratio;
 
-        joint[new_numbe] = joint[m];
-        //s4.b0[2 * new_numbe] = s4.b0[2 * m];
-        //s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
-        //newly added 
+        joint[new_numbe] = joint[m];       
         update_s4(m,new_numbe);
        
     }
     else
     {
-        new_element_para t;
-       // t.b01 = s4.b0[2 * m];
-       // t.b02 = s4.b0[2 * m + 1];
+        new_element_para t;      
         t.j = joint[m];
         t.new_el = new_elem;
         t.ratio = new_elem.a / elm_list[m].a;

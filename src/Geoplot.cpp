@@ -15,6 +15,56 @@ using namespace CommonPara_h::comvar;
 
 
 
+
+void export_to_vtk() {
+    wstring filename = BE_dir + L"/BE" + std::to_wstring(mcyc) + L".vtk";
+    std::ofstream BEfile(filename);
+    std::ofstream vtkfile(filename);
+
+    if (!vtkfile.is_open()) {
+        std::cerr << "Failed to open vtk file " << std::endl;
+        return;
+    }
+
+    int num_lines = win_exchange.w_numbe;
+    int num_points = num_lines * 2;
+
+    vtkfile << "# vtk DataFile Version 3.0\n";
+    vtkfile << "Boundary Elements with jstat coloring\n";
+    vtkfile << "ASCII\n";
+    vtkfile << "DATASET POLYDATA\n";
+    vtkfile << "POINTS " << num_points << " float\n";
+
+    for (int l = 0; l < num_lines; ++l)
+    {
+        vtkfile << geom[l].w_xbeg << " " << geom[l].w_ybeg << " 0\n";
+        vtkfile << geom[l].w_xend << " " << geom[l].w_yend << " 0\n";
+    }
+
+    vtkfile << "\nLINES " << num_lines << " " << num_lines * 3 << "\n";
+
+    // Write lines (2 point indices per line)
+    for (int i = 0; i < num_lines; ++i) {
+        vtkfile << "2 " << i * 2 << " " << i * 2 + 1 << "\n";
+    }
+
+
+    // CELL_DATA section (per line)
+    vtkfile << "\nCELL_DATA " << num_lines << "\n";
+    vtkfile << "SCALARS jstat int 1\n";
+    vtkfile << "LOOKUP_TABLE default\n";
+    for (int l = 0; l < num_lines; ++l) {
+        vtkfile << geom[l].w_jstat << "\n";
+    }
+    vtkfile.close();
+    std::cout << "VTK file written: " << std::endl;
+}
+
+
+
+
+
+
 void geoplot() 
 {
     int numbe_real = 0;  
@@ -111,7 +161,9 @@ void geoplot()
         }
     }  
 
-    std::stringstream buffer;
+    /*std::stringstream buffer;
+    buffer << std::fixed << std::setprecision(4);
+
     buffer << "x1"<<","<<"y1" << "," << "x2" << "," << "y2" << "," << "jstat" << "," << "kod" << "," << "jwater" << "," << "mat" << endl;
     for (int l = 0; l < numbe_real; ++l)
         buffer << geom[l].w_xbeg << "," << geom[l].w_ybeg << "," << geom[l].w_xend << "," << geom[l].w_yend << "," <<
@@ -119,12 +171,43 @@ void geoplot()
         geom[l].w_jwater << "," << geom[l].w_mat << endl;
 
     BEfile << buffer.str();
+    BEfile.close();*/
+
+    // Helper to round to N decimal places
+    auto roundTo = [](float value, int decimals) {
+        float factor = std::pow(10.0, decimals);
+        return std::round(value * factor) / factor;
+        };
+
+    std::stringstream buffer;
+    buffer << std::fixed << std::setprecision(3);
+
+    buffer << "x1" << "," << "y1" << "," << "x2" << "," << "y2" << ","
+        << "jstat" << "," << "kod" << "," << "jwater" << "," << "mat" << "\n";
+
+    for (int l = 0; l < numbe_real; ++l) {
+        float x1 = roundTo(geom[l].w_xbeg, 3);
+        float y1 = roundTo(geom[l].w_ybeg, 3);
+        float x2 = roundTo(geom[l].w_xend, 3);
+        float y2 = roundTo(geom[l].w_yend, 3);
+
+        buffer << x1 << "," << y1 << "," << x2 << "," << y2 << ","
+            << geom[l].w_jstat << "," << geom[l].w_kod << ","
+            << geom[l].w_jwater << "," << geom[l].w_mat << "\n";
+    }
+
+    BEfile << buffer.str();
     BEfile.close();
+
     win_exchange.w_numbe = numbe_real;
+    //export_to_vtk();
     int npoint, jpoint, npointp;
     AcousticE();
-    internal(0, npoint);   
-    fracture_defo(0, jpoint);          
+    internal(npoint);   
+    fracture_defo(jpoint);          
     ++state;
     return;
 }
+
+
+

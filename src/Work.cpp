@@ -579,9 +579,9 @@ void work0(int mode)
             snd = sn - be.sn_old;
             be.sigma_s += ssd;
             be.sigma_n += snd;
-            be.us_neg = usneg;
+            be.us_neg = usneg;  //displacement 
             be.un_neg = unneg;
-            be.us = ustem;
+            be.us = ustem;  
             be.un = untem;
 
             /* open fracture

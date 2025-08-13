@@ -10,7 +10,7 @@ using namespace WinInterface_h::winvar;
 
 
 Wjoint compute_join_attr_and_add_them(int m, int& jpoint, int round);
-void fracture_defo(int id, int& jpoint);
+void fracture_defo( int& jpoint);
 
 
 #endif 
