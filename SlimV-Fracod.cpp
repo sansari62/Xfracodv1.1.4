@@ -1,4 +1,4 @@
-// SlimV-Fracod.cpp : This file contains the 'main' function. Program execution begins and ends there.
+﻿// SlimV-Fracod.cpp : This file contains the 'main' function. Program execution begins and ends there.
 #include<stdafx.h>
 #include<CommonPara.h>
 #include<Source.h>
@@ -7,7 +7,7 @@
 #include <cctype>
 #include <regex>
 
-#define VERSION "v1.0.2"
+#define VERSION "v1.1.4"
 
 using namespace CommonPara_h::comvar;
 using namespace std;
@@ -122,6 +122,43 @@ void  file_preprocesing(const std::wstring& filename)
 }
 
 
+bool isTrialExpired() {
+    const char* filename = "trial.dat";
+
+    // Check if trial file exists
+    std::ifstream infile(filename, std::ios::binary);
+    if (!infile.good()) {
+        // First run → create file with current time
+        time_t now = time(nullptr);
+
+        // Simple encoding (XOR with key)
+        unsigned long key = 0xA5A5A5A5;
+        unsigned long encoded = static_cast<unsigned long>(now) ^ key;
+
+        std::ofstream outfile(filename, std::ios::binary);
+        outfile.write(reinterpret_cast<const char*>(&encoded), sizeof(encoded));
+        outfile.close();
+
+        // Hide the file
+        SetFileAttributesA(filename, FILE_ATTRIBUTE_HIDDEN);
+        return false;
+    }
+
+    // Read encoded start time
+    unsigned long encoded = 0;
+    infile.read(reinterpret_cast<char*>(&encoded), sizeof(encoded));
+    infile.close();
+
+    // Decode
+    unsigned long key = 0xA5A5A5A5;
+    time_t start = static_cast<time_t>(encoded ^ key);
+
+    // Compare with current time
+    time_t now = time(nullptr);
+    double days = difftime(now, start) / (60 * 60 *24);
+
+    return days > 14;    // Expired if more than 14 days
+}
 
 
 namespace fs = std::filesystem;
@@ -129,6 +166,18 @@ namespace fs = std::filesystem;
 
 int main()
 {
+    /*if (isTrialExpired()) {
+        MessageBoxA(NULL,
+            "Your trial has expired. Please contact Dynafrax.",
+            "Trial Expired",
+            MB_OK | MB_ICONSTOP);
+        return 0;
+    }
+
+    MessageBoxA(NULL,
+        "Welcome! Trial is active.",
+        "Message",
+        MB_OK | MB_ICONINFORMATION);*/
     cout <<
         " XFracod2D v1.1.4 - Next Generation Fracture System Simulation Code\n" << " Copyright(c) DynaFrax UG LTD. All rights reserved.\n";
     //    <<"\n*This test version of XFracod2D supports up to 500 boundary elements.\n"

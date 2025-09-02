@@ -3,8 +3,8 @@
 #include "Fracture.h"
 
 
-Fracture::Fracture(float x1, float y1, float x2, float y2, int mat, int eno,int jmat1) :
-	x_beg(x1), y_beg(y1), x_end(x2), y_end(y2), jmat(jmat1), GeologicalForm(mat,eno,5){}
+Fracture::Fracture(float x1, float y1, float x2, float y2, int mat, int eno,int jmat1,int fid) :
+	x_beg(x1), y_beg(y1), x_end(x2), y_end(y2), jmat(jmat1),id(fid), GeologicalForm(mat,eno,5){}
 
 void Fracture::frac_reassign_values(int eno, float x1, float y1, float x2, float y2,int kode, int mat, int jmat1) 
 {

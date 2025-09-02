@@ -69,7 +69,7 @@ int check_elastic_growth(int m)
 
 
 
-bool newcoord()
+bool newcoord(int parent_id)
 {    
 
     /*compute the coordinates of gost element*/
@@ -127,6 +127,7 @@ bool newcoord()
     elm_list[m].sinbet = yd / sw;
     elm_list[m].cosbet = xd / sw;
     elm_list[m].kod = 5;
+    elm_list[m].frac_id = parent_id;
 
     elm_list[m].mat_no = mm;
     cosb = elm_list[m].cosbet;
@@ -354,7 +355,7 @@ void fmax1(float& f0, float& angle)
         if (kk == 0) return;                
     }
     numbe++;
-    if (!newcoord())
+    if (!newcoord(m))
     {
         numbe--;
         return;

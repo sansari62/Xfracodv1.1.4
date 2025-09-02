@@ -16,7 +16,8 @@ public:
 	float sinbet;
 	float cosbet;
 	float a;
-	int kod;	
+	int kod;
+	int frac_id;
 
 	BoundaryElement();	
 	BoundaryElement(float x, float y, float am, float cos, float sin,

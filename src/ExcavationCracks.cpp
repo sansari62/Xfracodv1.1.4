@@ -160,7 +160,7 @@ void  check_point_in_rock(float xp, float yp, bool flag, int& n_valid)
             return ;
         }
     }
-    Rectangle1 rect = check_rectangle(false);
+    /*Rectangle1 rect = check_rectangle(false);
     Point p1;
     p1.x = xp;
     p1.y = yp;
@@ -169,6 +169,19 @@ void  check_point_in_rock(float xp, float yp, bool flag, int& n_valid)
     {
         n_valid = 0;
         return;
+    }*/
+    optional<Rectangle1> rect = check_rectangle(false);
+    if(rect)
+    {
+        Point p1;
+        p1.x = xp;
+        p1.y = yp;
+        int p1_state = point_inside_rectangle(p1, *rect);
+        if (p1_state == 0)
+        {
+            n_valid = 0;
+            return;
+        }
     }
     float dist0 = 1e6;
     int n = -1;

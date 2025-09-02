@@ -8,7 +8,8 @@ using namespace comvar;
 
 
 float val = 0.0;
-BoundaryElement::BoundaryElement() :mat_no(0), xm(val), ym(val), kod(0), a(val), sinbet(val), cosbet(val) {}
+BoundaryElement::BoundaryElement() :mat_no(0), xm(val), ym(val), kod(0), a(val), sinbet(val),
+cosbet(val), frac_id(0){}
 
 
 BoundaryElement::BoundaryElement(float x, float y, float am, float cos, float sin, int kd, int mat)

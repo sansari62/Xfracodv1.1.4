@@ -165,7 +165,7 @@ void processFracture()
             << "         number of elements   = " << std::setw(4) << num << std::endl
             << "         material              = " << std::setw(4) << material << std::endl;
             
-        Fracture frac(xbeg, ybeg, xend, yend, material, num, jmat);         //dfine new fracture
+        Fracture frac(xbeg, ybeg, xend, yend, material, num, jmat,nf);         //dfine new fracture
         frac_list[nf] = frac;
         frac_list[nf].bound_type = 5;
         nf++;
@@ -1317,7 +1317,7 @@ void processFracture()
                int jmat = 1; // jmat here is meaningless
                int itype = 0; // meaningless
                ellip_list[nellipse].def_boundary_elements_for_Geoform(1,xbeg, ybeg,
-                   xend, yend, bvs, bvn, gradsy, gradny,itype, jmat);
+                   xend, yend, bvs, bvn, gradsy, gradny,itype, jmat,0);
            }
        }
        catch (std::ifstream::failure e)

@@ -14,10 +14,11 @@ public:
 	float x_end;
 	float y_end;	
 	int jmat;
+	int id;
 
 
 	Fracture() {};
-	Fracture(float x1, float y1, float x2, float y2, int mat, int eno, int jmat1);
+	Fracture(float x1, float y1, float x2, float y2, int mat, int eno, int jmat1, int fid);
 	
 	void frac_reassign_values(int eno, float x1, float y1, float x2, float y2, int kode, int mat, int jmat1);
 

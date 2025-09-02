@@ -320,21 +320,24 @@ void setting_elem_and_tipn_failure(int m, int im)
 bool check_new_crack_in_exca(float x1, float y1, float x2, float y2)
 {
     bool nvalid = false;
-    Rectangle1 rect = check_rectangle(false);
-    Point p1, p2;
-    p1.x = x1;
-    p1.y = y1;
-    p2.x = x2;
-    p2.y = y2;
+    optional<Rectangle1> rect = check_rectangle(false);
+    if(rect)
+    {
+        Point p1, p2;
+        p1.x = x1;
+        p1.y = y1;
+        p2.x = x2;
+        p2.y = y2;
 
-    int p1_state = point_inside_rectangle(p1, rect);
-    int p2_state = point_inside_rectangle(p2, rect);
+        int p1_state = point_inside_rectangle(p1, *rect);
+        int p2_state = point_inside_rectangle(p2, *rect);
 
-    if ((p1_state == 0 && p2_state == 0) ||
-        (p1_state == 2 && p2_state == 2) ||
-        (p1_state == 0 && p2_state == 2) ||
-        (p1_state == 2 && p2_state == 0)) {
-        nvalid = true;
+        if ((p1_state == 0 && p2_state == 0) ||
+            (p1_state == 2 && p2_state == 2) ||
+            (p1_state == 0 && p2_state == 2) ||
+            (p1_state == 2 && p2_state == 0)) {
+            nvalid = true;
+        }
     }
     return nvalid;
 }
@@ -390,21 +393,24 @@ void failure(float xp, float yp, float r, float alpha, int im)
     elm_list[m].cosbet= (xn - xb) / dl;
     elm_list[m].kod = 5;
     elm_list[m].mat_no = material;
+    elm_list[m].frac_id = nf;    
     if (check_new_crack_in_exca(xn, yn, xb, yb))
     {
-        no -= 1;
+        no -= 1;        
         return;
     }
 
     legal = CheckNewElement(elm_list[m].a, elm_list[m].xm, elm_list[m].ym,
         elm_list[m].cosbet, elm_list[m].sinbet, 0);    
     m += 1;
+    nf++;
     if (legal == 0)
     {
         elm_list[m-1].mat_no = 0;
         tips[no-1].mat_no = 0;
         m -= 1;
-        no -= 1;       
+        no -= 1; 
+        nf -= 1;
     }
     else
     {
@@ -463,6 +469,8 @@ void failure(float xp, float yp, float r, float alpha, int im)
         elm_list[m].cosbet = cosb;       
         elm_list[m].kod = 5;
         elm_list[m].mat_no = material;
+        elm_list[m].frac_id = nf;
+        nf++;
 
         float a = elm_list[m].a; float xm = elm_list[m].xm; float ym = elm_list[m].ym;
         legal = CheckNewElement(a,xm, ym, cosb, sinb, 0);
@@ -473,6 +481,7 @@ void failure(float xp, float yp, float r, float alpha, int im)
             tips[no-1].mat_no = 0;
             m -= 2;
             no -= 2;
+            nf -= 2;
         }
         else
         {
@@ -535,10 +544,11 @@ void failureB(float xp, float yp, float r, float alpha, int im)
     elm_list[m].cosbet = cosb;
     elm_list[m].kod = 5;
     elm_list[m].mat_no = material;
-   
+    elm_list[m].frac_id = nf;
+       
     if (check_new_crack_in_exca(x, y, xb, yb))
     {       
-        no -= 1;
+        no -= 1;       
         return;
     }
     else
@@ -547,10 +557,12 @@ void failureB(float xp, float yp, float r, float alpha, int im)
             elm_list[m].cosbet, elm_list[m].sinbet, 1);
 
         m = numbe + 1;
+        nf++;
         if (legal == 0)
         {
             m -= 1;
             no -= 1;
+            nf -= 1;
         }
         else
         {
@@ -558,7 +570,7 @@ void failureB(float xp, float yp, float r, float alpha, int im)
             // -----------------------------------------------       
             if (multi_region)
                 material = check_material_id(0.5 * (xb + xe), 0.5 * (yb + ye));
-
+            
             elm_list[m].xm = 0.5 * (xb + xe);
             elm_list[m].ym = 0.5 * (yb + ye);
             elm_list[m].a = dl / 2;
@@ -566,22 +578,25 @@ void failureB(float xp, float yp, float r, float alpha, int im)
             elm_list[m].cosbet = cosb;
             elm_list[m].kod = 5;
             elm_list[m].mat_no = material;
+            elm_list[m].frac_id = nf;            
             if (check_new_crack_in_exca(elm_list[m].xm, elm_list[m].ym, xe, ye))
             {
-                m -= 1;
+                //m -= 1;
                 no -= 1;
                 numbe = m;
+                //nf--;
                 return;
             }
             legal = CheckNewElement(elm_list[m].a, elm_list[m].xm, elm_list[m].ym,
                 elm_list[m].cosbet, elm_list[m].sinbet, 1);
-            m = numbe + 2;
+            m = numbe + 2;            
             if (legal == 0)
             {
                 elm_list[m - 1].mat_no = 0;
                 tips[no - 1].mat_no = 0;
                 m -= 2;
                 no -= 1;
+                nf -= 1;
             }
             else
             {

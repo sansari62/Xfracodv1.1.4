@@ -26,7 +26,7 @@ void chk_potential_crack_growth(float xbeg, float ybeg, float xend, float yend, 
 	
 //create set of boundary elements for each geologicalforms
 int def_boundary_elements_for_Geoform( int num, float xbeg,float ybeg, float xend, float yend,
-		float bvs, float bvn, float gradsy,float gradny,int itype,int jmat);  
+		float bvs, float bvn, float gradsy,float gradny,int itype,int jmat,int fid);  
 	
 		
 };

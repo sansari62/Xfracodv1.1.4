@@ -590,76 +590,76 @@ void save_buffer_to_file(ofstream& file4, stringstream& buffer)
 }
 
 
-void export_stress_to_vtk()
-{
-    std::wstring filename = stress_dir + L"/Stress" + std::to_wstring(mcyc) + L".vtk";
-    std::ofstream vtkfile(filename);
-
-    if (!vtkfile.is_open()) {
-        std::cerr << "Failed to open VTK file for stress export\n";
-        return;
-    }
-
-    vtkfile << "# vtk DataFile Version 3.0\n";
-    vtkfile << "Stress field at internal points\n";
-    vtkfile << "ASCII\n";
-    vtkfile << "DATASET UNSTRUCTURED_GRID\n";
-
-    int npoint = static_cast<int>(stress.size());
-
-    // Write points
-    vtkfile << "POINTS " << npoint << " float\n";
-    for (const auto& st : stress) {
-        vtkfile << st.w_xp << " " << st.w_yp << " 0.0\n";
-    }
-
-    // Define each point as a vertex (optional for VTK visualization)
-    vtkfile << "\nCELLS " << npoint << " " << npoint * 2 << "\n";
-    for (int i = 0; i < npoint; ++i) {
-        vtkfile << "1 " << i << "\n";
-    }
-
-    vtkfile << "CELL_TYPES " << npoint << "\n";
-    for (int i = 0; i < npoint; ++i) {
-        vtkfile << "1\n"; // VTK_VERTEX = 1
-    }
-
-    // Point data (stress components)
-    vtkfile << "\nPOINT_DATA " << npoint << "\n";
-
-    vtkfile << "SCALARS sxx float 1\nLOOKUP_TABLE default\n";
-    for (const auto& st : stress) {
-        vtkfile << st.w_sig1 << "\n";
-    }
-
-    vtkfile << "SCALARS syy float 1\nLOOKUP_TABLE default\n";
-    for (const auto& st : stress) {
-        vtkfile << st.w_sig2 << "\n";
-    }
-
-    vtkfile << "SCALARS sxy float 1\nLOOKUP_TABLE default\n";
-    for (const auto& st : stress) {
-        vtkfile << st.w_sig12 << "\n";
-    }
-
-    vtkfile << "SCALARS disp float 1\nLOOKUP_TABLE default\n";
-    for (const auto& st : stress) {
-        vtkfile << st.w_disp << "\n";
-    }
-
-    vtkfile << "SCALARS bet float 1\nLOOKUP_TABLE default\n";
-    for (const auto& st : stress) {
-        vtkfile << st.w_bet << "\n";
-    }
-
-    vtkfile << "SCALARS matregion int 1\nLOOKUP_TABLE default\n";
-    for (const auto& st : stress) {
-        vtkfile << st.w_mat << "\n";
-    }
-
-    vtkfile.close();
-    std::wcout << L"Stress VTK file written: " << filename << std::endl;
-}
+//void export_stress_to_vtk()
+//{
+//    std::wstring filename = stress_dir + L"/Stress" + std::to_wstring(mcyc) + L".vtk";
+//    std::ofstream vtkfile(filename);
+//
+//    if (!vtkfile.is_open()) {
+//        std::cerr << "Failed to open VTK file for stress export\n";
+//        return;
+//    }
+//
+//    vtkfile << "# vtk DataFile Version 3.0\n";
+//    vtkfile << "Stress field at internal points\n";
+//    vtkfile << "ASCII\n";
+//    vtkfile << "DATASET UNSTRUCTURED_GRID\n";
+//
+//    int npoint = static_cast<int>(stress.size());
+//
+//    // Write points
+//    vtkfile << "POINTS " << npoint << " float\n";
+//    for (const auto& st : stress) {
+//        vtkfile << st.w_xp << " " << st.w_yp << " 0.0\n";
+//    }
+//
+//    // Define each point as a vertex (optional for VTK visualization)
+//    vtkfile << "\nCELLS " << npoint << " " << npoint * 2 << "\n";
+//    for (int i = 0; i < npoint; ++i) {
+//        vtkfile << "1 " << i << "\n";
+//    }
+//
+//    vtkfile << "CELL_TYPES " << npoint << "\n";
+//    for (int i = 0; i < npoint; ++i) {
+//        vtkfile << "1\n"; // VTK_VERTEX = 1
+//    }
+//
+//    // Point data (stress components)
+//    vtkfile << "\nPOINT_DATA " << npoint << "\n";
+//
+//    vtkfile << "SCALARS sxx float 1\nLOOKUP_TABLE default\n";
+//    for (const auto& st : stress) {
+//        vtkfile << st.w_sig1 << "\n";
+//    }
+//
+//    vtkfile << "SCALARS syy float 1\nLOOKUP_TABLE default\n";
+//    for (const auto& st : stress) {
+//        vtkfile << st.w_sig2 << "\n";
+//    }
+//
+//    vtkfile << "SCALARS sxy float 1\nLOOKUP_TABLE default\n";
+//    for (const auto& st : stress) {
+//        vtkfile << st.w_sig12 << "\n";
+//    }
+//
+//    vtkfile << "SCALARS disp float 1\nLOOKUP_TABLE default\n";
+//    for (const auto& st : stress) {
+//        vtkfile << st.w_disp << "\n";
+//    }
+//
+//    vtkfile << "SCALARS bet float 1\nLOOKUP_TABLE default\n";
+//    for (const auto& st : stress) {
+//        vtkfile << st.w_bet << "\n";
+//    }
+//
+//    vtkfile << "SCALARS matregion int 1\nLOOKUP_TABLE default\n";
+//    for (const auto& st : stress) {
+//        vtkfile << st.w_mat << "\n";
+//    }
+//
+//    vtkfile.close();
+//    std::wcout << L"Stress VTK file written: " << filename << std::endl;
+//}
 
 
 void internal( int& npoint)
@@ -696,7 +696,7 @@ void internal( int& npoint)
     save_buffer_to_file(file4, buffer);    
     buffer.flags(old_flags);
     file4.close();    
-    export_stress_to_vtk();
+    //export_stress_to_vtk();
     return;
 }
 

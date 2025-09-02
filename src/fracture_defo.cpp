@@ -15,13 +15,10 @@ void write_to_file(stringstream& buffer, int jpoint)
       
         int m = wjoint[index].m_indx;   
         float tx = (wjoint[index].w_xp + wjoint[index + 1].w_xp) / 2;
-       float ty = (wjoint[index].w_yp + wjoint[index + 1].w_yp) / 2;
-
+        float ty = (wjoint[index].w_yp + wjoint[index + 1].w_yp) / 2;
         float ta= elm_list[m].a ;
         float cosm = elm_list[m].cosbet;
-        float sinm = elm_list[m].sinbet;
-        //float tx = elm_list[m].xm;
-        //float ty = elm_list[m].ym;
+        float sinm = elm_list[m].sinbet;        
         float xb = tx - ta * cosm;
         float yb = ty - ta * sinm;
         float xe = tx + ta * cosm;
@@ -31,7 +28,7 @@ void write_to_file(stringstream& buffer, int jpoint)
         if (aperture < joint[m].aperture_r)
             aperture = joint[m].aperture_r;
 
-        buffer << std::fixed << std::setprecision(6) << xb << deli << std::fixed << std::setprecision(6) << yb << deli << 
+        buffer << elm_list[m].frac_id +1 << deli << std::fixed << std::setprecision(6) << xb << deli << std::fixed << std::setprecision(6) << yb << deli <<
             std::fixed << std::setprecision(6) << xe << deli << std::fixed <<
             std::setprecision(6) << ye << deli << std::scientific << std::setprecision(6) << 2 * wjoint[index].w_ds << deli <<
             std::scientific <<std::setprecision(4) << 2 * wjoint[index].w_dn << deli<< std::setprecision(4) <<aperture << endl;
@@ -248,7 +245,7 @@ void fracture_stress(int& jpoint) {
     wstring filename = fs_dir + L"/Frac_stress" + std::to_wstring(state) + L".csv";
     std::ofstream outfile(filename);
     
-    outfile << "x1" << "," << "y1" << "," << "x2" << "," << "y2" << "," << "ss" << "," << "sn" << "\n";
+    outfile << "id" << "," << "x1" << "," << "y1" << "," << "x2" << "," << "y2" << "," << "ss" << "," << "sn" << "\n";
     stringstream buffer;
     int index = 0;
     while (index < jpoint)
@@ -260,16 +257,14 @@ void fracture_stress(int& jpoint) {
 
         float ta = elm_list[m].a;
         float cosm = elm_list[m].cosbet;
-        float sinm = elm_list[m].sinbet;
-        //float tx = elm_list[m].xm;
-        //float ty = elm_list[m].ym;
+        float sinm = elm_list[m].sinbet;        
         float xb = tx - ta * cosm;
         float yb = ty - ta * sinm;
         float xe = tx + ta * cosm;
         float ye = ty + ta * sinm;
         string deli = ",";
 
-        buffer << std::fixed << std::setprecision(6) << xb << deli << std::fixed << std::setprecision(6) << yb << deli <<
+        buffer << elm_list[m].frac_id+1 << deli <<std::fixed << std::setprecision(6) << xb << deli << std::fixed << std::setprecision(6) << yb << deli <<
             std::fixed << std::setprecision(6) << xe << deli << std::fixed <<
             std::setprecision(6) << ye << deli << std::scientific << std::setprecision(4) << b_elm[m].sigma_s << deli <<
             std::scientific << std::setprecision(4) << b_elm[m].sigma_n << endl;
@@ -286,14 +281,9 @@ void fracture_stress(int& jpoint) {
 void fracture_defo(int& jpoint) {
 
     wstring filename = fd_dir + L"/Frac_deform" + std::to_wstring(state) + L".csv";
-    std::ofstream outfile(filename);
-
-    //outfile << "xp         yp         ds          dn          aperture \n";
-   // outfile << "x1         y1       x2       y2       ds           dn          aperture \n";
-    //outfile << "x1;y1;x2;y2;ds;dn;aperture\n";
-    outfile << "x1"<<","<<"y1"<<","<<"x2"<< "," << "y2" << ","<<"ds" << "," << "dn" << "," << "aperture"<<"\n";
-    
-   
+    std::ofstream outfile(filename);    
+    outfile <<"id" << "," << "x1"<<","<<"y1"<<","<<"x2"<< "," << "y2" << ","<<"ds" << "," << "dn" << "," << "aperture"<<"\n";
+     
     jpoint = 0;
     stringstream buffer;
     //------- displ. on fracture surfaces----

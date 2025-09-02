@@ -947,7 +947,7 @@ void final_wrap_up_for_Archs()
             int num = 1;
             int jmat = 1; // Note: jmat here is meaningless
             int itype = 0; // Note: itype here is meaningless
-            arc.def_boundary_elements_for_Geoform(num, xbeg, ybeg, xend, yend, bvs, bvn, gradsy, gradny, itype, jmat);  //need to change it probably Sara!
+            arc.def_boundary_elements_for_Geoform(num, xbeg, ybeg, xend, yend, bvs, bvn, gradsy, gradny, itype, jmat,0);  //need to change it probably Sara!
         }
     }
 }
@@ -1026,7 +1026,7 @@ void final_wrap_up_for_Fracs()
             
         }       
         f.bound_type = 5;
-        f.def_boundary_elements_for_Geoform(f.elem_no, xb, yb, xe, ye,  0.0, 0.0, 0.0, 0.0, itip[i],f.jmat);   //need to change it Sara!
+        f.def_boundary_elements_for_Geoform(f.elem_no, xb, yb, xe, ye,  0.0, 0.0, 0.0, 0.0, itip[i],f.jmat,f.id);   //need to change it Sara!
     }
 }
 
@@ -1046,7 +1046,7 @@ void final_wrap_up()
             float gradny = obj.get_gny();
 
             obj.def_boundary_elements_for_Geoform( obj.elem_no, obj.get_xbeg(), obj.get_ybeg(), obj.get_xend(), obj.get_yend(), bvs,
-                bvn, gradsy, gradny, 0, 0);      //do we need to send the attr of the object to the method of that class while we access to all of it Sara!
+                bvn, gradsy, gradny, 0, 0,0);      //do we need to send the attr of the object to the method of that class while we access to all of it Sara!
         }
 
         //final check for archs

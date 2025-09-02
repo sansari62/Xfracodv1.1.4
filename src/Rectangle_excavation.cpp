@@ -222,7 +222,7 @@ void process_elements(const Rectangle1& rect) {
 
 
 
-Rectangle1 check_rectangle(bool flag)
+std::optional<Rectangle1> check_rectangle(bool flag)
 {
     Rectangle1 rect1;
     if (flag)
@@ -232,9 +232,14 @@ Rectangle1 check_rectangle(bool flag)
             rect_exca = true;
             process_elements(rect1);
         }
+        return rect1;
     }
-    else
-        validate_and_extract_rectangle(rect1);
-    
-   return rect1;
+    else        
+    {
+        if (validate_and_extract_rectangle(rect1))
+        {
+            return rect1;     // return valid rectangle
+        }
+    }    
+    return std::nullopt;
 }
