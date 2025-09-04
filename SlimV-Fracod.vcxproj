@@ -183,40 +183,96 @@ exit /b
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="SlimV-Fracod.cpp" />
-    <ClCompile Include="src\Acousic.cpp" />
-    <ClCompile Include="src\Arc.cpp" />
-    <ClCompile Include="src\Arch_interface.cpp" />
-    <ClCompile Include="src\Borehole.cpp" />
-    <ClCompile Include="src\BoundaryElement.cpp" />
+    <ClCompile Include="src\Acousic.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Arc.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Arch_interface.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Borehole.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\BoundaryElement.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\CommonPara.cpp" />
-    <ClCompile Include="src\Creep.cpp" />
-    <ClCompile Include="src\DispWindow.cpp" />
-    <ClCompile Include="src\DX.cpp" />
-    <ClCompile Include="src\Edge.cpp" />
-    <ClCompile Include="src\Edge_interface.cpp" />
+    <ClCompile Include="src\Creep.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\DispWindow.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\DX.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Edge.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Edge_interface.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\Elliptical_opening.cpp" />
-    <ClCompile Include="src\ExcavationCracks.cpp" />
+    <ClCompile Include="src\ExcavationCracks.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\Failure.cpp" />
-    <ClCompile Include="src\Fmax.cpp" />
-    <ClCompile Include="src\Fracture.cpp" />
-    <ClCompile Include="src\fracture_defo.cpp" />
-    <ClCompile Include="src\GeologicalForm.cpp" />
-    <ClCompile Include="src\Geoplot.cpp" />
-    <ClCompile Include="src\Initiation.cpp" />
-    <ClCompile Include="src\Input.cpp" />
-    <ClCompile Include="src\InputCheck.cpp" />
+    <ClCompile Include="src\Fmax.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Fracture.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\fracture_defo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\GeologicalForm.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Geoplot.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Initiation.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Input.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\InputCheck.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\Internal.cpp" />
-    <ClCompile Include="src\Mainb.cpp" />
-    <ClCompile Include="src\Rectangle_excavation.cpp" />
-    <ClCompile Include="src\Remov_preexisting_BEs.cpp" />
-    <ClCompile Include="src\Rock.cpp" />
+    <ClCompile Include="src\Mainb.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Rectangle_excavation.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Remov_preexisting_BEs.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Rock.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\rstor_chek.cpp" />
-    <ClCompile Include="src\S4.cpp" />
-    <ClCompile Include="src\Save_and_Restore.cpp" />
-    <ClCompile Include="src\Source.cpp" />
-    <ClCompile Include="src\Tips.cpp" />
+    <ClCompile Include="src\S4.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Save_and_Restore.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Source.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Tips.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\WinInterface.cpp" />
-    <ClCompile Include="src\Work.cpp" />
+    <ClCompile Include="src\Work.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Acoustic.h" />

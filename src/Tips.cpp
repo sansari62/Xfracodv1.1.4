@@ -140,6 +140,7 @@ void label400_new_coordin_for_tip(int n, int mm, int mergtip, float xt, float yt
     elm_list[m].xm = 0.5 * (t.xen + t.xbe);
     elm_list[m].ym = 0.5 * (t.yen + t.ybe);
     elm_list[m].mat_no = mm;
+    elm_list[m].frac_id = nf;
     /*if (restor_flg)
     {
         if (check_new_crack_in_exca(t.xen, t.yen, t.xbe, t.ybe))
@@ -149,6 +150,7 @@ void label400_new_coordin_for_tip(int n, int mm, int mergtip, float xt, float yt
         }
     }*/
     numbe++;
+    nf++;
     if (numbe >= m0 - 1)
     {
         MessageBox(nullptr, L"Maximum BE limit exceeded!", L"Message!", MB_OK);
@@ -449,7 +451,7 @@ void newtips(float dr)
                 {
                     dc = min(sqrt(pow(xt - xc, 2) + pow(yt - (2. * symm.ysym - yc), 2)), 
                         sqrt(pow((xt0 - xc), 2) + pow((yt0 - (2. * symm.ysym - yc)), 2)));
-                    if (dc <= tol1 * max(be.a, 0))
+                    if (dc <= tol1 * max(be.a, 0.f))
                     {
                         dbeg = sqrt(pow((xt - xbeg), 2) + pow((yt - (2. * symm.ysym - ybeg)), 2));
                         dend = sqrt(pow((xt - xend), 2) + pow((yt - (2. * symm.ysym - yend)), 2));

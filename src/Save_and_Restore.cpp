@@ -11,7 +11,7 @@ void save(ofstream& file10)
     
     file10 << File_ID << std::endl;
     file10 << numbe << " " << no << " " << numbe_old << " " 
-        << title<< std::endl;
+        << title << " " <<nf<< std::endl;
     file10 << pi << " " << irock<< std::endl;
     for (int mm = 0; mm < 10; mm++)
     {
@@ -117,13 +117,12 @@ void restore(string filename)
     } 
     getline(inputFile, lineData);
     std::stringstream ss(lineData);
-    ss >> numbe >> no >> numbe_old >> title;
+    ss >> numbe >> no >> numbe_old >> title>>nf;
     inputFile >> pi>> irock;
     for (int mm = 0; mm < 10; ++mm)
     {
         rock1[mm].read_from_file(inputFile);
     }
-
     s2us.read_from_file(inputFile);
     symm.read_from_file(inputFile);    
     s4.read_from_file(inputFile);

@@ -243,19 +243,19 @@ void reorder_fractures(fstream& file25)
                     else
                         if (itr == 1)  itype = 2;
                 }
-            k++;           
+           // k++;           
 
             try
             {
                 file25 << num << " " << xbeg << " " << ybeg << " " << xend << " " << yend << " " << kode << " "
-                    << itype << " " << jmat << " " << material << std::endl;
+                    << itype << " " << jmat << " " << material << " " << k << std::endl;
             }
             catch (std::ifstream::failure e)
             {
                 std::cerr << "Exception opening/reading file:in fracture_reordering1\n";
 
             }
-
+            k++;
         }
 
     }   //end for 
@@ -263,7 +263,7 @@ void reorder_fractures(fstream& file25)
     file25.seekg(0, std::ios::beg);
     nf = k;
 
-    int  mat_no = 0, joint_mat = 0, elem_no = 0, bound_type = 5;
+    int  mat_no = 0, joint_mat = 0, elem_no = 0, bound_type = 5,fid = 0;
     if (!file25)
     {
         std::cerr << "Failed to open file for reading." << std::endl;
@@ -277,8 +277,8 @@ void reorder_fractures(fstream& file25)
         {
             Fracture& f = frac_list[i];       
             file25 >> elem_no>> xbeg >> ybeg >> xend >>
-                yend >> bound_type >> itip[i] >> joint_mat >> mat_no;
-            f.frac_reassign_values(elem_no,xbeg,ybeg,xend,yend,bound_type,mat_no,joint_mat);                         
+                yend >> bound_type >> itip[i] >> joint_mat >> mat_no>>fid;
+            f.frac_reassign_values(elem_no,xbeg,ybeg,xend,yend,bound_type,mat_no,joint_mat,fid);                         
 
         }
     }
@@ -296,7 +296,7 @@ void reorder_fractures(fstream& file25)
 void check_fracture_cross()
 {   
 
-    float  xb1, xe1, xb2, xe2, yb1, yb2, ye1, ye2, xcross, ycross;   
+    float xb1, xe1, xb2, xe2, yb1, yb2, ye1, ye2, xcross, ycross;   
     float d1, db1, de1, d2, db2, de2;
     float dtol = s5u.dtol;
     float tan1 = 0, tan2 = 0;    

@@ -19,8 +19,6 @@ using namespace CommonPara_h::comvar;
 
 
 
-
-
 void processEdge()
 {
        int material = 1;

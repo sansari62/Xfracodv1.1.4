@@ -1,5 +1,4 @@
-﻿#define NOMINMAX        // must go before windows.h
-
+﻿//#define NOMINMAX        // must go before windows.h
 #include<stdafx.h>
 #include<Rectangle_check.h>
 #include "CommonPara.h"

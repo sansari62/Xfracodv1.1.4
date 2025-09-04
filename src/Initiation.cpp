@@ -870,7 +870,7 @@ void InitiationR()
         sn = sig1 * sinf(alphas2 - bet) * sinf(alphas2 - bet) + sig2 * cosf(alphas2 - bet)
             * cosf(alphas2 - bet);
 
-        sss = max(-sn, 0.0) * tanf(rock1[mm].rphi) + rock1[mm].rcoh;
+        sss = max(-sn, 0.0f) * tanf(rock1[mm].rphi) + rock1[mm].rcoh;
         if (sss == 0) sss = 1e-6;
         fails = abs(ss) / sss;
 

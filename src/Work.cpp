@@ -607,7 +607,7 @@ void work0(int mode)
                     //water pressure/effective stress. sn - total stress. careful about + and -
                     beta = be.phi;
                     streng = max(-(be.sigma_n + watercm.pwater[m] * watercm.jwater[m]) *
-                        tanf(beta), 0.0) + be.coh;
+                        tanf(beta), 0.0f) + be.coh;
 
                     if (abs(ssd) <= 1e4)   
                         ssd = 0;                        
@@ -791,7 +791,7 @@ void work1(int mode)
     //total stress/displacement using d0(m) total, not increment d(m)   
     elm_list[numbe-1].bound(numbe-1, ss, sn, ustem, untem, usneg, unneg);
 
-    streng = max(- (sn + watercm.pwater[numbe - 1] * watercm.jwater[numbe - 1]) * tanf(ph), 0.0);
+    streng = max(- (sn + watercm.pwater[numbe - 1] * watercm.jwater[numbe - 1]) * tanf(ph), 0.0f);
 
     if (sn + watercm.pwater[numbe - 1] * watercm.jwater[numbe - 1] > 1e4 +thre)
     {
