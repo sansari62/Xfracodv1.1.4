@@ -1,6 +1,9 @@
 #include<stdafx.h>
-
 #include "Fracture.h"
+#include<CommonPara.h>
+
+
+using namespace CommonPara_h::comvar;
 
 
 Fracture::Fracture(float x1, float y1, float x2, float y2, int mat, int eno,int jmat1,int fid) :
@@ -32,6 +35,20 @@ void Fracture::take_ybeg(float y) { y_beg = y; }
 void Fracture::take_xend(float x) { x_end = x; }
 void Fracture::take_yend(float y) { y_end = y; }
 void Fracture::take_xy_beg(float x, float y){ x_beg = x; y_beg = y;}
-void Fracture::take_xy_end(float x, float y){ x_end = x;  y_end = y;
-}
+void Fracture::take_xy_end(float x, float y) { x_end = x;  y_end = y; }
+//void Fracture::save_to_file(ofstream & f)
+//{
+//	for (int m = 0; m < nf; ++m) {
+//		f << jmat << " " << std::endl;
+//	}
+//
+//}
+//
+//void Fracture::read_from_file(ifstream & f)
+//{
+//	for (int m = 0; m < nf; ++m) {
+//		f >> jmat;
+//	}
+//}
+
 

@@ -2,6 +2,7 @@
 #include <CommonPara.h>
 #include <fracture_defo.h>
 #include <Failure.h>
+#include<Save_and_Restore.h>
 
 using namespace CommonPara_h::comvar;
 
@@ -28,10 +29,19 @@ void write_to_file(stringstream& buffer, int jpoint)
         if (aperture < joint[m].aperture_r)
             aperture = joint[m].aperture_r;
 
-        buffer << elm_list[m].frac_id +1 << deli << std::fixed << std::setprecision(6) << xb << deli << std::fixed << std::setprecision(6) << yb << deli <<
+        buffer << elm_list[m].frac_id + 1 << deli << std::fixed << std::setprecision(6) << xb << deli << std::fixed << std::setprecision(6) << yb << deli <<
             std::fixed << std::setprecision(6) << xe << deli << std::fixed <<
-            std::setprecision(6) << ye << deli << std::scientific << std::setprecision(6) << 2 * wjoint[index].w_ds << deli <<
-            std::scientific <<std::setprecision(4) << 2 * wjoint[index].w_dn << deli<< std::setprecision(4) <<aperture << endl;
+            std::setprecision(6) << ye << deli << std::scientific << std::setprecision(6) <<
+            2 * wjoint[index].w_ds << deli <<
+            std::scientific << std::setprecision(4) << 2 * wjoint[index].w_dn << deli << std::setprecision(4)
+            << aperture << deli << std::dec;
+        if (restor_flg == true)
+            buffer << jmat_list[elm_list[m].frac_id] << deli;
+        else
+        {
+            buffer << frac_list[elm_list[m].frac_id].jmat << deli;
+        }
+        buffer << elm_list[m].mat_no << endl;
            
         index+=2;
     }
@@ -245,12 +255,12 @@ void fracture_stress(int& jpoint) {
     wstring filename = fs_dir + L"/Frac_stress" + std::to_wstring(state) + L".csv";
     std::ofstream outfile(filename);
     
-    outfile << "id" << "," << "x1" << "," << "y1" << "," << "x2" << "," << "y2" << "," << "ss" << "," << "sn" << "\n";
+    outfile << "id" << "," << "x1" << "," << "y1" << "," << "x2" << "," << "y2" << "," << "ss" << "," << "sn" <<
+        "," << "jmat" << "," << "mat" << "\n";
     stringstream buffer;
     int index = 0;
     while (index < jpoint)
     {
-
         int m = wjoint[index].m_indx;
         float tx = (wjoint[index].w_xp + wjoint[index + 1].w_xp) / 2;
         float ty = (wjoint[index].w_yp + wjoint[index + 1].w_yp) / 2;
@@ -264,11 +274,19 @@ void fracture_stress(int& jpoint) {
         float ye = ty + ta * sinm;
         string deli = ",";
 
-        buffer << elm_list[m].frac_id+1 << deli <<std::fixed << std::setprecision(6) << xb << deli << std::fixed << std::setprecision(6) << yb << deli <<
-            std::fixed << std::setprecision(6) << xe << deli << std::fixed <<
-            std::setprecision(6) << ye << deli << std::scientific << std::setprecision(4) << b_elm[m].sigma_s << deli <<
-            std::scientific << std::setprecision(4) << b_elm[m].sigma_n << endl;
-
+        buffer << elm_list[m].frac_id + 1 << deli << std::fixed << std::setprecision(6) << xb << deli << std::fixed
+            << std::setprecision(6) << yb << deli << std::fixed << std::setprecision(6) << xe << deli <<
+            std::fixed << std::setprecision(6) << ye << deli << std::scientific << std::setprecision(4) <<
+            b_elm[m].sigma_s << deli << std::scientific << std::setprecision(4) << b_elm[m].sigma_n << deli <<
+            std::dec;// << frac_list[elm_list[m].frac_id].jmat << deli << elm_list[m].mat_no << endl;
+        if (restor_flg == true)
+            buffer << jmat_list[elm_list[m].frac_id] << deli;
+        else
+        {
+            buffer << frac_list[elm_list[m].frac_id].jmat << deli;
+        }
+        buffer << elm_list[m].mat_no << endl;
+        
         index += 2;
     }
     outfile << buffer.str();
@@ -282,7 +300,8 @@ void fracture_defo(int& jpoint) {
 
     wstring filename = fd_dir + L"/Frac_deform" + std::to_wstring(state) + L".csv";
     std::ofstream outfile(filename);    
-    outfile <<"id" << "," << "x1"<<","<<"y1"<<","<<"x2"<< "," << "y2" << ","<<"ds" << "," << "dn" << "," << "aperture"<<"\n";
+    outfile <<"id" << "," << "x1"<<","<<"y1"<<","<<"x2"<< "," << "y2" << ","<<"ds" << "," << "dn" << "," << 
+        "aperture"<< "," << "jmat"<<","<<"mat"<<"\n";
      
     jpoint = 0;
     stringstream buffer;

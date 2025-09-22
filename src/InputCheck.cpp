@@ -261,7 +261,8 @@ void reorder_fractures(fstream& file25)
     }   //end for 
 
     file25.seekg(0, std::ios::beg);
-    nf = k;
+    if(k!= 0)
+        nf = k;
 
     int  mat_no = 0, joint_mat = 0, elem_no = 0, bound_type = 5,fid = 0;
     if (!file25)
@@ -1249,12 +1250,18 @@ void inputcheck()
         std::cerr << "Error opening file temp001!" << std::endl;
         return;
     }
-    
-    check_fracture_cross();
-    reorder_fractures(file25);
-    check_cross_boundaries();
-    reorder_boundaries(file25);
-    check_cross_arcs(file25);
+    if(nf > 0)
+    {
+        check_fracture_cross();
+        reorder_fractures(file25);
+    }
+    if(nb>0)
+    {
+        check_cross_boundaries();
+        reorder_boundaries(file25);
+    }
+    if(na>0)
+        check_cross_arcs(file25);
     if (restor_flg)       
     {
         if (na>0)

@@ -33,6 +33,8 @@ public:
 	float get_ybeg() const;
 	float get_xend() const;
 	float get_yend() const;	
+	//void save_to_file(ofstream& f);
+	//void read_from_file(ifstream& f);
 
 
 };
