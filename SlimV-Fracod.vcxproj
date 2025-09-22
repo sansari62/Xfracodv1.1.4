@@ -178,8 +178,12 @@ exit /b
   <ItemGroup>
     <ClCompile Include="SlimV-Fracod.cpp" />
     <ClCompile Include="src\Acousic.cpp" />
-    <ClCompile Include="src\Arc.cpp" />
-    <ClCompile Include="src\Arch_interface.cpp" />
+    <ClCompile Include="src\Arc.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Arch_interface.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\Borehole.cpp" />
     <ClCompile Include="src\BoundaryElement.cpp" />
     <ClCompile Include="src\CommonPara.cpp" />
