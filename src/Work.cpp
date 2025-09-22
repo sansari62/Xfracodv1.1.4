@@ -835,8 +835,35 @@ void work1(int mode)
     //undo accumulation because the fictitious element is not real element yet
     for (int k = 0; k < 2 * numbe; ++k)
         s4.d0[k] -= s4.d[k];  
+    w1 = 0.0;
+    for (int m = 0; m < numbe; ++m)
+    {
+        switch (elm_list[m].kod)
+        {
+        case 1:
+        case 11:
+            w1 += 0.5 * b_elm[m].forces * b_elm[m].us + 0.5 * b_elm[m].forcen * b_elm[m].un;
+            break;
 
-    float sum = 0.0;
+        case 2:
+        case 12:
+            w1 -= 0.5 * b_elm[m].forces * b_elm[m].us - 0.5 * b_elm[m].forcen * b_elm[m].un;
+            break;
+        case 3:
+        case 13:
+            w1 -= 0.5 * b_elm[m].forces * b_elm[m].us + 0.5 * b_elm[m].forcen * b_elm[m].un;
+            break;
+        case 4:
+        case 14:
+            w1 += 0.5 * b_elm[m].forces * b_elm[m].us - 0.5 * b_elm[m].forcen * b_elm[m].un;
+            break;
+        case 5:
+        case 6:
+            w1 += 0.5 * b_elm[m].forces * b_elm[m].us + 0.5 * b_elm[m].forcen * b_elm[m].un;
+        }
+    }
+
+   /* float sum = 0.0;
     for (int m = 0; m < numbe; ++m)
     {
         auto& belm = b_elm[m];
@@ -859,7 +886,9 @@ void work1(int mode)
             sum += term1 - term2; break;
         }
     }
-    w1 = sum;
+    w1 = sum;*/
+
+
     //reset the fictitous element to no water pressure   
     // watercm.jwater[numbe - 1]= 0;
 
