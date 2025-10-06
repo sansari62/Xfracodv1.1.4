@@ -15,7 +15,7 @@ void save(ofstream& file10)
         << title << std::endl;
     file10<< nf << std::endl;
     file10 << pi << " " << irock<< std::endl;
-    for (int mm = 0; mm < 10; mm++)
+    for (int mm = 1; mm < 10; mm++)
     {
         rock1[mm].save_to_file(file10);        
     }
@@ -138,7 +138,7 @@ void restore(string filename)
     jmat_list.resize(nf);
 
     inputFile>> pi>> irock;
-    for (int mm = 0; mm < 10; ++mm)
+    for (int mm = 1; mm < 10; ++mm)
     {
         rock1[mm].read_from_file(inputFile);
     }

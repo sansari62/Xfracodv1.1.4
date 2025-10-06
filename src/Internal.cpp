@@ -242,9 +242,13 @@ void compute_stress_displ_at_specified_points(int& npoint, stringstream& buffer)
         pyy = symm.pyy1 + g.sky * (y0 - yp);
         pxy = symm.pxy1;       
 
-        mm = j_material;
+        /*mm = j_material;
         if(multi_region)
-           mm = check_material_id(xp, yp);
+           mm = check_material_id(xp, yp);*/
+        
+        material = check_material_id(xp, yp);
+        mm = material;
+         
 
         ux = 0.0, uy = 0.0, sigxx = pxx, sigyy = pyy, sigxy = pxy;
 
@@ -453,16 +457,16 @@ void reassigning_boundary_values2(int& npoint, int ID, int m, int j, int k, floa
     bet = (sn == st) ? pi / 2.0 : 0.5 * atanf(2.0 * ss / (st - sn));
 
 
-    //float sig1 = st * cosf(bet) * cosf(bet) + 2 * ss * sinf(bet) * cosf(bet) + sn * sinf(bet) * sinf(bet);
-    //float sig2 = st * sinf(bet) * sinf(bet) - 2 * ss * sinf(bet) * cosf(bet) + sn * cosf(bet) * cosf(bet);
-    float sin_bet = std::sin(bet);
-    float cos_bet = std::cos(bet);
-    float sin2 = sin_bet * sin_bet;  // sin(bet)^2
-    float cos2 = cos_bet * cos_bet;  // cos(bet)^2
-    float sin_cos = sin_bet * cos_bet;  // sin(bet) * cos(bet)
+    float sig1 = st * cosf(bet) * cosf(bet) + 2 * ss * sinf(bet) * cosf(bet) + sn * sinf(bet) * sinf(bet);
+    float sig2 = st * sinf(bet) * sinf(bet) - 2 * ss * sinf(bet) * cosf(bet) + sn * cosf(bet) * cosf(bet);
+    //float sin_bet = std::sin(bet);
+    //float cos_bet = std::cos(bet);
+    //float sin2 = sin_bet * sin_bet;  // sin(bet)^2
+    //float cos2 = cos_bet * cos_bet;  // cos(bet)^2
+    //float sin_cos = sin_bet * cos_bet;  // sin(bet) * cos(bet)
 
-    float sig1 = std::fma(st, cos2, std::fma(2.0f * ss, sin_cos, sn * sin2));
-    float sig2 = std::fma(st, sin2, std::fma(-2.0f * ss, sin_cos, sn * cos2));
+    //float sig1 = std::fma(st, cos2, std::fma(2 * ss, sin_cos, sn * sin2));
+    //float sig2 = std::fma(st, sin2, std::fma(-2 * ss, sin_cos, sn * cos2));
     float sig12 = (sig1 - sig2) / 2.0;
 
 
@@ -602,25 +606,25 @@ void internal( int& npoint)
     file4.setf(ios::fixed, ios::floatfield);  // Fixed-point format for floats
     stringstream buffer;
 
-    buffer << "xp        yp        sxx        syy        sxy      disp      bet     set     zet      matregion" << std::endl;
+    buffer << "xp        yp        sxx        syy        sxy       disp       bet      set      zet       matregion" << std::endl;
     // compute displacements and stresses at specified points in body.
     npoint = 0;     
     compute_stress_displ_at_specified_points(npoint, buffer);    
     compute_stress_on_boundary_surfaces(npoint, buffer);
-    int perc = 3;
+    int perc = 2;
     buffer.precision(perc); 
     
     for (size_t i = 0; i < npoint; ++i) 
     {
         Stress& st = stress[i];
-        buffer << fixed << setprecision(perc) << setw(7) << st.w_xp << "  "
+        buffer << fixed << setprecision(perc+1) << setw(7) << st.w_xp << "  "
             << setw(7) << st.w_yp << "  "
             << setw(10) << scientific << setprecision(perc) << st.w_sig1 << "  "
             << setw(10) << scientific << setprecision(perc) << st.w_sig2 << "  "
             << setw(10) << scientific << setprecision(perc) << st.w_sig12 << "  "
             << scientific << setprecision(perc) << st.w_disp << "   "
             << setprecision(3) << fixed << st.w_bet << "   "               
-            <<fixed << setprecision(perc) << st.w_set << "  "               
+            <<fixed << setprecision(perc+1) << st.w_set << "  "               
             << scientific << setprecision(perc) << st.w_zet << "   "
             << st.w_mat << endl;          
     }  
