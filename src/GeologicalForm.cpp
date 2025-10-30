@@ -240,7 +240,7 @@ void GeologicalForm::ctl_cross_elements(int& k,int m, int numbe0,int num)
 
 
 int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float ybeg, float xend, float yend,
-    float bvs, float bvn, float gradsy,float gradny, int  itype, int jmat)
+    float bvs, float bvn, float gradsy,float gradny, int  itype, int jmat,int fid)
 {
     /*
     numbe is the global variable shows the total no of elements, so
@@ -314,6 +314,7 @@ int GeologicalForm::def_boundary_elements_for_Geoform(int num, float xbeg, float
             joint[m].aperture_r = s8[jmat].apert_r;
             watercm.pwater[m] = 0;
             watercm.jwater[m] = 0;
+            elm_list[m].frac_id = fid;
         }
         int ms = 2 * m;
         int mn = ms  + 1;       

@@ -14,12 +14,13 @@ public:
 	float x_end;
 	float y_end;	
 	int jmat;
+	int id;
 
 
 	Fracture() {};
-	Fracture(float x1, float y1, float x2, float y2, int mat, int eno, int jmat1);
+	Fracture(float x1, float y1, float x2, float y2, int mat, int eno, int jmat1, int fid);
 	
-	void frac_reassign_values(int eno, float x1, float y1, float x2, float y2, int kode, int mat, int jmat1);
+	void frac_reassign_values(int eno, float x1, float y1, float x2, float y2, int kode, int mat, int jmat1,int id);
 
 	void take_xbeg(float x);
 	void take_ybeg(float y);
@@ -32,6 +33,8 @@ public:
 	float get_ybeg() const;
 	float get_xend() const;
 	float get_yend() const;	
+	//void save_to_file(ofstream& f);
+	//void read_from_file(ifstream& f);
 
 
 };

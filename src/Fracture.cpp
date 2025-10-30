@@ -1,12 +1,15 @@
 #include<stdafx.h>
-
 #include "Fracture.h"
+#include<CommonPara.h>
 
 
-Fracture::Fracture(float x1, float y1, float x2, float y2, int mat, int eno,int jmat1) :
-	x_beg(x1), y_beg(y1), x_end(x2), y_end(y2), jmat(jmat1), GeologicalForm(mat,eno,5){}
+using namespace CommonPara_h::comvar;
 
-void Fracture::frac_reassign_values(int eno, float x1, float y1, float x2, float y2,int kode, int mat, int jmat1) 
+
+Fracture::Fracture(float x1, float y1, float x2, float y2, int mat, int eno,int jmat1,int fid) :
+	x_beg(x1), y_beg(y1), x_end(x2), y_end(y2), jmat(jmat1),id(fid), GeologicalForm(mat,eno,5){}
+
+void Fracture::frac_reassign_values(int eno, float x1, float y1, float x2, float y2,int kode, int mat, int jmat1,int id1) 
 {
 	x_beg = x1;
 	y_beg = y1;
@@ -16,6 +19,7 @@ void Fracture::frac_reassign_values(int eno, float x1, float y1, float x2, float
 	bound_type = kode ;
 	mat_no = mat; 
 	jmat = jmat1;
+	id = id1;
 }
 
 
@@ -31,6 +35,20 @@ void Fracture::take_ybeg(float y) { y_beg = y; }
 void Fracture::take_xend(float x) { x_end = x; }
 void Fracture::take_yend(float y) { y_end = y; }
 void Fracture::take_xy_beg(float x, float y){ x_beg = x; y_beg = y;}
-void Fracture::take_xy_end(float x, float y){ x_end = x;  y_end = y;
-}
+void Fracture::take_xy_end(float x, float y) { x_end = x;  y_end = y; }
+//void Fracture::save_to_file(ofstream & f)
+//{
+//	for (int m = 0; m < nf; ++m) {
+//		f << jmat << " " << std::endl;
+//	}
+//
+//}
+//
+//void Fracture::read_from_file(ifstream & f)
+//{
+//	for (int m = 0; m < nf; ++m) {
+//		f >> jmat;
+//	}
+//}
+
 

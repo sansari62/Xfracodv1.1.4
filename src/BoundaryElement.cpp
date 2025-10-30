@@ -8,7 +8,8 @@ using namespace comvar;
 
 
 float val = 0.0;
-BoundaryElement::BoundaryElement() :mat_no(0), xm(val), ym(val), kod(0), a(val), sinbet(val), cosbet(val) {}
+BoundaryElement::BoundaryElement() :mat_no(0), xm(val), ym(val), kod(0), a(val), sinbet(val),
+cosbet(val), frac_id(0){}
 
 
 BoundaryElement::BoundaryElement(float x, float y, float am, float cos, float sin, int kd, int mat)
@@ -29,7 +30,7 @@ BoundaryElement::BoundaryElement(float x, float y, float am, float cos, float si
 
 void BoundaryElement::read_from_file(ifstream& f,int m)
 {
-    f >> xm >> ym >> cosbet >> sinbet >> a >> kod;
+    f >> xm >> ym >> cosbet >> sinbet >> a >> kod>> frac_id;
     f >> b_elm[m].ipair >>
         b_elm[m].jstate >> b_elm[m].jslipd >> b_elm[m].jmode >>
         b_elm[m].force1 >> b_elm[m].force2 >> tips[m].costem >> tips[m].sintem >>
@@ -47,7 +48,7 @@ void BoundaryElement::read_from_file(ifstream& f,int m)
 void BoundaryElement::save_to_file(ofstream& f, int m)
 {
     f << xm << " " << ym << " " << cosbet << " " << sinbet << " "
-        << a << " " << kod << " " << b_elm[m].ipair << " " << b_elm[m].jstate << " "
+        << a << " " << kod << " " << frac_id << " " << b_elm[m].ipair << " " << b_elm[m].jstate << " "
         << b_elm[m].jslipd << " " << b_elm[m].jmode << " " <<
         b_elm[m].force1 << " " << b_elm[m].force2 << " " << tips[m].costem << " " << tips[m].sintem
         << " " << b_elm[m].us << " " << b_elm[m].un << " " << b_elm[m].forces << " " << b_elm[m].forcen
