@@ -1,7 +1,8 @@
+#define NOMINMAX
 #include<stdafx.h>
 #include "DispWindow.h"
 #include <CommonPara.h>
-
+#include <algorithm>
 using namespace CommonPara_h::comvar;
 
 
@@ -60,20 +61,20 @@ void CheckRange() {
         {
             if (symm.ksym == 1 || symm.ksym == 4)
             {
-                xl = min(xl, min(2.0 * symm.xsym - xbeg, 2.0 * symm.xsym - xend));
-                xh = max(xh, max(2.0 * symm.xsym - xbeg, 2.0 * symm.xsym - xend));
+                xl = min(xl, min(2.0f * symm.xsym - xbeg, 2.0f * symm.xsym - xend));
+                xh = max(xh, max(2.0f * symm.xsym - xbeg, 2.0f * symm.xsym - xend));
             }
             if (symm.ksym == 2 || symm.ksym == 4)
             {
-                yl = min(yl, min(2.0 * symm.ysym - ybeg, 2.0 * symm.ysym - yend));
-                yh = max(yh, max(2.0 * symm.ysym - ybeg, 2.0 * symm.ysym - yend));
+                yl = min(yl, min(2.0f * symm.ysym - ybeg, 2.0f * symm.ysym - yend));
+                yh = max(yh, max(2.0f * symm.ysym - ybeg, 2.0f * symm.ysym - yend));
             }
             if (symm.ksym == 3 || symm.ksym == 4)
             {
-                xl = min(xl, min(2.0 * symm.xsym - xbeg, 2.0 * symm.xsym - xend));
-                xh = max(xh, max(2.0 * symm.xsym - xbeg, 2.0 * symm.xsym - xend));
-                yl = min(yl, min(2.0 * symm.ysym - ybeg, 2.0 * symm.ysym - yend));
-                yh = max(yh, max(2.0 * symm.ysym - ybeg, 2.0 * symm.ysym - yend));
+                xl = min(xl, min(2.0f * symm.xsym - xbeg, 2.0f * symm.xsym - xend));
+                xh = max(xh, max(2.0f * symm.xsym - xbeg, 2.0f * symm.xsym - xend));
+                yl = min(yl, min(2.0f * symm.ysym - ybeg, 2.0f * symm.ysym - yend));
+                yh = max(yh, max(2.0f * symm.ysym - ybeg, 2.0f * symm.ysym - yend));
             }
         }
     }

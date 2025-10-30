@@ -65,6 +65,7 @@ bool check_segmnt_valid(const Point& a, const Point& b,
         newelem.sinbet = dy / len;
         newelem.kod = orig_elem.kod;
         newelem.mat_no = orig_elem.mat_no;
+        newelem.frac_id = orig_elem.frac_id;
     }
     return valid;
 }

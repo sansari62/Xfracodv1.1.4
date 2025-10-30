@@ -14,6 +14,8 @@ using namespace CommonPara_h::comvar;
 
 void finding_in_rock_iniR()
 {
+    /*find all points which are valid for fracture initiation */
+
     int num1, num2;
     float dx, dy, ddr, dda;
     float xp = 0, yp = 0;
@@ -93,6 +95,9 @@ void finding_in_rock_iniR()
 
 
 void compute_n_vlaid_all_points() {
+    /*
+    findout the coordination of all grid points inside the rock    
+    */
 
     int num1 = 0, num2 = 0;
     float dx = 0, dy = 0, ddr = 0, dda = 0 ,xp = 0, yp = 0;
@@ -111,7 +116,6 @@ void compute_n_vlaid_all_points() {
         num1 = dispwin.numr;
         num2 = dispwin.numa;
     }
-
     for (int ix = 0; ix <= num1; ++ix)
     {
         for (int iy = 0; iy <= num2; ++iy)
@@ -121,14 +125,11 @@ void compute_n_vlaid_all_points() {
                 xp = dispwin.xll + ix * dx;
                 yp = dispwin.yll + iy * dy;
             }
-
             else
             {
                 xp = dispwin.xc0 + ix * ddr * cosf(iy * dda);
                 yp = dispwin.yc0 + ix * ddr * sinf(iy * dda);
             }
-
-
             int n_valid = 1;
             check_point_in_rock(xp, yp, 0, n_valid);           
 
@@ -145,6 +146,9 @@ void compute_n_vlaid_all_points() {
 
 
 std::string getTimeOnly() {
+
+    /* Read system clock*/
+
     auto now = std::chrono::system_clock::now();
     std::time_t now_c = std::chrono::system_clock::to_time_t(now);
 
@@ -161,7 +165,7 @@ std::string getTimeOnly() {
 
 void main_computing_part()
 {
-    if (insituS.incres != 0 && ktipgrow == true)     //special treatment th final grownth element in cycle
+    if (insituS.incres != 0 && ktipgrow == true)     //special treatment for the final grownth element in cycle
     {
         int incres_tem = insituS.incres;
         insituS.incres = 0;
@@ -206,7 +210,13 @@ void creep_problem()
 
 
 void Central_control()
-{    
+{   
+    /*
+     here is the main part of the code. the simulation starts here 
+     with processing the input file, controlling the parameters
+     and calling the main_computing part for doing the simulation
+     */
+
     auto start = std::chrono::high_resolution_clock::now();
     if (!file50 || !file2 )
     {
@@ -217,7 +227,6 @@ void Central_control()
     creep.ID_creep = 0;
     n_it = 20;
     StopReturn = false; 
-
     input();
     CheckRange();
     logfile << "The initial number of boundary elements:"<< numbe <<", fractures:" << nf <<

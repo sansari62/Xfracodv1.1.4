@@ -4,16 +4,22 @@
 using namespace CommonPara_h::comvar;
 
 
+std::vector<int> jmat_list;
 
 void save(ofstream& file10)
 {       
+    /*
+    save all parameters values needed for starting or continuing
+    the simulation in a file with the name which user specified
+    */
     const char* File_ID = "XFRACOD_SAVED_FILE";
     
     file10 << File_ID << std::endl;
     file10 << numbe << " " << no << " " << numbe_old << " " 
-        << title<< std::endl;
+        << title << std::endl;
+    file10<< nf << std::endl;
     file10 << pi << " " << irock<< std::endl;
-    for (int mm = 0; mm < 10; mm++)
+    for (int mm = 1; mm < 10; mm++)
     {
         rock1[mm].save_to_file(file10);        
     }
@@ -91,7 +97,21 @@ void save(ofstream& file10)
     file10 << factors.factor_f << " " << factors.factor_e << " " << factors.tolerance << std::endl;
 
     file10 << exca.ID_Exca << " " << exca.d_wall << " " << exca.rand_e << std::endl;
-   
+    if(frac_list.size() == nf)
+    {
+        for (int m = 0; m < nf; ++m) {
+            file10 << frac_list[m].jmat << " ";
+        }
+    }
+    else{        
+        if (!jmat_list.empty()) {
+            // if jmat_list has elements, print them
+            for (size_t m = 0; m < jmat_list.size(); ++m) {
+                std::cout << jmat_list[m] << " ";
+            }
+        }
+    }
+    file10 << endl;
     file10.close();
     return;
 }
@@ -101,6 +121,10 @@ void save(ofstream& file10)
 
 void restore(string filename)
 {
+    /*
+    restore all parameters values from the saved file
+    
+    */
     std::ifstream inputFile(filename);
     if (!inputFile.is_open()) {
         MessageBox(nullptr, L"Error in opening save_file!press OK to quit.",
@@ -118,12 +142,14 @@ void restore(string filename)
     getline(inputFile, lineData);
     std::stringstream ss(lineData);
     ss >> numbe >> no >> numbe_old >> title;
-    inputFile >> pi>> irock;
-    for (int mm = 0; mm < 10; ++mm)
+    inputFile>> nf;
+    jmat_list.resize(nf);
+
+    inputFile>> pi>> irock;
+    for (int mm = 1; mm < 10; ++mm)
     {
         rock1[mm].read_from_file(inputFile);
     }
-
     s2us.read_from_file(inputFile);
     symm.read_from_file(inputFile);    
     s4.read_from_file(inputFile);
@@ -198,6 +224,12 @@ void restore(string filename)
     inputFile >> exca.ID_Exca >> exca.d_wall >> exca.rand_e;
     
     //lastinput = "endf";
+    if(nf > 0)
+    {
+        for (int m = 0; m < nf; ++m) {
+                inputFile >> jmat_list[m];
+        }
+    }
     return;
 }
 

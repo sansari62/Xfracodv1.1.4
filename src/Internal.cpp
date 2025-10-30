@@ -1,5 +1,14 @@
-#include<stdafx.h>
+/**
+ * @brief Computes and saves stress and displacement data at internal grid points.
+ *
+ * This function calculates stresses and displacements at specified internal
+ * grid points and boundary surfaces, then writes the results into a formatted
+ * .dat file named according to the current simulation cycle (mcyc).
+ *
+ * @param npoint Reference to an integer that stores the total number of internal grid points.
+ */
 
+#include<stdafx.h>
 #include <Internal.h>
 #include <CommonPara.h>
 #include<ExcavationCracks.h>
@@ -242,9 +251,13 @@ void compute_stress_displ_at_specified_points(int& npoint, stringstream& buffer)
         pyy = symm.pyy1 + g.sky * (y0 - yp);
         pxy = symm.pxy1;       
 
-        mm = j_material;
+        /*mm = j_material;
         if(multi_region)
-           mm = check_material_id(xp, yp);
+           mm = check_material_id(xp, yp);*/
+        
+        material = check_material_id(xp, yp);
+        mm = material;
+         
 
         ux = 0.0, uy = 0.0, sigxx = pxx, sigyy = pyy, sigxy = pxy;
 
@@ -282,7 +295,8 @@ void compute_stress_displ_at_specified_points(int& npoint, stringstream& buffer)
 
    // win_exchange.w_npoints = npoint;
    // write_data_to_file2(0, npoint, buffer);
-    compute_disp_boundary_and_frac_surfaces(npoint, sig1, sig2, bet, sig12, set, mm, buffer);
+   // JS said on 4.9.2025 that is no needed anymore 
+    //compute_disp_boundary_and_frac_surfaces(npoint, sig1, sig2, bet, sig12, set, mm, buffer);
     return;
 }
 
@@ -452,16 +466,16 @@ void reassigning_boundary_values2(int& npoint, int ID, int m, int j, int k, floa
     bet = (sn == st) ? pi / 2.0 : 0.5 * atanf(2.0 * ss / (st - sn));
 
 
-    //float sig1 = st * cosf(bet) * cosf(bet) + 2 * ss * sinf(bet) * cosf(bet) + sn * sinf(bet) * sinf(bet);
-    //float sig2 = st * sinf(bet) * sinf(bet) - 2 * ss * sinf(bet) * cosf(bet) + sn * cosf(bet) * cosf(bet);
-    float sin_bet = std::sin(bet);
-    float cos_bet = std::cos(bet);
-    float sin2 = sin_bet * sin_bet;  // sin(bet)^2
-    float cos2 = cos_bet * cos_bet;  // cos(bet)^2
-    float sin_cos = sin_bet * cos_bet;  // sin(bet) * cos(bet)
+    float sig1 = st * cosf(bet) * cosf(bet) + 2 * ss * sinf(bet) * cosf(bet) + sn * sinf(bet) * sinf(bet);
+    float sig2 = st * sinf(bet) * sinf(bet) - 2 * ss * sinf(bet) * cosf(bet) + sn * cosf(bet) * cosf(bet);
+    //float sin_bet = std::sin(bet);
+    //float cos_bet = std::cos(bet);
+    //float sin2 = sin_bet * sin_bet;  // sin(bet)^2
+    //float cos2 = cos_bet * cos_bet;  // cos(bet)^2
+    //float sin_cos = sin_bet * cos_bet;  // sin(bet) * cos(bet)
 
-    float sig1 = std::fma(st, cos2, std::fma(2.0f * ss, sin_cos, sn * sin2));
-    float sig2 = std::fma(st, sin2, std::fma(-2.0f * ss, sin_cos, sn * cos2));
+    //float sig1 = std::fma(st, cos2, std::fma(2 * ss, sin_cos, sn * sin2));
+    //float sig2 = std::fma(st, sin2, std::fma(-2 * ss, sin_cos, sn * cos2));
     float sig12 = (sig1 - sig2) / 2.0;
 
 
@@ -590,88 +604,21 @@ void save_buffer_to_file(ofstream& file4, stringstream& buffer)
 }
 
 
-void export_stress_to_vtk()
-{
-    std::wstring filename = stress_dir + L"/Stress" + std::to_wstring(mcyc) + L".vtk";
-    std::ofstream vtkfile(filename);
-
-    if (!vtkfile.is_open()) {
-        std::cerr << "Failed to open VTK file for stress export\n";
-        return;
-    }
-
-    vtkfile << "# vtk DataFile Version 3.0\n";
-    vtkfile << "Stress field at internal points\n";
-    vtkfile << "ASCII\n";
-    vtkfile << "DATASET UNSTRUCTURED_GRID\n";
-
-    int npoint = static_cast<int>(stress.size());
-
-    // Write points
-    vtkfile << "POINTS " << npoint << " float\n";
-    for (const auto& st : stress) {
-        vtkfile << st.w_xp << " " << st.w_yp << " 0.0\n";
-    }
-
-    // Define each point as a vertex (optional for VTK visualization)
-    vtkfile << "\nCELLS " << npoint << " " << npoint * 2 << "\n";
-    for (int i = 0; i < npoint; ++i) {
-        vtkfile << "1 " << i << "\n";
-    }
-
-    vtkfile << "CELL_TYPES " << npoint << "\n";
-    for (int i = 0; i < npoint; ++i) {
-        vtkfile << "1\n"; // VTK_VERTEX = 1
-    }
-
-    // Point data (stress components)
-    vtkfile << "\nPOINT_DATA " << npoint << "\n";
-
-    vtkfile << "SCALARS sxx float 1\nLOOKUP_TABLE default\n";
-    for (const auto& st : stress) {
-        vtkfile << st.w_sig1 << "\n";
-    }
-
-    vtkfile << "SCALARS syy float 1\nLOOKUP_TABLE default\n";
-    for (const auto& st : stress) {
-        vtkfile << st.w_sig2 << "\n";
-    }
-
-    vtkfile << "SCALARS sxy float 1\nLOOKUP_TABLE default\n";
-    for (const auto& st : stress) {
-        vtkfile << st.w_sig12 << "\n";
-    }
-
-    vtkfile << "SCALARS disp float 1\nLOOKUP_TABLE default\n";
-    for (const auto& st : stress) {
-        vtkfile << st.w_disp << "\n";
-    }
-
-    vtkfile << "SCALARS bet float 1\nLOOKUP_TABLE default\n";
-    for (const auto& st : stress) {
-        vtkfile << st.w_bet << "\n";
-    }
-
-    vtkfile << "SCALARS matregion int 1\nLOOKUP_TABLE default\n";
-    for (const auto& st : stress) {
-        vtkfile << st.w_mat << "\n";
-    }
-
-    vtkfile.close();
-    std::wcout << L"Stress VTK file written: " << filename << std::endl;
-}
 
 
 void internal( int& npoint)
 {
-    /* internal grid point stresses and displacements */    
+    /*------------------------------------------------------------
+         * 1. Prepare output file for internal stress and displacement data
+    *------------------------------------------------------------*/
+
     wstring filename = stress_dir + L"/Stress" + std::to_wstring(mcyc) + L".dat";
     std::ofstream file4(filename);
     auto old_flags = file4.flags();
     file4.setf(ios::fixed, ios::floatfield);  // Fixed-point format for floats
     stringstream buffer;
 
-    buffer << "xp        yp        sxx        syy        sxy      disp      bet     set     zet      matregion" << std::endl;
+    buffer << "xp        yp        sxx        syy        sxy       disp       bet      set      zet       matregion" << std::endl;
     // compute displacements and stresses at specified points in body.
     npoint = 0;     
     compute_stress_displ_at_specified_points(npoint, buffer);    
@@ -684,10 +631,10 @@ void internal( int& npoint)
         Stress& st = stress[i];
         buffer << fixed << setprecision(perc+1) << setw(7) << st.w_xp << "  "
             << setw(7) << st.w_yp << "  "
-            << setw(10) << scientific << setprecision(2) << st.w_sig1 << "  "
-            << setw(10) << scientific << setprecision(2) << st.w_sig2 << "  "
-            << setw(10) << scientific << setprecision(2) << st.w_sig12 << "  "
-            << scientific << setprecision(2) << st.w_disp << "   "
+            << setw(10) << scientific << setprecision(perc) << st.w_sig1 << "  "
+            << setw(10) << scientific << setprecision(perc) << st.w_sig2 << "  "
+            << setw(10) << scientific << setprecision(perc) << st.w_sig12 << "  "
+            << scientific << setprecision(perc) << st.w_disp << "   "
             << setprecision(3) << fixed << st.w_bet << "   "               
             <<fixed << setprecision(perc+1) << st.w_set << "  "               
             << scientific << setprecision(perc) << st.w_zet << "   "
@@ -696,7 +643,6 @@ void internal( int& npoint)
     save_buffer_to_file(file4, buffer);    
     buffer.flags(old_flags);
     file4.close();    
-    export_stress_to_vtk();
     return;
 }
 

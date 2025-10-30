@@ -15,6 +15,9 @@ using namespace CommonPara_h::comvar;
 
 void check_symm_and_set_n_valid(float xp, float yp, bool flag, int& n_valid)
 {  
+    /*Checks symmetry boundaries and updates the validity
+    flag for a given point.*/
+
     float dist = 0.0, xb = 0.0, yb = 0.0, xe = 0.0, ye = 0.0;
     float thr = 0;   // 0.0006;
     if (symm.ksym == 1 || symm.ksym == 4)
@@ -28,12 +31,12 @@ void check_symm_and_set_n_valid(float xp, float yp, bool flag, int& n_valid)
                 pow(yp - be.ym, 2));
             xb = be.xm - be.a * be.cosbet;
             yb = be.ym - be.a * be.sinbet;
-            dist = min(dist, sqrt(pow(xp - (2.0 * symm.xsym - xb), 2) +
-                pow(yp - yb, 2)));
+            dist = std::min(dist, sqrt((float)pow(xp - (2.0 * symm.xsym - xb), 2) +
+                (float)pow(yp - yb, 2)));
             xe = xb + 2.0 * be.a * be.cosbet;
             ye = yb + 2.0 * be.a * be.sinbet;
-            dist = min(dist, sqrt(pow(xp - (2.0 * symm.xsym - xe), 2) + 
-                pow(yp - ye, 2)));
+            dist = std::min(dist, sqrt((float)pow(xp - (2.0 * symm.xsym - xe), 2) +
+                (float)pow(yp - ye, 2)));
 
             if (flag == 0)
             {
@@ -62,10 +65,10 @@ void check_symm_and_set_n_valid(float xp, float yp, bool flag, int& n_valid)
             dist = sqrt(pow(xp - be.xm, 2) + pow(yp - (2.0 * symm.ysym - be.ym), 2));
             xb = be.xm - be.a * be.cosbet;
             yb = be.ym - be.a * be.sinbet;
-            dist = min(dist, sqrt(pow(xp - xb, 2) + pow(yp - (2.0 * symm.ysym - yb), 2)));
+            dist = std::min(dist, (float)sqrt(pow(xp - xb, 2) + pow(yp - (2.0 * symm.ysym - yb), 2)));
             xe = xb + 2.0 * be.a * be.cosbet;
             ye = yb + 2.0 * be.a * be.sinbet;
-            dist = min(dist, sqrt(pow(xp - xe, 2) + pow(yp - (2.0 * symm.ysym - ye), 2)));
+            dist = std::min(dist, (float)sqrt(pow(xp - xe, 2) + pow(yp - (2.0 * symm.ysym - ye), 2)));
 
             if (flag == 0)
             {
@@ -94,10 +97,10 @@ void check_symm_and_set_n_valid(float xp, float yp, bool flag, int& n_valid)
             dist = sqrt(pow(xp - (2.0 * symm.xsym - be.xm), 2) + pow(yp - (2.0 * symm.ysym - be.ym),2));
             xb = be.xm - be.a * be.cosbet;
             yb = be.ym - be.a * be.sinbet;
-            dist = min(dist, sqrt(pow(xp - (2.0 * symm.xsym - xb), 2) + pow(yp - (2.0 * symm.ysym - yb),2)));
+            dist = min(dist, (float)sqrt(pow(xp - (2.0 * symm.xsym - xb), 2) + pow(yp - (2.0 * symm.ysym - yb),2)));
             xe = xb + 2.0 * be.a * be.cosbet;
             ye = yb + 2.0 * be.a * be.sinbet;
-            dist = min(dist, sqrt(pow(xp - (2.0 * symm.xsym - xe), 2) + pow(yp - (2.0 * symm.ysym - ye),2)));
+            dist = min(dist, (float)sqrt(pow(xp - (2.0 * symm.xsym - xe), 2) + pow(yp - (2.0 * symm.ysym - ye),2)));
 
             if (flag == 0)
             {
@@ -160,15 +163,19 @@ void  check_point_in_rock(float xp, float yp, bool flag, int& n_valid)
             return ;
         }
     }
-    Rectangle1 rect = check_rectangle(false);
-    Point p1;
-    p1.x = xp;
-    p1.y = yp;
-    int p1_state = point_inside_rectangle(p1, rect);
-    if (p1_state == 0)
+    
+    optional<Rectangle1> rect = check_rectangle(false);
+    if(rect)
     {
-        n_valid = 0;
-        return;
+        Point p1;
+        p1.x = xp;
+        p1.y = yp;
+        int p1_state = point_inside_rectangle(p1, *rect);
+        if (p1_state == 0)
+        {
+            n_valid = 0;
+            return;
+        }
     }
     float dist0 = 1e6;
     int n = -1;
@@ -287,10 +294,10 @@ void  check_point_in_rock(float xp, float yp, bool flag, int& n_valid)
         dist = sqrt(pow(xp - be.xm, 2) + pow(yp - be.ym, 2));
         xb = be.xm - be.a * be.cosbet;
         yb = be.ym - be.a * be.sinbet;
-        dist = min(dist, sqrt(pow(xp - xb, 2) + pow(yp - yb, 2)));
+        dist = min(dist, (float)sqrt(pow(xp - xb, 2) + pow(yp - yb, 2)));
         xe = xb + 2.0 * be.a * be.cosbet;
         ye = yb + 2.0 * be.a * be.sinbet;
-        dist = min(dist, sqrt(pow(xp - xe, 2) + pow(yp - ye, 2)));
+        dist = min(dist, (float)sqrt(pow(xp - xe, 2) + pow(yp - ye, 2)));
         if (flag == 0)
         {
             if ((dist  <= 1.1 * be.a))
@@ -319,63 +326,65 @@ void  check_point_in_rock(float xp, float yp, bool flag, int& n_valid)
 
 
 
-void ExcavationCracks() 
-{
-    float dist = 0;
-    float  xb = 0, yb = 0, xe = 0, ye = 0, xp = 0, yp = 0;       
-    int  n_valid;
-    for (auto it = valid.begin(); it != valid.end(); ) {
+void ExcavationCracks(){
+ /*
+ Check valid points within an excavation zone and randomly create
+  new fracture elements near excavation boundaries.*/
+float dist = 0;
+float  xb = 0, yb = 0, xe = 0, ye = 0, xp = 0, yp = 0;       
+int  n_valid;
+for (auto it = valid.begin(); it != valid.end(); ) {
              
-        xp = (*it).first;
-        yp = (*it).second;
-        n_valid = 1;
-        check_point_in_rock(xp, yp, 0, n_valid);
-        if (n_valid == 0)
-        {
-            it = valid.erase(it);
-            continue;
-        }         
+    xp = (*it).first;
+    yp = (*it).second;
+    n_valid = 1;
+    check_point_in_rock(xp, yp, 0, n_valid);
+    if (n_valid == 0)
+    {
+        it = valid.erase(it);
+        continue;
+    }         
 
-        dist = 1e6;
-        for (int m = 0; m < numbe; ++m)
-        {
-            if (elm_list[m].kod == 5) continue;
-			dist = min(dist, std::sqrt(std::pow(xp - elm_list[m].xm, 2) + std::pow(yp - elm_list[m].ym, 2)));
-			xb = elm_list[m].xm - elm_list[m].a * elm_list[m].cosbet;
-			yb = elm_list[m].ym - elm_list[m].a * elm_list[m].sinbet;
+    dist = 1e6;
+    for (int m = 0; m < numbe; ++m)
+    {
+        if (elm_list[m].kod == 5) continue;
+		dist = min(dist, (float)std::sqrt(std::pow(xp - elm_list[m].xm, 2) + std::pow(yp - elm_list[m].ym, 2)));
+		xb = elm_list[m].xm - elm_list[m].a * elm_list[m].cosbet;
+		yb = elm_list[m].ym - elm_list[m].a * elm_list[m].sinbet;
 
-			dist = min(dist, std::sqrt(std::pow(xp - xb, 2) + std::pow(yp - yb, 2)));
-			xe = xb + 2.0 * elm_list[m].a * elm_list[m].cosbet;
-			ye = yb + 2.0 * elm_list[m].a * elm_list[m].sinbet;
-			dist = min(dist, std::sqrt(std::pow(xp - xe, 2) + std::pow(yp - ye, 2)));
+		dist = min(dist, (float)std::sqrt(std::pow(xp - xb, 2) + std::pow(yp - yb, 2)));
+		xe = xb + 2.0 * elm_list[m].a * elm_list[m].cosbet;
+		ye = yb + 2.0 * elm_list[m].a * elm_list[m].sinbet;
+		dist = min(dist, (float)std::sqrt(std::pow(xp - xe, 2) + std::pow(yp - ye, 2)));
            
-        }
+    }
 
-        if (dist > exca.d_wall) {
-            ++it; 
-            continue;
-        }
-        float randn;
-        srand(time(nullptr));      
-        randn = static_cast<float>(std::rand()) / RAND_MAX;
-        if (randn > exca.rand_e) {
-            ++it;
-            continue;
-        }
+    if (dist > exca.d_wall) {
+        ++it; 
+        continue;
+    }
+    float randn;
+    srand(time(nullptr));      
+    randn = static_cast<float>(std::rand()) / RAND_MAX;
+    if (randn > exca.rand_e) {
+        ++it;
+        continue;
+    }
            
-        srand(time(nullptr)); // Seed for random_comvar::number
-        randn = static_cast<float>(std::rand()) / RAND_MAX;
-        float alpha = randn * (2.0 * pi);
+    srand(time(nullptr)); // Seed for random_comvar::number
+    randn = static_cast<float>(std::rand()) / RAND_MAX;
+    float alpha = randn * (2.0 * pi);
 
-        float r = s15.a_ini;
-        int legal;
+    float r = s15.a_ini;
+    int legal;
 
-        legal = CheckNewElement( r, xp, yp, cosf(alpha), sinf(alpha),0);
-        float fos = 1;
-        int im = 4;  // fracture initiation mode 0 - elastic, 1 - tensile; 2 - shear; 4 - blast
-        if (legal == 1) 
-            failure(xp, yp, r, alpha, im);        
-        ++it;      
+    legal = CheckNewElement( r, xp, yp, cosf(alpha), sinf(alpha),0);
+    float fos = 1;
+    int im = 4;  // fracture initiation mode 0 - elastic, 1 - tensile; 2 - shear; 4 - blast
+    if (legal == 1) 
+        failure(xp, yp, r, alpha, im);        
+    ++it;      
     }
 }
 

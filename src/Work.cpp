@@ -50,9 +50,13 @@ void safety_check()
 
 void increment()
 {
-    /*This subroutine provides the up-to-date matrix s4.b0() in any iteration cycle
-!    For growing cracks, only the old elements are reassigned.
-!    The newly grown elements have their s4.b0() brought from the failure process, and defined in newtip*/
+    /*
+    This subroutine provides the up-to-date matrix s4.b0() 
+    in any iteration cycle
+    For growing cracks, only the old elements are reassigned.
+    The newly grown elements have their s4.b0() brought from the failure process,
+    and defined in newtip
+   */
 
     int ms = 0, mn = 0;
     float dss, dnn;    
@@ -150,18 +154,19 @@ void increment()
 
 
 
-/*------------------------------------------------ -
+/*----------------------------------------
        Hydraulic pressure
-  ------------------------------------------------ -*/
-  //only called from work0(), not water is considered for fictitious element
-/*void water()
+  ----------------------------------------*/
+  //only called from work0(), no water is considered for fictitious element
+
+static void water()
 {
-    float jwater_old[m0] = { 0.0 };
+    vector<float> jwater_old(numbe, 0.0);
     int ms = 0, mn = 0;
     float dist = 0.0;
 
     // Save the current state of jwater to jwater_old
-    for (int m = 0; m < m0; ++m)
+    for (int m = 0; m < numbe; ++m)
     {
         jwater_old[m] = watercm.jwater[m];
     }
@@ -274,7 +279,7 @@ void increment()
     }
 
     return;
-}*/
+}
 
 
 
@@ -283,6 +288,10 @@ void increment()
 
 void monitoring_point(float xp, float yp, float& sigxx, float& sigyy, float& sigxy, float& ux, float& uy)
 {
+    /*
+    * the stress and the monitoring points user defined are calculated 
+    * and later saved.
+    */
 
     int mm = j_material;
     if (multi_region)
@@ -464,7 +473,6 @@ void third_correction_run(int& it)
 
 void run_check(int mode)
 {
-    // mainb(mode); 
      mainb_work0( mode);
      s4.limit_d();   
      /*redo the d0() accumulation with correct fracture state*/
@@ -528,8 +536,9 @@ void calc_bound_stress(int it)
 void work0(int mode)
 {
     /*-calculate the total strain enegery before fracture growth-*/
-   /* if (water_mod)
-        water();*/
+
+    if (water_mod)
+        water();
 
     safety_check();   
 
@@ -607,7 +616,7 @@ void work0(int mode)
                     //water pressure/effective stress. sn - total stress. careful about + and -
                     beta = be.phi;
                     streng = max(-(be.sigma_n + watercm.pwater[m] * watercm.jwater[m]) *
-                        tanf(beta), 0.0) + be.coh;
+                        tanf(beta), 0.0f) + be.coh;
 
                     if (abs(ssd) <= 1e4)   
                         ssd = 0;                        
@@ -791,7 +800,7 @@ void work1(int mode)
     //total stress/displacement using d0(m) total, not increment d(m)   
     elm_list[numbe-1].bound(numbe-1, ss, sn, ustem, untem, usneg, unneg);
 
-    streng = max(- (sn + watercm.pwater[numbe - 1] * watercm.jwater[numbe - 1]) * tanf(ph), 0.0);
+    streng = max(- (sn + watercm.pwater[numbe - 1] * watercm.jwater[numbe - 1]) * tanf(ph), 0.0f);
 
     if (sn + watercm.pwater[numbe - 1] * watercm.jwater[numbe - 1] > 1e4 +thre)
     {
@@ -835,8 +844,35 @@ void work1(int mode)
     //undo accumulation because the fictitious element is not real element yet
     for (int k = 0; k < 2 * numbe; ++k)
         s4.d0[k] -= s4.d[k];  
+    w1 = 0.0;
+    for (int m = 0; m < numbe; ++m)
+    {
+        switch (elm_list[m].kod)
+        {
+        case 1:
+        case 11:
+            w1 += 0.5 * b_elm[m].forces * b_elm[m].us + 0.5 * b_elm[m].forcen * b_elm[m].un;
+            break;
 
-    float sum = 0.0;
+        case 2:
+        case 12:
+            w1 -= 0.5 * b_elm[m].forces * b_elm[m].us - 0.5 * b_elm[m].forcen * b_elm[m].un;
+            break;
+        case 3:
+        case 13:
+            w1 -= 0.5 * b_elm[m].forces * b_elm[m].us + 0.5 * b_elm[m].forcen * b_elm[m].un;
+            break;
+        case 4:
+        case 14:
+            w1 += 0.5 * b_elm[m].forces * b_elm[m].us - 0.5 * b_elm[m].forcen * b_elm[m].un;
+            break;
+        case 5:
+        case 6:
+            w1 += 0.5 * b_elm[m].forces * b_elm[m].us + 0.5 * b_elm[m].forcen * b_elm[m].un;
+        }
+    }
+
+   /* float sum = 0.0;
     for (int m = 0; m < numbe; ++m)
     {
         auto& belm = b_elm[m];
@@ -859,7 +895,9 @@ void work1(int mode)
             sum += term1 - term2; break;
         }
     }
-    w1 = sum;
+    w1 = sum;*/
+
+
     //reset the fictitous element to no water pressure   
     // watercm.jwater[numbe - 1]= 0;
 
