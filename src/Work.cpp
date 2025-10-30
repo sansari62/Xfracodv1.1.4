@@ -50,9 +50,13 @@ void safety_check()
 
 void increment()
 {
-    /*This subroutine provides the up-to-date matrix s4.b0() in any iteration cycle
-!    For growing cracks, only the old elements are reassigned.
-!    The newly grown elements have their s4.b0() brought from the failure process, and defined in newtip*/
+    /*
+    This subroutine provides the up-to-date matrix s4.b0() 
+    in any iteration cycle
+    For growing cracks, only the old elements are reassigned.
+    The newly grown elements have their s4.b0() brought from the failure process,
+    and defined in newtip
+   */
 
     int ms = 0, mn = 0;
     float dss, dnn;    
@@ -150,18 +154,19 @@ void increment()
 
 
 
-/*------------------------------------------------ -
+/*----------------------------------------
        Hydraulic pressure
-  ------------------------------------------------ -*/
-  //only called from work0(), not water is considered for fictitious element
-/*void water()
+  ----------------------------------------*/
+  //only called from work0(), no water is considered for fictitious element
+
+static void water()
 {
-    float jwater_old[m0] = { 0.0 };
+    vector<float> jwater_old(numbe, 0.0);
     int ms = 0, mn = 0;
     float dist = 0.0;
 
     // Save the current state of jwater to jwater_old
-    for (int m = 0; m < m0; ++m)
+    for (int m = 0; m < numbe; ++m)
     {
         jwater_old[m] = watercm.jwater[m];
     }
@@ -274,7 +279,7 @@ void increment()
     }
 
     return;
-}*/
+}
 
 
 
@@ -283,6 +288,10 @@ void increment()
 
 void monitoring_point(float xp, float yp, float& sigxx, float& sigyy, float& sigxy, float& ux, float& uy)
 {
+    /*
+    * the stress and the monitoring points user defined are calculated 
+    * and later saved.
+    */
 
     int mm = j_material;
     if (multi_region)
@@ -464,7 +473,6 @@ void third_correction_run(int& it)
 
 void run_check(int mode)
 {
-    // mainb(mode); 
      mainb_work0( mode);
      s4.limit_d();   
      /*redo the d0() accumulation with correct fracture state*/
@@ -528,8 +536,9 @@ void calc_bound_stress(int it)
 void work0(int mode)
 {
     /*-calculate the total strain enegery before fracture growth-*/
-   /* if (water_mod)
-        water();*/
+
+    if (water_mod)
+        water();
 
     safety_check();   
 

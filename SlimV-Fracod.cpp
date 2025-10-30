@@ -1,4 +1,16 @@
-﻿// SlimV-Fracod.cpp : This file contains the 'main' function. Program execution begins and ends there.
+﻿// ===============================================================
+// Project: Fracture Propagation Simulator (DDM-based)
+// Author: Sara
+// Description:
+//   Simulates fracture initiation and propagation in rock using
+//   the Displacement Discontinuity Method (DDM).
+// Modules:
+//   geometry/ - boundary elements, fractures, arches
+//   solver/   - system assembly, linear solver (Eigen/MKL)
+//   gui/      - Tkinter-based visualization tool in pythin
+//  This file contains the 'main' function. Program execution begins and ends there.
+// ===============================================================
+
 #include<stdafx.h>
 #include<CommonPara.h>
 #include<Source.h>

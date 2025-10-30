@@ -67,7 +67,12 @@ int check_elastic_growth(int m)
 
 
 
-
+/*===========================================
+ Function: newcoord
+ Purpose:
+     Computes the coordinates and stress state of a newly added "ghost" element
+     for fracture propagation. Updates element and boundary data.
+ =============================================*/
 
 bool newcoord(int parent_id)
 {    
@@ -106,12 +111,7 @@ bool newcoord(int parent_id)
     yd = ye - yb;
     sw = sqrt(xd*xd + yd*yd);
     int mm = t.mat_no;
-
-   /* if (xe >= s5u.xmax || xb <= s5u.xmin || ye >= s5u.ymax || yb <= s5u.ymin)
-    {
-        t.ityp = 0;
-        return false;
-    }*/
+   
     float xp = xb + 0.5 * xd;
     float yp = yb + 0.5 * yd;
     if(xp >= s5u.xmax || xp <= s5u.xmin || yp >= s5u.ymax || yp <= s5u.ymin)

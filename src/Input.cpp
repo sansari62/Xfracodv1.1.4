@@ -1,3 +1,5 @@
+/* the keywords in the input file are processed here */
+
 #include <stdafx.h>
 #include <CommonPara.h>
 #include <WinInterface.h>
@@ -1559,9 +1561,7 @@ void processFracture()
         {"perm",processPermeability},
         {"rect",processRect},
         {"hole",processHole}
-       };  
-
-
+       }; 
 
        try
        {

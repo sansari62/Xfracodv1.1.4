@@ -1,5 +1,14 @@
-#include<stdafx.h>
+/**
+ * @brief Computes and saves stress and displacement data at internal grid points.
+ *
+ * This function calculates stresses and displacements at specified internal
+ * grid points and boundary surfaces, then writes the results into a formatted
+ * .dat file named according to the current simulation cycle (mcyc).
+ *
+ * @param npoint Reference to an integer that stores the total number of internal grid points.
+ */
 
+#include<stdafx.h>
 #include <Internal.h>
 #include <CommonPara.h>
 #include<ExcavationCracks.h>
@@ -599,7 +608,10 @@ void save_buffer_to_file(ofstream& file4, stringstream& buffer)
 
 void internal( int& npoint)
 {
-    /* internal grid point stresses and displacements */    
+    /*------------------------------------------------------------
+         * 1. Prepare output file for internal stress and displacement data
+    *------------------------------------------------------------*/
+
     wstring filename = stress_dir + L"/Stress" + std::to_wstring(mcyc) + L".dat";
     std::ofstream file4(filename);
     auto old_flags = file4.flags();

@@ -708,7 +708,7 @@ std::pair<bool,bool> for_j_loop(int k, int m, float xt, float yt, float & x, flo
 
 
 
-
+/*Fracture initiation from boundary*/
 
 void InitiationB()
 {
@@ -824,7 +824,7 @@ float call_point_and_cal_sig_sum(int index, float xp, float yp, float alphas1, i
 
 
 
-//********* Fracture initiation in rock ******************************
+//*** Fracture initiation in rock ***
 
 void InitiationR()
 {      
@@ -910,6 +910,9 @@ void InitiationR()
 
 void initiation()
  {
+    /*
+    models the fracture initiation from boundary or rock
+    */
       mf = 0;      // Number of failure points is set to zero initially
       if (s15.i_bound == 1)
           InitiationB();

@@ -1,4 +1,10 @@
-﻿#include<stdafx.h>
+﻿/*
+ This module performs geometric clipping of boundary elements against circular
+ sectors (such as boreholes or excavated regions). It determines which elements
+ fall fully inside, outside, or intersect with the given circular sector, and
+ updates the boundary element list accordingly.
+ */
+#include<stdafx.h>
 #include<rstor_chek.h>
 #include <CommonPara.h>
 #include<GeologicalForm.h>
@@ -175,8 +181,7 @@ void findallintersect(const Point& p1, const Point& p2, float xc, float yc, floa
             b_elm[new_numbe] = b_elm[m];
             joint[new_numbe].aperture0 = joint[m].aperture0;
             joint[new_numbe].aperture_r = joint[m].aperture_r;
-           // s4.b0[2 * new_numbe] = s4.b0[2 * m];
-           // s4.b0[2 * new_numbe + 1] = s4.b0[2 * m + 1];
+           
             update_s4(m, new_numbe);
             new_numbe++; 
             return;

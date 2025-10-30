@@ -1,4 +1,12 @@
-﻿#include<stdafx.h>
+﻿/*============================
+File: Mainb.cpp
+Description :
+This file implements key routines for solving the boundary element equations
+used in fracture mechanics simulation(based on the Displacement
+    Discontinuity Method - DDM)
+================*/
+
+#include<stdafx.h>
 #include <Mainb.h>
 #include "CommonPara.h"
 
@@ -7,6 +15,7 @@ using namespace CommonPara_h::comvar;
 
 void solve(int n, int mode)
 {
+    /* Gaussian elimination solver */
     int nb = n - 1;
     
     for (int j = 0; j < nb; ++j)
@@ -61,6 +70,7 @@ void solve(int n, int mode)
 void coeff(float xi, float yi, float xj, float yj, float aj, float cosbj, float sinbj,
     int msym, int material)
 {
+    /* Coefficient computation for influence matrices  */
     int mm = material;
     float con = 1.0 / (4. * pi * (1. - rock1[mm].pr));
     float cons = rock1[mm].e / (1. + rock1[mm].pr);
@@ -135,7 +145,7 @@ void coeff(float xi, float yi, float xj, float yj, float aj, float cosbj, float 
 
 void interface_matrix(int i, int j)
 {
-    /* set up the interface matrix */
+    /* set up the interface matrix between boundary elements */
     matx.A_is_js = 0;
     matx.A_is_jn = 0;
     matx.A_in_js = 0;
@@ -222,7 +232,7 @@ void label_500(int i, int j, int mm, int mmj, int is, int in, int js, int jn, in
     normal run of mainb */
 
 
-    // !------------zero matrix, (1, m, n, k) -> (n, k)
+    // --zero matrix, (1, m, n, k) -> (n, k)
     if (elm_list[i].kod == 6)
     {
         //-------- - read existing influence coefficients-----------------------       
@@ -361,6 +371,10 @@ void label_500(int i, int j, int mm, int mmj, int is, int in, int js, int jn, in
 
 void mainb_ini(int mode, int i_st, int i_en, int j_st, int j_en)
 {
+    /*
+    initializes and assembles the influence
+    coefficient matrix
+    */
     int in = 0, is = 0, mm = 0, mmj = 0, jn = 0, js = 0, n = 0;
     float xi = 0, yi = 0, cosbi = 0, sinbi = 0, xj, yj, cosbj = 0, sinbj = 0, aj = 0;
     double ks = 0.0, kn = 0.0;

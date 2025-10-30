@@ -1,3 +1,13 @@
+﻿/*
+==================================
+ This module handles the creation and validation of new cracks.
+    • Compute coordinates and geometric properties of new cracks or
+    crack extensions.
+    • Check whether the newly generated fracture segment is valid
+    (i.e., not overlapping existing elements, not outside the domain
+    limits, and not intersecting excavated regions).
+===================================
+*/
 #include<stdafx.h>
 #include <Failure.h>
 #include "CommonPara.h"
@@ -9,12 +19,12 @@ using namespace CommonPara_h::comvar;
 
 
 
+int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, int flagB){
 
-int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, int flagB)
-{
-    //if flagB = 1 then it works like checkNewElementB in the original code
-    //one more condition added to loop, maybe need to optimized
-
+    /* Tests whether a new fracture element can be legally added to the model.
+     Ensures it does not overlap existing elements or exceed geometric limits.
+     if flagB = 1 then it works like checkNewElementB in the original code
+     */
     int legal = 1;
     float x1 = xc - ac * cosbeta;
     float y1 = yc - ac * sinbeta;
@@ -118,9 +128,10 @@ int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, 
 
 
 
-
 int  check_material_id(float xp, float yp)
 {
+    /* determines the rock/material region at a given point 
+    */
     float dist0 = 10e8;
     int mm = 1, mclosest = 0;
     int k = 0;
@@ -242,7 +253,7 @@ int  check_material_id(float xp, float yp)
 
 void  Sum_Failure(float xp, float yp, float r, float alpha, int im, float fos, int location)
 {
-    /* This function reassign value to the failure points
+    /* reassign value to the failure points
         mf - numbe of identified failure points
     */
     int index = mf;
@@ -355,9 +366,11 @@ bool check_iwin_limit(float xp,float yp)
 }
 
 
-
-void failure(float xp, float yp, float r, float alpha, int im)
-{
+void failure(float xp, float yp, float r, float alpha, int im){
+    
+    /* handles fracture initiation and propagation from within the rock mass.
+     Identifies failure points, computes new crack geometry,verifies validity,
+     and updates model data structures*/
     //IM = 1, tensile, IM = 2, shear
 
     int m = 0;   
@@ -373,7 +386,8 @@ void failure(float xp, float yp, float r, float alpha, int im)
     xb = xp - 1 / 2.0 * r * cosf(alpha);     // xbe(?) etc are potential (additional) element
     yb = yp - 1 / 2.0 * r * sinf(alpha);
     xn = xp;
-    yn = yp;    
+    yn = yp; 
+    // Assign the corresponding material ID at the new location
     material = (multi_region)?check_material_id(0.5 * (xb + xn), 0.5 * (yb + yn)): j_material;
     float dl = sqrt(std::pow(xn - xb,2) + std::pow(yn - yb,2));
     tips[n].assign_val(xb, yb, xn, yn, dl, cosf(alpha), sinf(alpha), -1, material);  
@@ -393,13 +407,14 @@ void failure(float xp, float yp, float r, float alpha, int im)
     elm_list[m].cosbet= (xn - xb) / dl;
     elm_list[m].kod = 5;
     elm_list[m].mat_no = material;
-    elm_list[m].frac_id = nf;    
+    elm_list[m].frac_id = nf;  
+    // Ensure the new crack is not inside the excavation region
     if (check_new_crack_in_exca(xn, yn, xb, yb))
     {
         no -= 1;        
         return;
     }
-
+    // Verify the crack does not intersect or overlap with existing elements
     legal = CheckNewElement(elm_list[m].a, elm_list[m].xm, elm_list[m].ym,
         elm_list[m].cosbet, elm_list[m].sinbet, 0);    
     m += 1;
@@ -622,8 +637,7 @@ void failureB(float xp, float yp, float r, float alpha, int im)
 
 void Choose_Failure()
 {
-    /* Choose the points with FoS > 0.9*FoS_max as the failure points*/
-
+   /* Choose the points with FoS > 0.9*FoS_max as the failure points*/
 
     float fos_max = 0, fos = 0;
     int legal = 0;

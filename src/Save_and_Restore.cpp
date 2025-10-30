@@ -8,6 +8,10 @@ std::vector<int> jmat_list;
 
 void save(ofstream& file10)
 {       
+    /*
+    save all parameters values needed for starting or continuing
+    the simulation in a file with the name which user specified
+    */
     const char* File_ID = "XFRACOD_SAVED_FILE";
     
     file10 << File_ID << std::endl;
@@ -117,6 +121,10 @@ void save(ofstream& file10)
 
 void restore(string filename)
 {
+    /*
+    restore all parameters values from the saved file
+    
+    */
     std::ifstream inputFile(filename);
     if (!inputFile.is_open()) {
         MessageBox(nullptr, L"Error in opening save_file!press OK to quit.",

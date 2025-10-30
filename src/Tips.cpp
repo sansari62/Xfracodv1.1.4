@@ -93,6 +93,9 @@ void set_frac_mech_properties(int index, float& aks_bb, float& akn_bb, float& ph
 void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, float& phid_bb,
     float& ap_bb, float& apr_bb, int im, int mm)
 {
+    /* assigns stiffness and mechanical parameters for a 
+        boundary element or fracture*/
+
     if (mm == 0)   mm = 1;
     if (im == 1 || im == 0)
     {
@@ -121,6 +124,9 @@ void stiffness_bb(float& aks_bb, float& akn_bb, float& phi_bb, float& coh_bb, fl
 
 void label400_new_coordin_for_tip(int n, int mm, int mergtip, float xt, float yt)
 {
+    /*
+    new element is added after crack growth
+    */
     Tip& t = tips[n];
     if (t.ityp == +1 || t.ityp == 3 || t.ityp == 4)
     {
@@ -252,9 +258,13 @@ void specialLabel_200(int & mergtip,int i)
 
 
 
-void newtips(float dr)
-    {    
-        int n = ni;
+void newtips(float dr){  
+    /*
+       computes and updates the new position of a propagating 
+       fracture tip based on its growth direction, interaction 
+       with boundary elements, and geometric symmetry conditions.*/
+        
+    int n = ni;
         int id = 0;    // return value from cross func
         float xt = 0, yt = 0, xt0 = 0, yt0 = 0, xbeg = 0, xend = 0, ybeg = 0,
             yend = 0, tol = 0, tol1 = 0, xc = 0, yc = 0, dbeg = 0, dend = 0;
@@ -333,7 +343,7 @@ void newtips(float dr)
         for (int i = 0; i < numbe; ++i)
         {
             BoundaryElement& be = elm_list[i];
-            if (i == m) continue; //do not check the mother element of the new tip
+            if (i == m) continue; // not check the mother element of the new tip
             xbeg = be.xm - be.a * be.cosbet;
             ybeg = be.ym - be.a * be.sinbet;
             xend = be.xm + be.a * be.cosbet;
@@ -588,127 +598,129 @@ void newtips(float dr)
 
 
 
-void check_crack_growth()
-    {
-        float creep_growth_max = 0;
-        float fm = 0;
+void check_crack_growth(){   
+    /*
+    check the possibility of crack growth for every tip
+    */
+    float creep_growth_max = 0;
+    float fm = 0;
 
-        float angle = 0, vel = 0;
-        float vel_creep = 0;
-        creep.vel_creep_max = 0;
-        creep.ID_fast_crack = 0;
-        file2 << "Cycle#" << mcyc << endl;
+    float angle = 0, vel = 0;
+    float vel_creep = 0;
+    creep.vel_creep_max = 0;
+    creep.ID_fast_crack = 0;
+    file2 << "Cycle#" << mcyc << endl;
                
-        for ( ni = 0; ni < no; ni++) 
+    for ( ni = 0; ni < no; ni++) 
+    {
+        Tip& t = tips[ni];
+        t.ifail = 0;
+        if (t.ityp == 0) continue; 
+        StopReturn = false;
+        fmax1(fm,angle);  
+        if (t.ityp == 0) continue;
+        if (fm < 0) fm = 0;            
+        if (abs(angle) >= 100 * pi / 180)//1.745329)
         {
-            Tip& t = tips[ni];
-            t.ifail = 0;
-            if (t.ityp == 0) continue; 
-            StopReturn = false;
-            fmax1(fm,angle);  
-            if (t.ityp == 0) continue;
-            if (fm < 0) fm = 0;            
-            if (abs(angle) >= 100 * pi / 180)//1.745329)
-            {
-                //if no proper max, then ignore this tip
-               t.angl = 0;
-               t.f_value = 0;
-            }
-            else
+            //if no proper max, then ignore this tip
+            t.angl = 0;
+            t.f_value = 0;
+        }
+        else
 
-            {
-               t.angl = angle;
-               t.f_value = fm;
-            }
-
-            if (fm >= 1.0)    //instant growth
-            {
-                t.ifail = 1;
-                creep.growth_length[ni] = t.dl;
-                creep_growth_max = 1.0;                
-                if (t.imode == 1) vel = creep.v1;
-                else if (t.imode == 2) vel = creep.v2;
-
-                file50 << std::scientific << std::setprecision(4);
-                file50 << std::setw(10) << creep.time << std::setw(1) << " " << std::setw(10) <<
-                    creep.deltaT << std::setw(1) << " "
-                    << std::setw(4) << ni << std::setw(8) << " " << std::setw(10) << 
-                    creep.growth_length[ni] << std::setw(7) << " "
-                    << std::setw(8) << t.angl * 180.0 / pi <<  std::setw(6) << 
-                    std::sqrt(std::abs(fm)) << std::setw(5) << " "
-                    << std::setw(10) << vel << "    (Fast crack growth)" << std::endl;
-                creep.ID_fast_crack = 1;                
-            }
-
-            if (creep.ID_creep == 1)
-            {
-                if (fm >= 0.0 && fm < 1.0)    //creep growth
-                {
-                    if (t.imode == 1) 
-                        vel_creep = creep.v1 * pow(fm / 1.0, (float(creep.nn1 / 2.))); //mode I creep propagation
-                    else if (t.imode == 2)
-                        vel_creep = creep.v2 * pow(fm / 1.0, (float(creep.nn2 / 2.))); //mode II creep propagation
-
-                    float deltaL = vel_creep * creep.deltaT;
-                    creep.creep_x[ni] = creep.creep_x[ni] + deltaL * cosf(t.angl);
-                    creep.creep_y[ni] = creep.creep_y[ni] + deltaL * sinf(t.angl);
-                    creep.creep_l[ni] = sqrt(pow(creep.creep_x[ni], 2) + pow(creep.creep_y[ni], 2));
-                    creep.creep_a[ni] = atan2f(creep.creep_y[ni], creep.creep_x[ni]);
-
-                    if (creep.creep_l[ni] < t.dl)   
-                    {
-                        file50 << std::scientific << std::setprecision(4);
-                        file50 << std::setw(10) << time << std::setw(1) << " " << std::setw(10) << creep.deltaT << std::setw(1) << " "
-                            << std::setw(4) << ni << std::setw(8) << " " << std::setw(10) << creep.creep_l[ni] << std::setw(7) << " "
-                            << std::setw(8) << creep.creep_a[ni] * 180/ 3.14 << std::setw(7) << " " << std::setw(6) <<
-                            std::sqrt(std::abs(fm)) << std::setw(5) << " "
-                            << std::setw(10) << vel_creep << "    (Temporary creep growth)" << std::endl;
-
-                    }
-
-                    else //if (creep.creep_l[ni] >= t.dl)
-                    {                       
-                        t.ifail = 1;
-                        creep.growth_length[ni] = t.dl;
-                        t.angl = creep.creep_a[ni];
-                        creep.creep_l[ni] = 0;
-                        creep.creep_x[ni] = 0;
-                        creep.creep_y[ni] = 0;
-                        
-                        file50 << std::scientific << std::setprecision(4);
-                        file50 << std::setw(10) << time << std::setw(1) << " " << std::setw(10) << creep.deltaT << std::setw(1) << " "
-                            << std::setw(4) << ni << std::setw(8) << " " << std::setw(10) << creep.growth_length[ni] << std::setw(7) << " "
-                            << std::setw(8) << t.angl * 180 / 3.14 << std::setw(7) << " " << std::setw(6) <<
-                            std::sqrt(std::abs(fm)) << std::setw(5) << " "
-                            << std::setw(10) << vel_creep << "    (Creep growth)" << std::endl;
-
-                    }
-                    creep_growth_max = max(creep_growth_max, deltaL / t.dl);
-                }
-            }
-
-            //no creep growth - elastic fracture tips
-            if (fm <= 0.0)
-            {
-                vel_creep = 0;
-                t.ifail = 0;
-            }
-
-            (((creep.vel_creep_max) > (vel_creep)) ? (creep.vel_creep_max) : (vel_creep)); 
-
+        {
+            t.angl = angle;
+            t.f_value = fm;
         }
 
-        // - automatically adjust time step within(min, max)
-        if (creep_growth_max != 0.0) 
-            creep.deltaT = creep.deltaT / (creep_growth_max * 10);
-        else
-            creep.deltaT = creep.deltaT_max;
+        if (fm >= 1.0)    //instant growth
+        {
+            t.ifail = 1;
+            creep.growth_length[ni] = t.dl;
+            creep_growth_max = 1.0;                
+            if (t.imode == 1) vel = creep.v1;
+            else if (t.imode == 2) vel = creep.v2;
 
-        if (creep.deltaT > creep.totalT) creep.deltaT = creep.totalT / 10;
-        if (creep.deltaT > creep.deltaT_max) creep.deltaT = creep.deltaT_max;
-        if (creep.deltaT < creep.deltaT_min) creep.deltaT = creep.deltaT_min;
+            file50 << std::scientific << std::setprecision(4);
+            file50 << std::setw(10) << creep.time << std::setw(1) << " " << std::setw(10) <<
+                creep.deltaT << std::setw(1) << " "
+                << std::setw(4) << ni << std::setw(8) << " " << std::setw(10) << 
+                creep.growth_length[ni] << std::setw(7) << " "
+                << std::setw(8) << t.angl * 180.0 / pi <<  std::setw(6) << 
+                std::sqrt(std::abs(fm)) << std::setw(5) << " "
+                << std::setw(10) << vel << "    (Fast crack growth)" << std::endl;
+            creep.ID_fast_crack = 1;                
+        }
 
-        return;
+        if (creep.ID_creep == 1)
+        {
+            if (fm >= 0.0 && fm < 1.0)    //creep growth
+            {
+                if (t.imode == 1) 
+                    vel_creep = creep.v1 * pow(fm / 1.0, (float(creep.nn1 / 2.))); //mode I creep propagation
+                else if (t.imode == 2)
+                    vel_creep = creep.v2 * pow(fm / 1.0, (float(creep.nn2 / 2.))); //mode II creep propagation
+
+                float deltaL = vel_creep * creep.deltaT;
+                creep.creep_x[ni] = creep.creep_x[ni] + deltaL * cosf(t.angl);
+                creep.creep_y[ni] = creep.creep_y[ni] + deltaL * sinf(t.angl);
+                creep.creep_l[ni] = sqrt(pow(creep.creep_x[ni], 2) + pow(creep.creep_y[ni], 2));
+                creep.creep_a[ni] = atan2f(creep.creep_y[ni], creep.creep_x[ni]);
+
+                if (creep.creep_l[ni] < t.dl)   
+                {
+                    file50 << std::scientific << std::setprecision(4);
+                    file50 << std::setw(10) << time << std::setw(1) << " " << std::setw(10) << creep.deltaT << std::setw(1) << " "
+                        << std::setw(4) << ni << std::setw(8) << " " << std::setw(10) << creep.creep_l[ni] << std::setw(7) << " "
+                        << std::setw(8) << creep.creep_a[ni] * 180/ 3.14 << std::setw(7) << " " << std::setw(6) <<
+                        std::sqrt(std::abs(fm)) << std::setw(5) << " "
+                        << std::setw(10) << vel_creep << "    (Temporary creep growth)" << std::endl;
+
+                }
+
+                else //if (creep.creep_l[ni] >= t.dl)
+                {                       
+                    t.ifail = 1;
+                    creep.growth_length[ni] = t.dl;
+                    t.angl = creep.creep_a[ni];
+                    creep.creep_l[ni] = 0;
+                    creep.creep_x[ni] = 0;
+                    creep.creep_y[ni] = 0;
+                        
+                    file50 << std::scientific << std::setprecision(4);
+                    file50 << std::setw(10) << time << std::setw(1) << " " << std::setw(10) << creep.deltaT << std::setw(1) << " "
+                        << std::setw(4) << ni << std::setw(8) << " " << std::setw(10) << creep.growth_length[ni] << std::setw(7) << " "
+                        << std::setw(8) << t.angl * 180 / 3.14 << std::setw(7) << " " << std::setw(6) <<
+                        std::sqrt(std::abs(fm)) << std::setw(5) << " "
+                        << std::setw(10) << vel_creep << "    (Creep growth)" << std::endl;
+
+                }
+                creep_growth_max = max(creep_growth_max, deltaL / t.dl);
+            }
+        }
+
+        //no creep growth - elastic fracture tips
+        if (fm <= 0.0)
+        {
+            vel_creep = 0;
+            t.ifail = 0;
+        }
+
+        (((creep.vel_creep_max) > (vel_creep)) ? (creep.vel_creep_max) : (vel_creep)); 
+
+    }
+
+    // - automatically adjust time step within(min, max)
+    if (creep_growth_max != 0.0) 
+        creep.deltaT = creep.deltaT / (creep_growth_max * 10);
+    else
+        creep.deltaT = creep.deltaT_max;
+
+    if (creep.deltaT > creep.totalT) creep.deltaT = creep.totalT / 10;
+    if (creep.deltaT > creep.deltaT_max) creep.deltaT = creep.deltaT_max;
+    if (creep.deltaT < creep.deltaT_min) creep.deltaT = creep.deltaT_min;
+
+    return;
     }
 
 
@@ -716,8 +728,12 @@ void check_crack_growth()
 
 
 
-void If_No_tip()
-    {
+void If_No_tip(){
+    
+    /*
+    when there is no tip to propagate, the possibility of
+    propagation from the rock and boundary is checked
+    */
         if (no == 0)
         {
             work0(0);   
@@ -794,7 +810,7 @@ void add_crack_growth()
                 inFile.close();
                 file9.close();
                 logfile.close();
-               // std::filesystem::remove("temp001.dat");
+                //std::filesystem::remove("temp001.dat");
                 std::exit(0);
                 //StopReturn = true;
                // return;              
@@ -806,8 +822,12 @@ void add_crack_growth()
 
 
 
-void input_tip_check()
-    {
+void input_tip_check(){
+  
+    /*
+    checks the validity of fracture tip coordinates and 
+     updates their type (ityp) if they coincide with 
+        any existing boundary element endpoints. */
 
         float xt = 0, yt = 0, x1 = 0, y1 = 0, x2 = 0, y2 = 0;
 
