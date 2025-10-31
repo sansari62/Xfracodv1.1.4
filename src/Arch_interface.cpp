@@ -1,5 +1,11 @@
-#include<stdafx.h>
+// -------------------------------------------------------
+// Arch_interface.cpp
+// Implements the Arch_interface class representing a circular or arched
+// geological interface. Provides constructors and getter methods for
+// geometry and material properties.
+//--------------------------------------------------------
 
+#include<stdafx.h>
 #include "Arch_interface.h"
 
 

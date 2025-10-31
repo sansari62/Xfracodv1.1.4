@@ -1,4 +1,14 @@
-﻿#include<stdafx.h>
+﻿// ============================================================================
+// Function : geoplot
+// Purpose  : Generate and save geometric data of boundary elements (BE) 
+//             after applying symmetry operations. 
+//             Also performs subsequent deformation and stress analysis.
+// Context  : Part of the geomechanical simulation cycle, invoked once per step.
+// Inputs   : None (uses global structures such as elm_list, b_elm, geom, etc.)
+// Outputs  : Writes a BE geometry CSV file for plotting or visualization.
+// ============================================================================
+
+#include<stdafx.h>
 #include "Geoplot.h"
 #include "CommonPara.h" 
 #include <WinInterface.h>
@@ -12,58 +22,6 @@
 
 using namespace WinInterface_h::winvar;
 using namespace CommonPara_h::comvar;
-
-
-
-//
-//void export_to_vtk() {
-//    wstring filename = BE_dir + L"/BE" + std::to_wstring(mcyc) + L".vtk";
-//    std::ofstream BEfile(filename);
-//    std::ofstream vtkfile(filename);
-//
-//    if (!vtkfile.is_open()) {
-//        std::cerr << "Failed to open vtk file " << std::endl;
-//        return;
-//    }
-//
-//    int num_lines = win_exchange.w_numbe;
-//    int num_points = num_lines * 2;
-//
-//    vtkfile << "# vtk DataFile Version 3.0\n";
-//    vtkfile << "Boundary Elements with jstat coloring\n";
-//    vtkfile << "ASCII\n";
-//    vtkfile << "DATASET POLYDATA\n";
-//    vtkfile << "POINTS " << num_points << " float\n";
-//
-//    for (int l = 0; l < num_lines; ++l)
-//    {
-//        vtkfile << geom[l].w_xbeg << " " << geom[l].w_ybeg << " 0\n";
-//        vtkfile << geom[l].w_xend << " " << geom[l].w_yend << " 0\n";
-//    }
-//
-//    vtkfile << "\nLINES " << num_lines << " " << num_lines * 3 << "\n";
-//
-//    // Write lines (2 point indices per line)
-//    for (int i = 0; i < num_lines; ++i) {
-//        vtkfile << "2 " << i * 2 << " " << i * 2 + 1 << "\n";
-//    }
-//
-//
-//    // CELL_DATA section (per line)
-//    vtkfile << "\nCELL_DATA " << num_lines << "\n";
-//    vtkfile << "SCALARS jstat int 1\n";
-//    vtkfile << "LOOKUP_TABLE default\n";
-//    for (int l = 0; l < num_lines; ++l) {
-//        vtkfile << geom[l].w_jstat << "\n";
-//    }
-//    vtkfile.close();
-//    std::cout << "VTK file written: " << std::endl;
-//}
-
-
-
-
-
 
 void geoplot() 
 {

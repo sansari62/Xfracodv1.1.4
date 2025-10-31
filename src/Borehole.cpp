@@ -1,5 +1,4 @@
 #include<stdafx.h>
-
 #include "Borehole.h"
 #include<CommonPara.h>
 

@@ -1,5 +1,4 @@
 #include<stdafx.h>
-
 #include <DX.h>
 #include <CommonPara.h>
 #include <Mainb.h>

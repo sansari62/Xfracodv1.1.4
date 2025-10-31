@@ -17,8 +17,6 @@
 
 using namespace CommonPara_h::comvar;
 
-
-
 int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, int flagB){
 
     /* Tests whether a new fracture element can be legally added to the model.
@@ -122,7 +120,6 @@ int CheckNewElement(float ac, float xc, float yc, float cosbeta, float sinbeta, 
 
     return legal;
 }
-
 
 
 
@@ -250,7 +247,6 @@ int  check_material_id(float xp, float yp)
 
 
 
-
 void  Sum_Failure(float xp, float yp, float r, float alpha, int im, float fos, int location)
 {
     /* reassign value to the failure points
@@ -267,7 +263,6 @@ void  Sum_Failure(float xp, float yp, float r, float alpha, int im, float fos, i
     mf += 1;
     return;
 }
-
 
 
 
@@ -516,7 +511,6 @@ void failure(float xp, float yp, float r, float alpha, int im){
  
 
 
-
 void failureB(float xp, float yp, float r, float alpha, int im)
 {
     //IM = 1, tensile, IM = 2, shear
@@ -629,7 +623,6 @@ void failureB(float xp, float yp, float r, float alpha, int im)
      numbe = m;     
     return;
 }
-
 
 
 

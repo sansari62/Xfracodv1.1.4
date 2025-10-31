@@ -157,7 +157,7 @@ void increment()
 /*----------------------------------------
        Hydraulic pressure
   ----------------------------------------*/
-  //only called from work0(), no water is considered for fictitious element
+//only called from work0(), no water is considered for fictitious element
 
 static void water()
 {

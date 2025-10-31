@@ -1,10 +1,9 @@
 ﻿/*============================
 File: Mainb.cpp
-Description :
-This file implements key routines for solving the boundary element equations
-used in fracture mechanics simulation(based on the Displacement
-    Discontinuity Method - DDM)
-================*/
+This file implements key routines for solving the boundary 
+element equations used in fracture mechanics simulation
+(based on the Displacement Discontinuity Method - DDM)
+==============================*/
 
 #include<stdafx.h>
 #include <Mainb.h>

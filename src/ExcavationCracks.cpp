@@ -1,5 +1,4 @@
 #include<stdafx.h>
-
 #include<ExcavationCracks.h>
 #include <cstdlib>
 #include <ctime>

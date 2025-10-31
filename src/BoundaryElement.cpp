@@ -5,8 +5,6 @@
 using namespace comvar;
 
 
-
-
 float val = 0.0;
 BoundaryElement::BoundaryElement() :mat_no(0), xm(val), ym(val), kod(0), a(val), sinbet(val),
 cosbet(val), frac_id(0){}

@@ -1,5 +1,4 @@
-﻿//#define NOMINMAX        // must go before windows.h
-#include<stdafx.h>
+﻿#include<stdafx.h>
 #include<Rectangle_check.h>
 #include "CommonPara.h"
 #include <set>
@@ -38,7 +37,7 @@ int point_inside_rectangle(const Point& point, const Rectangle1& rect) {
 }
 
 std::optional<Point> get_intersection(Point A, Point B, Point C, Point D) {
-    
+    // Find intersection point between two line segments AB and CD
     float a1 = B.y - A.y;
     float b1 = A.x - B.x;
     float c1 = a1 * A.x + b1 * A.y;
@@ -65,7 +64,10 @@ std::optional<Point> get_intersection(Point A, Point B, Point C, Point D) {
     return std::nullopt;
 }
 
-
+//---------------------------------------------------------- -
+// Compute intersection points between a line (p1, p2)
+// and all four edges of a rectangle
+// ----------------------------------------------------------
 std::vector<Point> get_all_intersections(const Point& p1, const Point& p2, const Rectangle1& rect) {
     std::vector<Point> intersections;
     for (int i = 0; i < 4; ++i) {
@@ -126,10 +128,11 @@ bool validate_and_extract_rectangle( Rectangle1& out_rect) {
 
 
 
-
-
 // ---------- Main Clipping Logic ----------
-
+// Core clipping routine: processes all boundary elements
+// against a rectangular region and removes/clips those
+// inside the excavation rectangle.
+// -----------------------------------------------------
 void process_elements(const Rectangle1& rect) {
 
     int new_numbe = 0;

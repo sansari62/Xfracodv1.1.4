@@ -295,7 +295,9 @@ void fracture_stress(int& jpoint) {
 }
 
 
-
+/* Compute and save fracture deformation data (displacements,
+// apertures, and related material information) 
+into a CSV file.*/
 void fracture_defo(int& jpoint) {
 
     wstring filename = fd_dir + L"/Frac_deform" + std::to_wstring(state) + L".csv";

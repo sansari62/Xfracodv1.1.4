@@ -4,6 +4,7 @@
  fall fully inside, outside, or intersect with the given circular sector, and
  updates the boundary element list accordingly.
  */
+
 #include<stdafx.h>
 #include<rstor_chek.h>
 #include <CommonPara.h>

@@ -1,5 +1,4 @@
 #include<stdafx.h>
-
 #include "Edge_interface.h"
 
 

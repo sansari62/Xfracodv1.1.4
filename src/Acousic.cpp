@@ -2,7 +2,6 @@
 #include <CommonPara.h>
 #include <WinInterface.h>
 
-
 using namespace WinInterface_h::winvar;
 using namespace CommonPara_h::comvar;
 

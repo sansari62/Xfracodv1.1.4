@@ -1369,7 +1369,7 @@ void processFracture()
    }
 
 
-   void randProcess() {
+   inline void randProcess() {
        string linedata;
        s15.i_rand = 1, s15.l_rand = 1;
 
@@ -1388,6 +1388,7 @@ void processFracture()
 
        }
    }
+
    inline void titl_Process() {
        //string tem;
        getline(inFile, title);
@@ -1483,7 +1484,7 @@ void processFracture()
    }
 
 
-   void restoreProcess()
+   inline void restoreProcess()
    {
        string lineData;
        string filename;

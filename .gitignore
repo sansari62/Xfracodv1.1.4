@@ -401,6 +401,9 @@ FodyWeavers.xsd
 
 #Exmaples
 Examples/
+docs/
+html/
+latex/
 
 *.txt
 *.dat
